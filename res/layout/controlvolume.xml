@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 4c000000 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="60px"
+    android:layout_height="275px"
+    android:background="#7f000000" >
+
+    <ImageView
+        android:id="@+id/img_volume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10px"
+        android:src="@drawable/volumn" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_volume"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10px"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/img_v16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/seekbar_bg" />
+        
+        <ImageView
+            android:id="@+id/img_v15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg" />
+
+        <ImageView
+            android:id="@+id/img_v1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5px"
+            android:src="@drawable/seekbar_bg2" />
+    </LinearLayout>
+
+</RelativeLayout>
