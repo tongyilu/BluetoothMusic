@@ -6,6 +6,7 @@ import com.spreadwin.btc.R;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,12 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class BluetoothFragment extends Fragment implements OnClickListener {
-		public  static final String TAG = MainActivity.TAG;
-		public  static final boolean DEBUG = true;	
+public class BluetoothFragment extends Fragment implements OnClickListener, OnLongClickListener ,OnGlobalLayoutListener{
+		public  static final String TAG = "BluetoothFragment";
+		public  static final boolean DEBUG = MainActivity.DEBUG;	
 		private LayoutInflater mInflater;
 		private ViewGroup mContentContainer;
 		private View mRootView;
@@ -30,11 +34,14 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 					mNumberXing,mDialButton,mDroppedButton;
 		TextView mInputText,mIncallText,mIncallTime;
 		
+		HorizontalScrollView mHsview;
+		
 		StringBuilder mDisplayNumber = new StringBuilder();
 		private int hour = 0;
 		private int minute = 0;
 		private int second = 0;
-		private boolean bool;
+		private boolean bool = false;
+		private int mRootViewWidth = 0;
 		
 		
 		
@@ -51,6 +58,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 			mInflater = inflater;
 			mRootView = inflater.inflate(R.layout.fragment_bluetooth, container, false);
 			init();
+			mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 			return mRootView;
 		}
 		
@@ -74,7 +82,9 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 			mInputText = (TextView) mRootView.findViewById(R.id.input_text);
 			mIncallText = (TextView) mRootView.findViewById(R.id.in_call_name);
 			mIncallTime = (TextView) mRootView.findViewById(R.id.in_call_timet);
+			mHsview = (HorizontalScrollView) mRootView.findViewById(R.id.scroollview);
 			mDeleteButton.setOnClickListener(this);
+			mDeleteButton.setOnLongClickListener(this);
 			mNumberOne.setOnClickListener(this);
 			mNumberTwo.setOnClickListener(this);
 			mNumberThree.setOnClickListener(this);
@@ -145,10 +155,12 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 		private void hangupCall() {
 			BtcNative.hangupCall();		
 //			clearInput();
+			setCallStatus(BtcGlobalData.NO_CALL);
 		}
 		
 		//拨打电话
 		public void dialCall(String callNumber) {
+			mLog("dialCall =="+callNumber);
 			if (callNumber.length() > 0) {
 				BtcNative.dialCall(callNumber);
 //				checkCallStatus();
@@ -160,8 +172,17 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 			BtcNative.dtmfCall(str);
 			mDisplayNumber.append(str);		
 			mInputText.setText(mDisplayNumber.toString());
+			updateInputIndex();
 		}
 		
+		private void updateInputIndex() {
+			mLog("updateInputIndex getWidth()=="+mInputText.getWidth());
+			mHsview.scrollTo(mInputText.getWidth(), 0);
+			if (mIncallText.getVisibility() == View.VISIBLE) {
+				mIncallText.setText("通话中..");	
+			}
+		}
+
 		public void setCallStatus(int status) {	
 			mLog("setCallStatus11111111 =="+isAdded());
 			if (!isAdded()) {
@@ -178,11 +199,11 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 				mIncallText.setVisibility(View.VISIBLE);
 				mIncallTime.setVisibility(View.VISIBLE);	
 				mLog("setCallStatus11111111 BtcNative.getCallNumber() =="+BtcNative.getCallNumber());
-				mIncallText.setText(getCallName(BtcNative.getCallNumber())+BtcNative.getCallNumber());
+				mIncallText.setText(getCallInfo());
 			}else if (status == BtcGlobalData.CALL_OUT) {
 				bool = false;
 				mInputText.setVisibility(View.VISIBLE);
-				mInputText.setText(getCallName(BtcNative.getCallNumber())+BtcNative.getCallNumber());
+				mInputText.setText(getCallInfo());
 				mDeleteButton.setVisibility(View.INVISIBLE);
 				mIncallText.setVisibility(View.VISIBLE);
 				mIncallTime.setVisibility(View.GONE);
@@ -204,28 +225,33 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 					mLog("setCallStatus11111111 BtcNative.getPhoneName()=="+BtcNative.getPhoneName()+"; BtcNative.getCallNumber() =="+BtcNative.getCallNumber());
 					mInputText.setText("");
 					mDisplayNumber.delete(0, mDisplayNumber.length());
-					mIncallText.setText(getCallName(BtcNative.getCallNumber())+BtcNative.getCallNumber());
+					mIncallText.setText(getCallInfo());
+				}
+				if (!bool) {
+					hour = 0;
+					minute = 0;
+					second = 0;		
+					mLog("setCallStatus second =="+second);
+					handler.removeCallbacks(runnable);
+					handler.post(runnable);
 				}
 				bool = true;
-				hour = 0;
-				minute = 0;
-				second = 0;		
-				handler.removeCallbacks(runnable);
-				handler.post(runnable);
 			}
 		}
 		
+		private CharSequence getCallInfo() {
+			String CallName = getCallName(BtcNative.getCallNumber());
+			String CallNumber = BtcNative.getCallNumber();
+			if (CallName.equals(CallNumber)) {
+				return CallNumber;
+			}
+			return CallName+CallNumber;
+		}
+
 		private String getCallName(String getCallNumber) {
 			String mCallName = "";
 			if (MainActivity.binder != null) {
-				if (MainActivity.binder.getPhoneBookInfo(BtcGlobalData.PB_PHONE).getSize()> 0) {
-					mCallName = MainActivity.binder.getPhoneBookInfo(BtcGlobalData.PB_PHONE).getCalllName(getCallNumber);
-					return mCallName;				
-				}
-				if (MainActivity.binder.getPhoneBookInfo(BtcGlobalData.PB_SIM).getSize()> 0) {
-					mCallName = MainActivity.binder.getPhoneBookInfo(BtcGlobalData.PB_SIM).getCalllName(getCallNumber);
-					return mCallName;				
-				}
+				return MainActivity.binder.getCallName(getCallNumber);
 			}
 			return mCallName;
 		}
@@ -241,7 +267,8 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 		Runnable runnable =new Runnable() {			
 			@Override
 			public void run() {				
-				second++;										
+				second++;					
+				mLog("runnable second =="+second);
 				if (second >= 60) {
 					minute++;
 					second = second % 60;
@@ -250,8 +277,14 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 					hour++;
 					minute = minute % 60;
 				}
-				mIncallTime.setText(format(hour) + ":" + format(minute) + ":"
+				if (hour == 0) {
+					mIncallTime.setText(format(minute) + ":"
 							+ format(second));
+					
+				}else {
+					mIncallTime.setText(hour + ":" + format(minute) + ":"
+							+ format(second));
+				}
 				if (bool) {
 					handler.postDelayed(this, 1000);
 				}
@@ -287,4 +320,25 @@ public class BluetoothFragment extends Fragment implements OnClickListener {
 				Log.d(TAG, string);				
 			}
 		}
+		
+
+		@Override
+		public boolean onLongClick(View v) {
+			if (v == mDeleteButton) {
+				clearInput();
+			}
+			return false;
+		}
+
+		@Override
+		public void onGlobalLayout() {
+			mLog("getWidth =="+mRootView.getWidth());
+			mLog("updateInputIndex getWidth()=="+mInputText.getWidth());
+			mHsview.scrollTo(mInputText.getWidth(), 0);
+			if (mRootView.getWidth() > 500) {
+				
+			}else{
+				
+			}
+		}	
 }

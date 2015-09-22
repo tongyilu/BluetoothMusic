@@ -19,7 +19,7 @@ public class BtcNative {
 	public static native int getBfpStatus();
 	public static native int getCallStatus();
 	public static native int getA2dpStatus();
-	static native int getSyncStatus();
+	public static native int getSyncStatus();
 	static native int startSyncPhoneBook(int type);
 	static native int getPhoneBookRecordNum(int type);
 	static native String getPhoneBookRecordNameByIndex(int type, int index);
@@ -39,6 +39,7 @@ public class BtcNative {
 	public static native String getPhoneName();
 	public static native String getCallNumber();
 	public static native String getPairDeviceName(int index);
+	public static native String getPairDeviceMac(int index);
 	public static native int dialCall(String number);
 	public static native int dtmfCall(String dtmf);
 	public static native int setVolume(int vol);

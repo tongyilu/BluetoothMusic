@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
+ <!-- 
+   <item
         android:id="@+id/menu_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
@@ -9,33 +10,40 @@
         android:id="@+id/action_refresh"
         android:icon="@drawable/button_contacts"
         android:orderInCategory="101"
-        android:showAsAction="ifRoom|withText"
+        android:showAsAction="never"
         android:title="refresh"/>
+        android:showAsAction="ifRoom|withText"
     <item
         android:id="@+id/action_about"
         android:icon="@drawable/button_contacts"
         android:orderInCategory="101"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="about"/>
+        android:showAsAction="ifRoom"
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/button_contacts"
         android:orderInCategory="103"
-        android:showAsAction="ifRoom"/>
+        android:showAsAction="never"
+        />
+        android:showAsAction="ifRoom"
     <item
         android:id="@+id/action_edit"
         android:icon="@android:drawable/ic_menu_edit"
         android:orderInCategory="105"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="edit"/>
-    <item
-        android:id="@+id/action_help"
-        android:showAsAction="always"
-        android:title="help"/>
+        android:showAsAction="ifRoom"
     <item
         android:id="@+id/action_email"
         android:icon="@android:drawable/ic_dialog_email"
         android:orderInCategory="106"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="email"/>
+  --> 
+    <item
+        android:id="@+id/action_help"
+        android:showAsAction="always"
+        android:title="帮助"/>
+        android:showAsAction="ifRoom"
 </menu>

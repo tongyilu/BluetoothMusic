@@ -89,7 +89,7 @@
     	    	android:layout_marginLeft="5dip"    	    	
         		android:textSize="25sp"  	    
         		android:textColor="@color/textview_color"
-    	    	android:text="蓝牙音乐"/>
+    	    	android:text="车载蓝牙"/>
     	</LinearLayout>
 	</LinearLayout>
 		<LinearLayout 

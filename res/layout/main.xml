@@ -40,15 +40,16 @@
         	layout="@layout/left_bar" />  
        <TextView 
     	    android:id="@+id/contect_status"
-    	    android:layout_width="wrap_content"
+    	    android:layout_width="180dip"
     	    android:layout_height="wrap_content"  
+    	    android:gravity="center_horizontal"
     	    android:ellipsize="end"
     	    android:singleLine="true"
     	    android:layout_marginLeft="5dip"    	    	
-    	    android:layout_marginRight="10dip"    	    	
             android:textSize="20sp"  	    
             android:textColor="@color/textview_color"
     	    android:text="@string/disconnect_title"/>
+    	    android:layout_marginRight="5dip"    	    	
     </LinearLayout>
     <FrameLayout  
         android:id="@+id/id_fragment_content"  

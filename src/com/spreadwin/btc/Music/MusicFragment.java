@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 public class MusicFragment extends Fragment implements OnClickListener{
 		public  static final String TAG = MainActivity.TAG;
-		public  static final boolean DEBUG = true;
+		public  static final boolean DEBUG = MainActivity.DEBUG;
 		public  int A2DP_DISCONNECT = BtcGlobalData.A2DP_DISCONNECT;
 	    public  int A2DP_CONNECTED = BtcGlobalData.A2DP_CONNECTED;
 	    public  int A2DP_PLAYING = BtcGlobalData.A2DP_PLAYING;

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <com.spreadwin.btc.contacts.ClearEditText
+        android:id="@+id/filter_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"       
+        android:layout_marginTop="5dip"
+        android:background="@drawable/search_bar_edit_selector"
+        android:drawableLeft="@drawable/search_bar_icon_normal"
+        android:hint="请输入关键字"
+        android:singleLine="true"
+        android:textColor="@android:color/background_dark"
+        android:imeOptions="flagNoExtractUi"
+        android:textSize="20.0dip" />
+    
+    <TextView 
+        android:id="@+id/mContactsNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="联系人数量：0"/>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <ListView
+            android:id="@+id/country_lvcountry"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:divider="@null" />
+
+        <TextView
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
+            android:layout_gravity="center"
+            android:background="@drawable/show_head_toast_bg"
+            android:gravity="center"            
+            android:textColor="#ffffffff"
+            android:textSize="30.0dip"
+            android:visibility="invisible" />
+
+        <com.spreadwin.btc.contacts.SideBar
+            android:id="@+id/sidrbar"
+            android:layout_width="30.0dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center" />
+        
+        <LinearLayout              
+         	 android:id="@+id/loading"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+		     android:gravity="center"	
+             >	  
+		     android:visibility="gone"
+	        <ProgressBar android:id="@+id/widget43"
+     			 android:layout_width="wrap_content" 
+      			android:layout_height="wrap_content"    
+      			android:layout_gravity="center_vertical">
+			</ProgressBar>
+	         <TextView 
+	              android:layout_width="wrap_content"
+	              android:layout_height="wrap_content"
+	              android:textSize="30sp"
+	              android:text="正在同步中。。。"
+	              />
+         </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

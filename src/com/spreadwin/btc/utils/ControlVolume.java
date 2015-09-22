@@ -6,6 +6,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -31,6 +32,8 @@ public class ControlVolume extends RelativeLayout {
 								  img_v11,img_v12,img_v13,img_v14,img_v15,img_v16};
 	private int[] mImgId ={R.id.img_v1,R.id.img_v2,R.id.img_v3,R.id.img_v4,R.id.img_v5,R.id.img_v6,R.id.img_v7,R.id.img_v8,
 			           R.id.img_v9,R.id.img_v10,R.id.img_v11,R.id.img_v12,R.id.img_v13,R.id.img_v14,R.id.img_v15,R.id.img_v16};
+	
+	private int mAudioMax = 16;
 	public ControlVolume(Context ctx) {
 		super(ctx);
 		this.init(ctx);
@@ -49,7 +52,12 @@ public class ControlVolume extends RelativeLayout {
 		img_volume = (ImageView) findViewById(R.id.img_volume);	
 		for (int i = 0; i < mImgId.length; i++) {
 			mImgVol[i] = (ImageView) findViewById(mImgId[i]);
+			Log.d("MainActivity", "mAudioMax =="+mAudioMax+"; i =="+i);
+			if (i > mAudioMax-1) {
+				mImgVol[i].setVisibility(View.GONE);
+			}
 		}
+		
 	}
 
 	
@@ -57,7 +65,7 @@ public class ControlVolume extends RelativeLayout {
 		Log.d("MainActivity", "current1111 =="+current);
 		int cur = current;
 		if (toggle) {			
-			if (cur < 16)
+			if (cur < mAudioMax)
 				cur += 1;
 			if (cur == 1)
 				img_volume.setImageResource(R.drawable.volumn);

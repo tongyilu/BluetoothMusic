@@ -1,94 +1,131 @@
 package com.spreadwin.btc.contacts;
 
-import java.util.ArrayList;
-import java.util.zip.Inflater;
+import java.util.List;
 
 import com.spreadwin.btc.R;
-import com.spreadwin.btc.utils.PhoneBookInfo;
+import com.spreadwin.btc.utils.PhoneBookInfo_new;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-public class ContactsAdapter extends BaseAdapter {
-	Context mContext;
-	ArrayList<String> mTelName;
-	ArrayList<String> mTelNumber;
-	ArrayList<String> mTelTime;
-	PhoneBookInfo mContactsInfo;
-	LayoutInflater mInflater;
-	public ContactsAdapter(Context context, ArrayList<String> _mTelName, ArrayList<String> _mTelNumber, ArrayList<String> _mTelTime) {
-		mContext = context;
-		mTelName = _mTelName;
-		mTelNumber = _mTelNumber;
-		mTelTime = _mTelTime;
-		mInflater = LayoutInflater.from(context);
+public class ContactsAdapter extends BaseAdapter implements SectionIndexer{
+	private List<PhoneBookInfo_new> list = null;
+	private Context mContext;
+	
+	public ContactsAdapter(Context mContext, List<PhoneBookInfo_new> list) {
+		this.mContext = mContext;
+		this.list = list;
+	}
+	
+	/**
+	 * 当ListView数据发生变化时,调用此方法来更新ListView
+	 * @param list
+	 */
+	public void updateListView(List<PhoneBookInfo_new> list){
+		this.list = list;		
 	}
 
-	public ContactsAdapter(Context context, LayoutInflater _Inflater, PhoneBookInfo callLogsInfo) {
-		mContext = context;
-		mContactsInfo = callLogsInfo;
-		mInflater = _Inflater;
-	}
-
-	@Override
 	public int getCount() {
-		 ContactsFragment.mLog("ContactsAdapter getCount =="+mContactsInfo.getSize());
-		return mContactsInfo.getSize();
+		return this.list.size();
+	}
+	
+	public List<PhoneBookInfo_new> getList() {
+		return list;
 	}
 
-	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return position;
+		return list.get(position);
 	}
 
-	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return position;
-	}
-	 private   class ViewHolder {
-	        private  TextView mTelName;
-	        private  TextView mTelNumber;
-	        private  TextView mTelTime;
-	    }
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        if(convertView == null)
-        {
-               holder = new ViewHolder();
-               convertView = mInflater.inflate(R.layout.listview_item, null);
-               ContactsFragment.mLog("getView convertView111 =="+convertView.getId()+"; position =="+position+";mCallLogsInfo type =="+mContactsInfo.getType());
-               holder.mTelName = (TextView) convertView.findViewById(R.id.tel_name);
-               holder.mTelNumber = (TextView) convertView.findViewById(R.id.tel_number);
-               holder.mTelTime = (TextView) convertView.findViewById(R.id.tel_time);
-               convertView.setTag(holder);
-        }
-        else
-        {
-               holder=(ViewHolder)convertView.getTag();
-        }
-        
-        ContactsFragment.mLog("getView convertView33 =="+convertView.getId()+"; position =="
-        		+position+";mCallLogsInfo type =="+mContactsInfo.getType() + "; mCallLogsInfo.getTelName(position)"+mContactsInfo.getTelName(position));
-        holder.mTelName.setText(mContactsInfo.getTelName(position));
-        holder.mTelNumber.setText(mContactsInfo.getTelNumber(position));
-        holder.mTelTime.setText(mContactsInfo.getTelTime(position));
-		return convertView;
-	}
-
-	public void setPhoneBookInfo(PhoneBookInfo phoneBookInfo) {
-		mContactsInfo = phoneBookInfo;		
 	}
 	
 
+	public View getView(final int position, View view, ViewGroup arg2) {
+		ViewHolder viewHolder = null;
+//		final PhoneBookInfo_new mContent = list.get(position);
+		if (view == null) {
+			viewHolder = new ViewHolder();
+			view = LayoutInflater.from(mContext).inflate(R.layout.contact_item, null);
+			viewHolder.name = (TextView) view.findViewById(R.id.name);
+			viewHolder.sortKey = (TextView) view.findViewById(R.id.sort_key);
+			viewHolder.sortKeyLayout = (LinearLayout) view.findViewById(R.id.sort_key_layout);
+			view.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) view.getTag();
+		}
+		
+		//根据position获取分类的首字母的Char ascii值
+		int section = getSectionForPosition(position);		
+		//如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
+		if(position == getPositionForSection(section)){
+			viewHolder.sortKey.setText(list.get(position).getSortLetters());
+			viewHolder.sortKeyLayout.setVisibility(View.VISIBLE);
+		}else{
+			viewHolder.sortKeyLayout.setVisibility(View.GONE);
+		}
+		
+		viewHolder.name.setText(this.list.get(position).getName());
+		return view;
+
+	}
+	
+
+
+	final static class ViewHolder {
+		TextView name;
+		TextView sortKey;
+		LinearLayout sortKeyLayout;
+	}
+
+
+	/**
+	 * 根据ListView的当前位置获取分类的首字母的Char ascii值
+	 */
+	public int getSectionForPosition(int position) {
+		return list.get(position).getSortLetters().charAt(0);
+	}
+
+	/**
+	 * 根据分类的首字母的Char ascii值获取其第一次出现该首字母的位置
+	 */
+	public int getPositionForSection(int section) {
+		for (int i = 0; i < getCount(); i++) {
+			String sortStr = list.get(i).getSortLetters();
+			char firstChar = sortStr.toUpperCase().charAt(0);
+			if (firstChar == section) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * 提取英文的首字母，非英文字母用#代替。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	private String getAlpha(String str) {
+		String  sortStr = str.trim().substring(0, 1).toUpperCase();
+		// 正则表达式，判断首字母是否是英文字母
+		if (sortStr.matches("[A-Z]")) {
+			return sortStr;
+		} else {
+			return "#";
+		}
+	}
+
+	@Override
+	public Object[] getSections() {
+		return null;
+	}
 }
