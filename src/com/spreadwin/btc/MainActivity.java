@@ -172,11 +172,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		setVolumeControlStream(10);			
 	}
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		// TODO Auto-generated method stub
-		super.onWindowFocusChanged(hasFocus);
-	}
+//	@Override
+//	public void onWindowFocusChanged(boolean hasFocus) {
+//		// TODO Auto-generated method stub
+//		super.onWindowFocusChanged(hasFocus);
+//	}
 
 	@Override
 	protected void onResume() {

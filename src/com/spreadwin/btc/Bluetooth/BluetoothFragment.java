@@ -23,7 +23,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class BluetoothFragment extends Fragment implements OnClickListener, OnLongClickListener ,OnGlobalLayoutListener{
+public class BluetoothFragment extends Fragment implements OnClickListener, OnLongClickListener {
 		public  static final String TAG = "BluetoothFragment";
 		public  static final boolean DEBUG = MainActivity.DEBUG;	
 		private LayoutInflater mInflater;
@@ -58,7 +58,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 			mInflater = inflater;
 			mRootView = inflater.inflate(R.layout.fragment_bluetooth, container, false);
 			init();
-			mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+//			mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 			return mRootView;
 		}
 		
@@ -330,15 +330,15 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 			return false;
 		}
 
-		@Override
-		public void onGlobalLayout() {
-			mLog("getWidth =="+mRootView.getWidth());
-			mLog("updateInputIndex getWidth()=="+mInputText.getWidth());
-			mHsview.scrollTo(mInputText.getWidth(), 0);
-			if (mRootView.getWidth() > 500) {
-				
-			}else{
-				
-			}
-		}	
+//		@Override
+//		public void onGlobalLayout() {
+//			mLog("getWidth =="+mRootView.getWidth());
+//			mLog("updateInputIndex getWidth()=="+mInputText.getWidth());
+//			mHsview.scrollTo(mInputText.getWidth(), 0);
+//			if (mRootView.getWidth() > 500) {
+//				
+//			}else{
+//				
+//			}
+//		}	
 }

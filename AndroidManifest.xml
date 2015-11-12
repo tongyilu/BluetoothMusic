@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spreadwin.btc"
-    android:versionCode="15091710"
-    android:versionName="15091710" >
+    android:versionCode="15093010"
+    android:versionName="15093010" >
     
     <uses-sdk android:minSdkVersion="14" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -21,6 +21,7 @@
             android:name="com.spreadwin.btc.MainActivity" 
             android:launchMode="singleTask"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="landscape">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
