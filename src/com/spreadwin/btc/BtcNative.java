@@ -31,8 +31,20 @@ public class BtcNative {
 	public static native int nextSong();
 	public static native int enterPair();
 	public static native int disconnectPhone();
+	/**
+	 * 接听
+	 * @return
+	 */		
 	public static native int answerCall();
+	/**
+	 * 拒听
+	 * @return
+	 */		
 	public static native int denyCall();
+	/**
+	 * 挂断
+	 * @return
+	 */			
 	public static native int hangupCall();
 	public static native int redialCall();
 	public static native int muteCall();
