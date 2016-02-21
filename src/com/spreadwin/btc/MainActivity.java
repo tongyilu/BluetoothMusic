@@ -774,6 +774,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			mShowDialog(DIALOG2);
 		}
+		else {
+			BtcNative.enterPair();
+		}
 
 	}
 
