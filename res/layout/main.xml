@@ -2,61 +2,74 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
-    <LinearLayout 
+    android:orientation="horizontal" >
+
+    <LinearLayout
         android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:orientation="horizontal">
-    <LinearLayout 
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" 
-        android:gravity="center_horizontal"
-        android:layout_marginLeft="29dip"   
-        android:orientation="vertical" >
-       <TextView 
-    	    android:id="@+id/bluetoot_name"
-    	    android:layout_width="150dip"
-    	    android:layout_height="wrap_content"    	 
-    	    android:singleLine="true"
-    	    android:ellipsize="marquee" 
-       		android:focusable="true" 
-        	android:marqueeRepeatLimit="marquee_forever"
-        	android:focusableInTouchMode="true" 
-            android:scrollHorizontally="true"
-            android:layout_marginTop="10dip"  
-    	    android:layout_marginLeft="5dip"
-    	    android:layout_marginRight="10dip"
-            android:textSize="20sp"
-            android:textColor="@color/textview_color"
-    	    android:text="@string/device_name"/>
-    	<include 
-        	android:id="@+id/id_ly_bottombar"  
-        	android:layout_width="wrap_content"  
-        	android:layout_height="wrap_content"     
-    		android:layout_weight="1"  
-        	android:layout_marginTop="15dip"       
-        	android:layout_marginBottom="15dip"       
-        	layout="@layout/left_bar" />  
-       <TextView 
-    	    android:id="@+id/contect_status"
-    	    android:layout_width="180dip"
-    	    android:layout_height="wrap_content"  
-    	    android:gravity="center_horizontal"
-    	    android:ellipsize="end"
-    	    android:singleLine="true"
-    	    android:layout_marginLeft="5dip"    	    	
-            android:textSize="20sp"  	    
-            android:textColor="@color/textview_color"
-    	    android:text="@string/disconnect_title"/>
-    	    android:layout_marginRight="5dip"    	    	
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="29dip"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/bluetoot_name"
+                android:layout_width="150dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="10dip"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="@string/device_name"
+                android:textColor="@color/textview_color"
+                android:textSize="20sp"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/id_ly_bottombar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                layout="@layout/left_bar" />
+
+            <TextView
+                android:id="@+id/contect_status"
+                android:layout_width="180dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="@string/disconnect_title"
+                android:textColor="@color/textview_color"
+                android:textSize="20sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/id_fragment_content"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/add_bluetooth_music"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_height="match_parent" />
+   
     </LinearLayout>
-    <FrameLayout  
-        android:id="@+id/id_fragment_content"  
-        android:layout_width="match_parent"  
-        android:layout_height="match_parent"  
-        />
-	<!-- 
+     <!--
 	<fragment  
         android:id="@+id/id_fragment_music"  
         android:name="com.spreadwin.btc.MusicFragment"  
@@ -69,9 +82,8 @@
         android:layout_width="fill_parent"  
         android:layout_height="fill_parent"         
         /> 
-	 -->
-	</LinearLayout>
-	
+
+        -->
     <com.spreadwin.btc.utils.ControlVolume
         android:id="@+id/view_MyControlVolume"
         android:layout_width="wrap_content"
@@ -79,4 +91,5 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:visibility="gone" />
+
 </RelativeLayout>

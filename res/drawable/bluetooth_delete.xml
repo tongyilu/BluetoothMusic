@@ -17,12 +17,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="true"
-        android:drawable="@drawable/delete" />
+        android:drawable="@drawable/delete_down" />
 
     <item android:state_focused="true" android:state_enabled="true"
         android:state_window_focused="true"
         android:drawable="@drawable/delete" />
 
     <item
-         android:drawable="@drawable/delete_down" />
+         android:drawable="@drawable/delete" />
 </selector>

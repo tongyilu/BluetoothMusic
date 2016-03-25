@@ -1,22 +1,18 @@
 package com.spreadwin.btc;
 
-import java.util.ArrayList;
-
-import com.spreadwin.btc.R;
 import com.spreadwin.btc.Bluetooth.BluetoothFragment;
 import com.spreadwin.btc.Calllogs.CallLogsFragment;
 import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
-import com.spreadwin.btc.utils.DBAdapter;
+import com.spreadwin.btc.utils.ScreenUtils;
 
-import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,8 +20,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.location.GpsStatus.NmeaListener;
 import android.media.AudioManager;
-import android.net.rtp.AudioStream;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -35,46 +31,45 @@ import android.os.PowerManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends FragmentActivity implements OnClickListener  {
-	public static final String TAG = "MainActivity";
+public class MainActivity extends FragmentActivity implements OnClickListener {
+	public static final String TAG = "-------->>>>>>>>";
 	public static final boolean DEBUG = true;
-	
+
 	public static final String MUSIC_MUTE_CHANGED_ACTION = "android.media.MUSIC_MUTE_CHANGED_ACTION";
-    public static final String EXTRA_MUSIC_VOLUME_MUTED = "android.media.EXTRA_MUSIC_VOLUME_MUTED";
+	public static final String EXTRA_MUSIC_VOLUME_MUTED = "android.media.EXTRA_MUSIC_VOLUME_MUTED";
 
 	public static final String mActionSync = "com.spreadwin.btc.sync";
 	public static final String mActionA2dp = "com.spreadwin.btc.a2dp";
 	public static final String mActionBfp = "com.spreadwin.btc.bfp";
 	public static final String mActionCall = "com.spreadwin.btc.call";
 	public static final String mActionPair = "com.spreadwin.btc.pair";
-	
-    public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
-    public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
-    public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
-    
-//    public static final String ACTION_BT_CALL_ANSWER = "ACTION_BT_CALL_ANSWER";
-//    public static final String ACTION_BT_CALL_REJECT = "ACTION_BT_CALL_REJECT";
+
+	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
+	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
+	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
+
+	// public static final String ACTION_BT_CALL_ANSWER =
+	// "ACTION_BT_CALL_ANSWER";
+	// public static final String ACTION_BT_CALL_REJECT =
+	// "ACTION_BT_CALL_REJECT";
 
 	private final int DIALOG1 = 1;
 	private final int DIALOG2 = 2;
@@ -95,8 +90,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 	public static BluetoothFragment mBluetoothFragment;
 	CallLogsFragment mCallLogsFragment;
 	ContactsFragment mContactsFragment;
-	LinearLayout mCallLogsLayout, mContactsLayout, mMusicLayout, mRedialLayout,
-			mBluetoothLayout;
+	LinearLayout mCallLogsLayout, mContactsLayout, mMusicLayout, mRedialLayout, mBluetoothLayout,mMusicLayoutAdd;
 	private boolean binded;
 	LocalBroadcastManager mLocalBroadcastManager;
 	BroadcastReceiver mBroadcastReceiver;
@@ -113,6 +107,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 	AudioManager audioManager;
 	Dialog mCallDialog = null;
 	int audioMax;
+	FragmentManager mAddBluetoothMusicFm = getFragmentManager();
+	FragmentTransaction mAddFragment = mAddBluetoothMusicFm.beginTransaction();
 
 	// 自定义音量条
 	private ControlVolume view_MyControlVolume;
@@ -121,12 +117,37 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 	PowerManager.WakeLock mWakeLock;
 	String callNumber;
 	String callName;
-	
-	boolean tempApp = false; // 为true时，活动结束后退到后台	
-	
+	FrameLayout mAddLayout;
+
+	boolean tempApp = false; // 为true时，活动结束后退到后台
+
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
 	final Messenger mMessenger = new Messenger(mIncomingHandler);
+
+	public BroadcastReceiver mScreenSizeChangeReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "mScreenSizeChangeReceiver =action" + intent.getAction());
+			if (intent.getAction().equals("android.intent.action.SPLIT_WINDOW_HAS_CHANGED")) {
+				ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+				int leftStackId = am.getLeftStackId();
+				int rightStackId = am.getRightStackId();
+				if (rightStackId > 0 && am.getWindowSizeStatus(rightStackId) == 0) {
+					Log.d("111111111111", " on left");
+					mAddLayout.setVisibility(View.GONE);
+					mMusicLayoutAdd.setVisibility(View.VISIBLE);
+				} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0) {
+					Log.d("111111111111", " on right");
+				} else {
+					mAddLayout.setVisibility(View.VISIBLE);
+					mMusicLayoutAdd.setVisibility(View.GONE);
+					Log.d("111111111111", " on full");
+				}
+			}
+		}
+	};
 
 	private ServiceConnection conn = new ServiceConnection() {
 
@@ -136,10 +157,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 			binder.setClientMessager(mMessenger);
 			binded = true;
 			if (binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
-				mBluetoothStatus.setText(getResources().getString(
-						R.string.connect_title));
-				handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
-						mShowDeviceNameDelayed);
+				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
+				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 
@@ -157,39 +176,52 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		 requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.main);		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.main);
 		init();
+		Log.d(TAG, "onresume for MainWindows");
 		mLog("MainActivity onCreate1111");
 		// 读取状态
-//		try {
-//			mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//			mWakeLock = mPowerManager.newWakeLock(
-//					PowerManager.PARTIAL_WAKE_LOCK, TAG);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		setVolumeControlStream(10);			
+		// try {
+		// mPowerManager = (PowerManager)
+		// getSystemService(Context.POWER_SERVICE);
+		// mWakeLock = mPowerManager.newWakeLock(
+		// PowerManager.PARTIAL_WAKE_LOCK, TAG);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		setVolumeControlStream(10);
 	}
 
-//	@Override
-//	public void onWindowFocusChanged(boolean hasFocus) {
-//		// TODO Auto-generated method stub
-//		super.onWindowFocusChanged(hasFocus);
-//	}
+	// @Override
+	// public void onWindowFocusChanged(boolean hasFocus) {
+	// // TODO Auto-generated method stub
+	// super.onWindowFocusChanged(hasFocus);
+	// }
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		if (binder != null
-//				&& binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
-//			mBluetoothStatus.setText(getResources().getString(
-//					R.string.connect_title));
-//			handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
-//					mShowDeviceNameDelayed);
-//		}
+		// if (binder != null
+		// && binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
+		// mBluetoothStatus.setText(getResources().getString(
+		// R.string.connect_title));
+		// handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
+		// mShowDeviceNameDelayed);
+		// }
+		IntentFilter intent = new IntentFilter("android.intent.action.SPLIT_WINDOW_HAS_CHANGED");
+		registerReceiver(mScreenSizeChangeReceiver, intent);
+		Log.d(TAG, "onresume for MainWindows");
+		if (ScreenUtils.setBluetoothStatus(this) == 0) {
+			mAddLayout.setVisibility(View.GONE);
+			mMusicLayoutAdd.setVisibility(View.VISIBLE);
+		} else if (ScreenUtils.setBluetoothStatus(this) == 1) {
+			mAddLayout.setVisibility(View.VISIBLE);
+			mMusicLayoutAdd.setVisibility(View.GONE);
+		}
+
 		tempApp = false;
-		
+
 		String action = getIntent().getAction();
 		mLog("MainActivity onResume action ==" + action);
 		if (action != null) {
@@ -203,8 +235,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 					if (mBluetoothFragment == null) {
 						mBluetoothFragment = new BluetoothFragment();
 					}
-					transaction.replace(R.id.id_fragment_content,
-							mBluetoothFragment);
+					transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
 					transaction.commit();
 					handler.sendEmptyMessage(mMessageCall);
 				}
@@ -212,14 +243,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 				tempApp = true;
 				mLog("MainActivity onResume action222222222 ==" + mActionCall);
 				handler.sendEmptyMessageDelayed(mMessageActionCall, 100);
-			}	
+			}
 		}
-		
-	}	
 
-	
+	}
+
 	@Override
-	protected void onNewIntent(Intent intent) {		
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		unregisterReceiver(mScreenSizeChangeReceiver);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		mLog("MainActivity onNewIntent action ==" + intent.getAction());
 		setIntent(intent);
@@ -229,7 +266,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 	protected void onStart() {
 		super.onStart();
 		mLog("MainActivity onStart 222222");
-		
+
 	}
 
 	private void init() {
@@ -237,10 +274,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		mContactsLayout = (LinearLayout) findViewById(R.id.contacts_layout);
 		mMusicLayout = (LinearLayout) findViewById(R.id.music_layout);
 		mRedialLayout = (LinearLayout) findViewById(R.id.redial_layout);
+		mMusicLayoutAdd = (LinearLayout)findViewById(R.id.music_layout_add);
 		mBluetoothLayout = (LinearLayout) findViewById(R.id.bluetooth_layout);
 		mBluetoothStatus = (TextView) findViewById(R.id.contect_status);
 		mBluetoothName = (TextView) findViewById(R.id.bluetoot_name);
 		view_MyControlVolume = (ControlVolume) findViewById(R.id.view_MyControlVolume);
+		mAddLayout = (FrameLayout) findViewById(R.id.add_bluetooth_music);
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
@@ -251,37 +290,38 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		mContactsFragment = new ContactsFragment();
 		mBluetoothFragment = new BluetoothFragment();
 		mMusicFragment = new MusicFragment();
+		mAddFragment.replace(R.id.add_bluetooth_music, mMusicFragment);
+		mAddFragment.commit();
 
 		Intent intent = new Intent(this, SyncService.class);
 		startService(intent);
 		bindService(intent, conn, Context.BIND_AUTO_CREATE);
-		setDefaultFragment();		
+		setDefaultFragment();
 		registerReceiver();
-		handler.sendEmptyMessageDelayed(mMessageShowBluetoothName,
-				mShowNameDelayed);		
-		
-//		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//		VoiceReceiver();
+		handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
+		// audioManager = (AudioManager)
+		// getSystemService(Context.AUDIO_SERVICE);
+		// VoiceReceiver();
 
 	}
 
-//	private void VoiceReceiver() {
-//		mVoiceReceiver = new BroadcastReceiver() {			
-//			@Override
-//			public void onReceive(Context context, Intent intent) {
-//				mLog("mVoiceReceiver ==" + intent.getAction());
-//				if (intent.getAction().equals(ACTION_BT_CALL_ANSWER)) {
-//					answerCall();
-//				}else if (intent.getAction().equals(ACTION_BT_CALL_REJECT)) {
-//					denyCall();
-//				}				
-//			}
-//		};
-//		IntentFilter intentFilter = new IntentFilter();
-//		intentFilter.addAction(ACTION_BT_CALL_ANSWER);
-//		intentFilter.addAction(ACTION_BT_CALL_REJECT);
-//		registerReceiver(mVoiceReceiver,intentFilter);
-//	}
+	// private void VoiceReceiver() {
+	// mVoiceReceiver = new BroadcastReceiver() {
+	// @Override
+	// public void onReceive(Context context, Intent intent) {
+	// mLog("mVoiceReceiver ==" + intent.getAction());
+	// if (intent.getAction().equals(ACTION_BT_CALL_ANSWER)) {
+	// answerCall();
+	// }else if (intent.getAction().equals(ACTION_BT_CALL_REJECT)) {
+	// denyCall();
+	// }
+	// }
+	// };
+	// IntentFilter intentFilter = new IntentFilter();
+	// intentFilter.addAction(ACTION_BT_CALL_ANSWER);
+	// intentFilter.addAction(ACTION_BT_CALL_REJECT);
+	// registerReceiver(mVoiceReceiver,intentFilter);
+	// }
 
 	private void registerReceiver() {
 		mBroadcastReceiver = new BroadcastReceiver() {
@@ -289,38 +329,32 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 			public void onReceive(Context arg0, Intent intent) {
 				mLog("mBroadcastReceiver ==" + intent.getAction());
 				if (intent.getAction().equals(mActionSync)) {
-					int mStatus = intent.getIntExtra("sync_status",
-							BtcGlobalData.NOT_SYNC);
+					int mStatus = intent.getIntExtra("sync_status", BtcGlobalData.NOT_SYNC);
 					mLog("Receiver mActionSync mStatus ==" + mStatus);
-					if (mStatus == BtcGlobalData.NEW_SYNC) {					
+					if (mStatus == BtcGlobalData.NEW_SYNC) {
 						handler.sendEmptyMessage(mMessageNotifyData);
 					} else if (mStatus == BtcGlobalData.IN_SYNC) {
 						mCallLogsFragment.showLoading();
-						if (binder.getmUpdateStatus()  == BtcGlobalData.NO_CALL) {
+						if (binder.getmUpdateStatus() == BtcGlobalData.NO_CALL) {
 							mContactsFragment.showLoading();
 						}
-					} else {						
+					} else {
 						mContactsFragment.hideLoading();
-												
+
 					}
 				} else if (intent.getAction().equals(mActionA2dp)) {
-					int mStatus = intent.getIntExtra("a2dp_status",
-							BtcGlobalData.A2DP_DISCONNECT);
+					int mStatus = intent.getIntExtra("a2dp_status", BtcGlobalData.A2DP_DISCONNECT);
 					mLog("Receiver mActionA2dp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-						mMusicFragment
-								.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
 					} else if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-						mMusicFragment
-								.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
 					} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
-						mMusicFragment
-								.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
+						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 					}
 					mMusicFragment.checkA2dpStatus();
 				} else if (intent.getAction().equals(mActionCall)) {
-					int mStatus = intent.getIntExtra("call_status",
-							BtcGlobalData.NO_CALL);
+					int mStatus = intent.getIntExtra("call_status", BtcGlobalData.NO_CALL);
 					mLog("Receiver mActionCall mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.CALL_IN) {
 						mShowDialog(DIALOG1);
@@ -330,28 +364,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 						if (mBluetoothFragment == null) {
 							mBluetoothFragment = new BluetoothFragment();
 						}
-						transaction.replace(R.id.id_fragment_content,
-								mBluetoothFragment);
+						transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
 						transaction.commit();
-						mBluetoothFragment
-								.setCallStatus(BtcGlobalData.CALL_OUT);
+						mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 					} else if (mStatus == BtcGlobalData.IN_CALL) {
 						mDismissDialog(DIALOG1);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
 						if (tempApp) {
-							moveTaskToBack(true);							
+							moveTaskToBack(true);
 						}
 					} else {
 						mDismissDialog(DIALOG1);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 						mLog("Receiver mActionCall mStatus NO_CALL  tempApp==" + tempApp);
 						if (tempApp) {
-							moveTaskToBack(true);							
+							moveTaskToBack(true);
 						}
 					}
 				} else if (intent.getAction().equals(mActionPair)) {
-					int mStatus = intent.getIntExtra("pair_status",
-							BtcGlobalData.NOT_PAIR);
+					int mStatus = intent.getIntExtra("pair_status", BtcGlobalData.NOT_PAIR);
 					mLog("Receiver mActionPair mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.NOT_PAIR) {
 
@@ -360,22 +391,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 					} else if (mStatus == BtcGlobalData.PAIRRED) {
 					}
 				} else if (intent.getAction().equals(mActionBfp)) {
-					int mStatus = intent.getIntExtra("bfp_status",
-							BtcGlobalData.BFP_DISCONNECT);
+					int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 					mLog("Receiver mActionBfp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.BFP_CONNECTED) {
-						mBluetoothStatus.setText(getResources().getString(
-								R.string.connect_title));
-						handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
-								mShowDeviceNameDelayed);
-//						LockScreen();
+						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
+						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
+						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
-//						UnLockScreen();
+						// UnLockScreen();
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
-						mBluetoothStatus.setText(getResources().getString(
-								R.string.disconnect_title));	
+						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 						handler.sendEmptyMessage(mMessageNotifyData);
-						mDismissDialog(DIALOG1);						
+						mDismissDialog(DIALOG1);
 					}
 				}
 
@@ -389,33 +416,29 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		intentFilter.addAction(mActionBfp);
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		mBroadcast = true;
-		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver,
-				intentFilter);
+		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, intentFilter);
 	}
-	
+
 	public Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case mMessageCall:
-				mLog("handleMessage 1111callName ==" + callName
-						+ "; callNumber ==" + callNumber);				
+				mLog("handleMessage 1111callName ==" + callName + "; callNumber ==" + callNumber);
 				for (int i = 0; i < 3; i++) {
 					if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 						if (callNumber != null) {
 							mBluetoothFragment.dialCall(callNumber);
-						} else if (callName != null
-								&& binder != null
-								&& getCallNumber(callName) != null) {
-							mLog("getCallNumber =="+getCallNumber(callName));
+						} else if (callName != null && binder != null && getCallNumber(callName) != null) {
+							mLog("getCallNumber ==" + getCallNumber(callName));
 							if (getCallNumber(callName).equals("more")) {
-								mShowDialog(DIALOG3);		
+								mShowDialog(DIALOG3);
 								mBluetoothLayout.showContextMenu();
-//								getWindow().getDecorView().showContextMenu();
-							}else {
-								mBluetoothFragment.dialCall(getCallNumber(callName));								
+								// getWindow().getDecorView().showContextMenu();
+							} else {
+								mBluetoothFragment.dialCall(getCallNumber(callName));
 							}
-						} 
-						//重置Intent的action信息
+						}
+						// 重置Intent的action信息
 						setIntent(new Intent());
 						break;
 					}
@@ -429,9 +452,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 
 				break;
 			case mMessageActionCall:
-				int mStatus = getIntent().getIntExtra("call_status",
-						BtcGlobalData.NO_CALL);
-				mLog("handler mStatus ==" + mStatus+"; binder.getCallStatus( )=="+binder.getCallStatus());
+				int mStatus = getIntent().getIntExtra("call_status", BtcGlobalData.NO_CALL);
+				mLog("handler mStatus ==" + mStatus + "; binder.getCallStatus( )==" + binder.getCallStatus());
 				if (mStatus == BtcGlobalData.CALL_IN && binder.getCallStatus() == BtcGlobalData.CALL_IN) {
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
@@ -446,38 +468,33 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 				break;
 
 			case mMessageShowDeviceName:
-				mLog("handleMessage BtcNative.getPairDeviceName(0) =="
-						+ BtcNative.getPairDeviceName(0));
+				mLog("handleMessage BtcNative.getPairDeviceName(0) ==" + BtcNative.getPairDeviceName(0));
 				if (BtcNative.getPairDeviceName(0).length() > 0) {
 					mBluetoothStatus.setText(BtcNative.getPairDeviceName(0));
-//					mBluetoothStatus.setText(getResources().getString(
-//							R.string.connect_title)
-//							+ "--" + BtcNative.getPairDeviceName(0));
+					// mBluetoothStatus.setText(getResources().getString(
+					// R.string.connect_title)
+					// + "--" + BtcNative.getPairDeviceName(0));
 				} else {
-					mBluetoothStatus.setText(getResources().getString(
-							R.string.connect_title));
+					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				}
 
 				break;
 			case mMessageHideVolume:
-				view_MyControlVolume.setAnimation(AnimationUtils.loadAnimation(
-						MainActivity.this, android.R.anim.fade_out));
+				view_MyControlVolume
+						.setAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_out));
 				view_MyControlVolume.setVisibility(View.GONE);
 				break;
 			case mMessageShowBluetoothName:
 				if (BtcNative.getDeviceName().length() > 0) {
-					mBluetoothName.setText(getResources().getString(
-							R.string.device_name)
-							+ BtcNative.getDeviceName()+" "+getResources().getString(
-									R.string.help_text));
+					mBluetoothName.setText(getResources().getString(R.string.device_name) + BtcNative.getDeviceName()
+							+ " " + getResources().getString(R.string.help_text));
 				} else {
-					handler.sendEmptyMessageDelayed(mMessageShowBluetoothName,
-							mShowNameDelayed);
+					handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
 				}
 				break;
 			case mMessageNotifyData:
 				try {
-					Thread.sleep(100);							
+					Thread.sleep(100);
 					mCallLogsFragment.notifyDataSetChanged();
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -494,8 +511,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 
 	protected void mDismissDialog(int dIALOG12) {
 		if (mCallDialog != null && mCallDialog.isShowing()) {
-			 Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);			
-			 sendBroadcast(mCallIntent);
+			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+			sendBroadcast(mCallIntent);
 			mCallDialog.dismiss();
 		}
 	}
@@ -506,10 +523,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		if (id == DIALOG1) {
 			View mCallView = inflater.inflate(R.layout.display_call, null);
 			builder.setView(mCallView);
-			mDialButton = (ImageButton) mCallView
-					.findViewById(R.id.mdial_button);
-			mdroppedbutton = (ImageButton) mCallView
-					.findViewById(R.id.mdropped_button);
+			mDialButton = (ImageButton) mCallView.findViewById(R.id.mdial_button);
+			mdroppedbutton = (ImageButton) mCallView.findViewById(R.id.mdropped_button);
 			mNumberText = (TextView) mCallView.findViewById(R.id.number_text);
 			mNameText = (TextView) mCallView.findViewById(R.id.name_text);
 
@@ -529,55 +544,51 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 			mCallDialog.setCanceledOnTouchOutside(false);
 			mCallDialog.show();
 
-			 Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-			 mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
-			 mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);			
-			 sendBroadcast(mCallIntent);
+			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
+			sendBroadcast(mCallIntent);
 		} else if (id == DIALOG2) {
 			builder.setTitle("提示");
 			builder.setMessage("确定断开连接吗");
-			builder.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							mBluetoothFragment
-									.setCallStatus(BtcGlobalData.NO_CALL);
-							BtcNative.disconnectPhone();
-						}
-					});
+			builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
+					BtcNative.disconnectPhone();
+				}
+			});
 			builder.setNegativeButton("取消", null);
 			builder.create().show();
 
-		}else if (id == DIALOG3) {
+		} else if (id == DIALOG3) {
 			ListView lv = new ListView(this);
 			final String[] number = new String[binder.getCallNumberList(callName).size()];
 			for (int i = 0; i < number.length; i++) {
-				number[i] = "拨打 :"+binder.getCallNumberList(callName).get(i);
+				number[i] = "拨打 :" + binder.getCallNumberList(callName).get(i);
 			}
-			lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,number));
+			lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, number));
 			lv.setOnItemClickListener(new OnItemClickListener() {
 				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-					mLog("DIALOG3 onItemClick arg2 =="+arg2+"; number[arg2]"+number[arg2]);;
-					mBluetoothFragment.dialCall(binder.getCallNumberList(callName).get(arg2));	
+				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+					mLog("DIALOG3 onItemClick arg2 ==" + arg2 + "; number[arg2]" + number[arg2]);
+					;
+					mBluetoothFragment.dialCall(binder.getCallNumberList(callName).get(arg2));
 					mCallDialog.dismiss();
 				}
 			});
 			builder.setView(lv);
 			builder.setTitle(callName);
 			mCallDialog = builder.create();
-//			mCallDialog.setCanceledOnTouchOutside(false);
+			// mCallDialog.setCanceledOnTouchOutside(false);
 			mCallDialog.show();
 		}
 
 	}
-	
-	
-	
-	public String getCallNumber(String  getCallName) {
+
+	public String getCallNumber(String getCallName) {
 		String mCallNmber = null;
 		if (binder != null) {
-			return binder.getCallNumber(getCallName);			
+			return binder.getCallNumber(getCallName);
 		}
 		return mCallNmber;
 	}
@@ -588,7 +599,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 			return binder.getCallName(getCallNumber);
 		}
 		return mCallName;
-	}	
+	}
 
 	@Override
 	protected void onDestroy() {
@@ -596,72 +607,71 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		if (binded) {
 			unbindService(conn);
 		}
-//		Intent intent = new Intent(this, SyncService.class);
-//		stopService(intent);
+		// Intent intent = new Intent(this, SyncService.class);
+		// stopService(intent);
 		if (mLocalBroadcastManager != null && mBroadcastReceiver != null) {
 			mBroadcast = false;
 			mLog("onDestroy() 1111111111111 ");
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
-//		if (mVoiceReceiver != null) {
-//			unregisterReceiver(mVoiceReceiver);			
-//		}
+		// if (mVoiceReceiver != null) {
+		// unregisterReceiver(mVoiceReceiver);
+		// }
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
+
 	}
 
 	private void setDefaultFragment() {
-//		String action = getIntent().getAction();
-//		if (action != null && action.equals(mActionCall)) {
-//			FragmentManager fm = getFragmentManager();
-//			FragmentTransaction transaction = fm.beginTransaction();		
-//			transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-//			transaction.commit();
-//		} else {
-//		}
+		// String action = getIntent().getAction();
+		// if (action != null && action.equals(mActionCall)) {
+		// FragmentManager fm = getFragmentManager();
+		// FragmentTransaction transaction = fm.beginTransaction();
+		// transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
+		// transaction.commit();
+		// } else {
+		// }
 		FragmentManager fm = getFragmentManager();
-		FragmentTransaction transaction = fm.beginTransaction();			
+		FragmentTransaction transaction = fm.beginTransaction();
 		transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
 		transaction.commit();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-//		 getMenuInflater().inflate(R.menu.activity_menu, menu);
+		// getMenuInflater().inflate(R.menu.activity_menu, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-//		case R.id.action_refresh:
-//			Toast.makeText(this, "Menu Item refresh selected",
-//					Toast.LENGTH_SHORT).show();
-//			// Log.d(TAG, "pair "+ BtcNative.getPairStatus());
-//			break;
-//		case R.id.action_about:
-//			Toast
-//					.makeText(this, "Menu Item about selected",
-//							Toast.LENGTH_SHORT).show();
-//			// Log.d(TAG, "bfp "+ BtcNative.getBfpStatus());
-//			break;
-//		case R.id.action_edit:
-//			Toast.makeText(this, "Menu Item edit selected", Toast.LENGTH_SHORT)
-//					.show();
-//			// Log.d(TAG, "call "+ BtcNative.getCallStatus());
-//			break;
-//		case R.id.action_search:
-//			Toast.makeText(this, "Menu Item search selected",
-//					Toast.LENGTH_SHORT).show();
-//			// Log.d(TAG, "a2dp "+ BtcNative.getA2dpStatus());
-//			break;
+		// case R.id.action_refresh:
+		// Toast.makeText(this, "Menu Item refresh selected",
+		// Toast.LENGTH_SHORT).show();
+		// // Log.d(TAG, "pair "+ BtcNative.getPairStatus());
+		// break;
+		// case R.id.action_about:
+		// Toast
+		// .makeText(this, "Menu Item about selected",
+		// Toast.LENGTH_SHORT).show();
+		// // Log.d(TAG, "bfp "+ BtcNative.getBfpStatus());
+		// break;
+		// case R.id.action_edit:
+		// Toast.makeText(this, "Menu Item edit selected", Toast.LENGTH_SHORT)
+		// .show();
+		// // Log.d(TAG, "call "+ BtcNative.getCallStatus());
+		// break;
+		// case R.id.action_search:
+		// Toast.makeText(this, "Menu Item search selected",
+		// Toast.LENGTH_SHORT).show();
+		// // Log.d(TAG, "a2dp "+ BtcNative.getA2dpStatus());
+		// break;
 		case R.id.action_help:
-			Toast.makeText(this, getResources().getString(R.string.help_text),
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getResources().getString(R.string.help_text), Toast.LENGTH_SHORT).show();
 			// Log.d(TAG, "a2dp "+ BtcNative.getA2dpStatus());
 			break;
 		default:
@@ -681,7 +691,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 			mLog("onClick mdroppedbutton22222222222");
 			denyCall();
 		} else {
-			FragmentManager fm = getFragmentManager();			
+			FragmentManager fm = getFragmentManager();
 			FragmentTransaction transaction = fm.beginTransaction();
 
 			switch (v.getId()) {
@@ -689,22 +699,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 				if (mCallLogsFragment == null) {
 					mCallLogsFragment = new CallLogsFragment();
 				}
-				transaction
-						.replace(R.id.id_fragment_content, mCallLogsFragment);
+				transaction.replace(R.id.id_fragment_content, mCallLogsFragment);
 				break;
 			case R.id.contacts_layout:
 				if (mContactsFragment == null) {
 					mContactsFragment = new ContactsFragment();
 				}
-				transaction
-						.replace(R.id.id_fragment_content, mContactsFragment);
+				transaction.replace(R.id.id_fragment_content, mContactsFragment);
 				break;
 			case R.id.redial_layout:
 				if (mBluetoothFragment == null) {
 					mBluetoothFragment = new BluetoothFragment();
 				}
-				transaction.replace(R.id.id_fragment_content,
-						mBluetoothFragment);
+				transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
 				break;
 			case R.id.music_layout:
 				if (mMusicFragment == null) {
@@ -713,9 +720,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 				transaction.replace(R.id.id_fragment_content, mMusicFragment);
 				break;
 			}
-//			 transaction.addToBackStack();
+			// transaction.addToBackStack();
 			// 事务提交
-//			transaction.commit();
+			// transaction.commit();
 			transaction.commitAllowingStateLoss();
 		}
 	}
@@ -729,9 +736,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 		} else if (keyCode == event.KEYCODE_VOLUME_UP) {
 			setBTVolume(true);
 			return true;
-		} else 
-//		int mCurV = BtcNative.getVolume();
-//		mLog("setBTVolume mCurV ==" + mCurV);
+		} else
+		// int mCurV = BtcNative.getVolume();
+		// mLog("setBTVolume mCurV ==" + mCurV);
 		if (keyCode == event.KEYCODE_BACK) {
 			moveTaskToBack(true);
 			return true;
@@ -742,39 +749,35 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 	/**
 	 * true 为加一级蓝牙声音，false为减一级蓝牙声音，范围0-16
 	 */
-	private void setBTVolume(boolean toggle) {		
+	private void setBTVolume(boolean toggle) {
 		int mCurV = BtcNative.getVolume();
-//		int mCurV = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		// int mCurV = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		mLog("setBTVolume mCurV ==" + mCurV);
 		mCurV = view_MyControlVolume.setImgBg(mCurV, toggle);
 		if (mCurV != BtcNative.getVolume()) {
 			// 返回已经处理过的值
 			mLog("setBTVolume mCurV2222 ==" + mCurV);
-			BtcNative.setVolume(mCurV);		
+			BtcNative.setVolume(mCurV);
 		}
-		setVisibility(mCurV);	
+		setVisibility(mCurV);
 	}
 
 	// 控制显示当前音量
 	private void setVisibility(int cur) {
 		if (view_MyControlVolume.getVisibility() == View.GONE) {
-			view_MyControlVolume.setAnimation(AnimationUtils.loadAnimation(
-					this, android.R.anim.fade_in));
+			view_MyControlVolume.setAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
 			view_MyControlVolume.setVisibility(View.VISIBLE);
-			handler.sendEmptyMessageDelayed(mMessageHideVolume,
-					mHideVolumeDelayed);
+			handler.sendEmptyMessageDelayed(mMessageHideVolume, mHideVolumeDelayed);
 		} else {
 			handler.removeMessages(3);
-			handler.sendEmptyMessageDelayed(mMessageHideVolume,
-					mHideVolumeDelayed);
+			handler.sendEmptyMessageDelayed(mMessageHideVolume, mHideVolumeDelayed);
 		}
 	}
 
 	private void mDisconnectPhone() {
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			mShowDialog(DIALOG2);
-		}
-		else {
+		} else {
 			BtcNative.enterPair();
 		}
 
@@ -808,8 +811,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 				e.printStackTrace();
 			}
 		}
-	}	
-
+	}
 
 	private void UnLockScreen() {
 		if (mWakeLock != null) {
@@ -824,46 +826,39 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 			}
 		}
 	}
-	
-	
+
 	class IncomingHandler extends Handler {
 		@Override
-		public void handleMessage(Message msg) {	
+		public void handleMessage(Message msg) {
 			Intent intent = (Intent) msg.obj;
 			mLog("IncomingHandler  Action ==" + intent.getAction());
 			if (intent.getAction().equals(mActionSync)) {
-				int mStatus = intent.getIntExtra("sync_status",
-						BtcGlobalData.NOT_SYNC);
+				int mStatus = intent.getIntExtra("sync_status", BtcGlobalData.NOT_SYNC);
 				mLog("Receiver mActionSync mStatus ==" + mStatus);
-				if (mStatus == BtcGlobalData.NEW_SYNC) {					
+				if (mStatus == BtcGlobalData.NEW_SYNC) {
 					handler.sendEmptyMessage(mMessageNotifyData);
 				} else if (mStatus == BtcGlobalData.IN_SYNC) {
 					mCallLogsFragment.showLoading();
-					if (binder.getmUpdateStatus()  == BtcGlobalData.NO_CALL) {
+					if (binder.getmUpdateStatus() == BtcGlobalData.NO_CALL) {
 						mContactsFragment.showLoading();
 					}
-				} else {						
+				} else {
 					mContactsFragment.hideLoading();
-											
+
 				}
 			} else if (intent.getAction().equals(mActionA2dp)) {
-				int mStatus = intent.getIntExtra("a2dp_status",
-						BtcGlobalData.A2DP_DISCONNECT);
+				int mStatus = intent.getIntExtra("a2dp_status", BtcGlobalData.A2DP_DISCONNECT);
 				mLog("Receiver mActionA2dp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-					mMusicFragment
-							.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
 				} else if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-					mMusicFragment
-							.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
 				} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
-					mMusicFragment
-							.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
+					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 				}
 				mMusicFragment.checkA2dpStatus();
 			} else if (intent.getAction().equals(mActionCall)) {
-				int mStatus = intent.getIntExtra("call_status",
-						BtcGlobalData.NO_CALL);
+				int mStatus = intent.getIntExtra("call_status", BtcGlobalData.NO_CALL);
 				mLog("Receiver mActionCall mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.CALL_IN) {
 					mShowDialog(DIALOG1);
@@ -873,28 +868,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 					if (mBluetoothFragment == null) {
 						mBluetoothFragment = new BluetoothFragment();
 					}
-					transaction.replace(R.id.id_fragment_content,
-							mBluetoothFragment);
+					transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
 					transaction.commit();
-					mBluetoothFragment
-							.setCallStatus(BtcGlobalData.CALL_OUT);
+					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
 					mDismissDialog(DIALOG1);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
 					if (tempApp) {
-						moveTaskToBack(true);							
+						moveTaskToBack(true);
 					}
 				} else {
 					mDismissDialog(DIALOG1);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mLog("Receiver mActionCall mStatus NO_CALL  tempApp==" + tempApp);
 					if (tempApp) {
-						moveTaskToBack(true);							
+						moveTaskToBack(true);
 					}
 				}
 			} else if (intent.getAction().equals(mActionPair)) {
-				int mStatus = intent.getIntExtra("pair_status",
-						BtcGlobalData.NOT_PAIR);
+				int mStatus = intent.getIntExtra("pair_status", BtcGlobalData.NOT_PAIR);
 				mLog("Receiver mActionPair mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.NOT_PAIR) {
 
@@ -903,29 +895,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener  {
 				} else if (mStatus == BtcGlobalData.PAIRRED) {
 				}
 			} else if (intent.getAction().equals(mActionBfp)) {
-				int mStatus = intent.getIntExtra("bfp_status",
-						BtcGlobalData.BFP_DISCONNECT);
+				int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 				mLog("Receiver mActionBfp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.BFP_CONNECTED) {
-					mBluetoothStatus.setText(getResources().getString(
-							R.string.connect_title));
-					handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
-							mShowDeviceNameDelayed);
-//					LockScreen();
+					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
+					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
+					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
-//					UnLockScreen();
+					// UnLockScreen();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
-					mBluetoothStatus.setText(getResources().getString(
-							R.string.disconnect_title));	
+					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 					handler.sendEmptyMessage(mMessageNotifyData);
-					mDismissDialog(DIALOG1);						
+					mDismissDialog(DIALOG1);
 				}
 			}
 		}
 	}
-
-	
-	
 
 	public static void mLog(String string) {
 		if (DEBUG) {

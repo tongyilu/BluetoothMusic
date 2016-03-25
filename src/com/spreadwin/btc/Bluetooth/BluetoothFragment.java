@@ -177,7 +177,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 		
 		private void updateInputIndex() {
 			mLog("updateInputIndex getWidth()=="+mInputText.getWidth());
-			mHsview.scrollTo(mInputText.getWidth(), 0);
+//			mHsview.scrollTo(mInputText.getWidth(), 0);
 			if (mIncallText.getVisibility() == View.VISIBLE) {
 				mIncallText.setText("通话中..");	
 			}

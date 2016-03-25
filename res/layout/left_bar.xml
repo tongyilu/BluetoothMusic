@@ -2,152 +2,198 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"     
-    >
-    android:background="#ffff0000"
-	<LinearLayout 
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-        android:layout_gravity="center"
-    	android:layout_weight="1"
-    	>      
-    	<LinearLayout 
-    	    android:id="@+id/calllogs_layout"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-        	android:gravity="center_vertical"
-        	android:background="@drawable/button_bg"  	
-    		>     
-    		<ImageView 
-      			android:id="@+id/calllogs_icon"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content" 
-        		android:layout_marginLeft="12dip"         		  	    
-        		android:background="@drawable/button_call_logs"/>
-    		<TextView 
-    	    	android:id="@+id/calllogs_title"
-    	    	android:layout_width="wrap_content"
-    	    	android:layout_height="wrap_content"    
-    	    	android:layout_marginLeft="5dip"    	    	
-        		android:textSize="25sp"  	    
-        		android:textColor="@color/textview_color"
-    	    	android:text="通话记录"/>
-    	</LinearLayout>
-	</LinearLayout>
-	<LinearLayout 
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_gravity="center"
-    	android:layout_weight="1"
-    	>      
-    	<LinearLayout 
-    	    android:id="@+id/contacts_layout"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-        	android:gravity="center_vertical"
-        	android:background="@drawable/button_bg"  	
-    		>     
-    		<ImageView 
-      			android:id="@+id/contacts_icon"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content" 
-        		android:layout_marginLeft="12dip"         		  	    
-        		android:background="@drawable/button_contacts"/>
-    		<TextView 
-    	    	android:id="@+id/contacts_title"
-    	    	android:layout_width="wrap_content"
-    	    	android:layout_height="wrap_content"    
-    	    	android:layout_marginLeft="5dip"    	    	
-        		android:textSize="25sp"  	    
-        		android:textColor="@color/textview_color"
-    	    	android:text="电话本"/>
-    	</LinearLayout>
-	</LinearLayout>
-		<LinearLayout 
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_gravity="center"
-    	android:layout_weight="1"
-    	>      
-    	<LinearLayout 
-    	    android:id="@+id/music_layout"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-        	android:gravity="center_vertical"
-        	android:background="@drawable/button_bg"  	
-    		>     
-    		<ImageView 
-      			android:id="@+id/music_icon"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content" 
-        		android:layout_marginLeft="12dip"         		  	    
-        		android:background="@drawable/button_music"/>
-    		<TextView 
-    	    	android:id="@+id/music_title"
-    	    	android:layout_width="wrap_content"
-    	    	android:layout_height="wrap_content"    
-    	    	android:layout_marginLeft="5dip"    	    	
-        		android:textSize="25sp"  	    
-        		android:textColor="@color/textview_color"
-    	    	android:text="车载蓝牙"/>
-    	</LinearLayout>
-	</LinearLayout>
-		<LinearLayout 
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_gravity="center"
-    	android:layout_weight="1"
-    	>      
-    	<LinearLayout 
-    	    android:id="@+id/redial_layout"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-        	android:gravity="center_vertical"
-        	android:background="@drawable/button_bg"  	
-    		>     
-    		<ImageView 
-      			android:id="@+id/redial_icon"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content" 
-        		android:layout_marginLeft="12dip"         		  	    
-        		android:background="@drawable/button_redial"/>
-    		<TextView 
-    	    	android:id="@+id/redial_title"
-    	    	android:layout_width="wrap_content"
-    	    	android:layout_height="wrap_content"    
-    	    	android:layout_marginLeft="5dip"    	    	
-        		android:textSize="25sp"  	   
-        		android:textColor="@color/textview_color" 
-    	    	android:text="拨号"/>
-    	</LinearLayout>
-	</LinearLayout>
-		<LinearLayout 
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_gravity="center"
-    	android:layout_weight="1"
-    	>      
-    	<LinearLayout 
-      		android:id="@+id/bluetooth_layout"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-        	android:gravity="center_vertical"
-        	android:background="@drawable/button_bg"  	
-    		>     
-    		<ImageView 
-      			android:id="@+id/bluetooth_icon"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content" 
-        		android:layout_marginLeft="12dip"         		  	    
-        		android:background="@drawable/button_bluetooth"/>
-    		<TextView 
-    	    	android:id="@+id/bluetooth_title"
-    	    	android:layout_width="wrap_content"
-    	    	android:layout_height="wrap_content"    
-    	    	android:layout_marginLeft="5dip"    	    	
-        		android:textSize="25sp"  	    
-        		android:textColor="@color/textview_color"
-    	    	android:text="断开连接"/>
-    	</LinearLayout>
-	</LinearLayout>
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1" >
+
+            <!--
+                 <ImageView
+                android:id="@+id/calllogs_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dip"
+                android:background="@drawable/button_call_logs" />
+
+            -->
+
+            <LinearLayout
+                android:id="@+id/calllogs_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tonghua_bj"
+                android:gravity="center_vertical" >
+
+                <RadioButton
+                    android:id="@+id/calllogs_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dip"
+                    android:button="@null"
+                   android:checked="false"
+                    android:clickable="true"
+                    android:text="通话记录"
+                    android:textColor="@color/textview_color"
+                    android:textSize="25sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1" >
+
+                 <!--
+                 <ImageView
+                android:id="@+id/contacts_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dip"
+                android:background="@drawable/button_contacts" />
+
+                -->
+                <LinearLayout
+                android:id="@+id/contacts_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dianhua_bj"
+                android:gravity="center_vertical" >
+
+           
+
+                <RadioButton
+                    android:id="@+id/contacts_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dip"
+                    android:button="@null"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:text="电话本"
+                    android:textColor="@color/textview_color"
+                    android:textSize="25sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:id="@+id/redial_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bohaojianpan_bj"
+                android:gravity="center_vertical" >
+ <!--
+                 <ImageView
+                android:id="@+id/redial_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dip"
+                android:background="@drawable/button_redial" />
+
+                -->
+               
+
+                <RadioButton
+                    android:id="@+id/redial_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dip"
+                    android:button="@null"
+                    android:checked="true"
+                    android:text="拨号键盘"
+                    android:textColor="@color/textview_color"
+                    android:textSize="25sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/music_layout_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1" >
+    <!--
+                 <ImageView
+                android:id="@+id/music_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dip"
+                android:background="@drawable/button_music" />
+
+            -->
+            
+        
+            <LinearLayout
+                android:id="@+id/music_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/lanya_bj"
+                android:gravity="center_vertical" >
+
+                <RadioButton
+                    android:id="@+id/music_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dip"
+                    android:button="@null"
+                   android:checked="false"
+                    android:clickable="true"
+                    android:text="蓝牙音乐"
+                    android:textColor="@color/textview_color"
+                    android:textSize="25sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:id="@+id/bluetooth_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/duankailanya_bj"
+                android:gravity="center_vertical" >
+
+                <!--
+                 <ImageView
+                android:id="@+id/bluetooth_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dip"
+                android:background="@drawable/button_bluetooth" />
+
+                -->
+
+                <RadioButton
+                    android:id="@+id/bluetooth_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dip"
+                    android:button="@null"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:text="断开连接"
+                    android:textColor="@color/textview_color"
+                    android:textSize="25sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </RadioGroup>
+
 </LinearLayout>

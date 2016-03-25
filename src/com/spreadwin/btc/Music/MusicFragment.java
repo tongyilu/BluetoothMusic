@@ -43,8 +43,6 @@ public class MusicFragment extends Fragment implements OnClickListener{
 			mLog("MusicFragment onCreate");
 		}
 		
-		
-		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
