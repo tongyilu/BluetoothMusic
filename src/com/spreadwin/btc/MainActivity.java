@@ -85,8 +85,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private final int mHideVolumeDelayed = 3000;
 	private final int mShowNameDelayed = 1000;
 
-	MusicFragment mMusicFragment;
-	MusicFragment mMusicRightFragment;
+	MusicFragment mMusicRightFragment, mMusicFragment;
 	public static BluetoothFragment mBluetoothFragment;
 	CallLogsFragment mCallLogsFragment;
 	ContactsFragment mContactsFragment;
@@ -303,7 +302,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main = (LinearLayout) findViewById(R.id.main);
 
 		mVto = main.getViewTreeObserver();
-		
+
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
@@ -344,6 +343,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mAddLayout.setVisibility(View.GONE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
+//						setDefaultFragment();
 					}
 				}
 			}
@@ -467,7 +467,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, intentFilter);
 	}
 
-
 	public Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -562,6 +561,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (mCallDialog != null && mCallDialog.isShowing()) {
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			sendBroadcast(mCallIntent);
+			mCalllogsTitle.setTextColor(getResources().getColor(white));
+			mContactsTitle.setTextColor(getResources().getColor(white));
+			mRedialTitle.setTextColor(getResources().getColor(blue));
+			mMusicTitle.setTextColor(getResources().getColor(white));
+			mBluetoothTitle.setTextColor(getResources().getColor(white));
 			mCallDialog.dismiss();
 		}
 	}
@@ -577,7 +581,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				transaction.replace(R.id.id_fragment_content, mDialogFragment);
 				mAddLayout.setVisibility(View.GONE);
 				mLeftMenu.setVisibility(View.GONE);
-			}else{
+			} else {
 				mFragmetContext.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.GONE);
@@ -632,17 +636,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		} else if (id == DIALOG3) {
 			ListView lv = new ListView(this);
 			final String[] number = new String[binder.getCallNumberList(callName).size()];
-			for (int i = 0; i < number.length; i++) {
-				number[i] = "拨打 :" + binder.getCallNumberList(callName).get(i);
-			}
-			lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, number));
-			builder.setView(lv);
-			builder.setTitle(callName);
-			mCallDialog = builder.create();
-			// mCallDialog.setCanceledOnTouchOutside(false);
-			mCallDialog.show();
+				for (int i = 0; i < number.length; i++) {
+					number[i] = "拨打 :" + binder.getCallNumberList(callName).get(i);
+				}
+				lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, number));
+				builder.setView(lv);
+				builder.setTitle(callName);
+				mCallDialog = builder.create();
+				// mCallDialog.setCanceledOnTouchOutside(false);
+				mCallDialog.show();
 		}
-
 	}
 
 	public String getCallNumber(String getCallName) {
@@ -740,51 +743,51 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void setChangeColor(int position) {
-		switch (position) {
-		case 0:
-			mCalllogsTitle.setTextColor(getResources().getColor(blue));
-			mContactsTitle.setTextColor(getResources().getColor(white));
-			mRedialTitle.setTextColor(getResources().getColor(white));
-			mMusicTitle.setTextColor(getResources().getColor(white));
-			mBluetoothTitle.setTextColor(getResources().getColor(white));
-			break;
-		case 1:
-			mCalllogsTitle.setTextColor(getResources().getColor(white));
-			mContactsTitle.setTextColor(getResources().getColor(blue));
-			mRedialTitle.setTextColor(getResources().getColor(white));
-			mMusicTitle.setTextColor(getResources().getColor(white));
-			mBluetoothTitle.setTextColor(getResources().getColor(white));
-			break;
-		case 2:
-			mCalllogsTitle.setTextColor(getResources().getColor(white));
-			mContactsTitle.setTextColor(getResources().getColor(white));
-			mRedialTitle.setTextColor(getResources().getColor(blue));
-			mMusicTitle.setTextColor(getResources().getColor(white));
-			mBluetoothTitle.setTextColor(getResources().getColor(white));
-			break;
-		case 3:
-			mCalllogsTitle.setTextColor(getResources().getColor(white));
-			mContactsTitle.setTextColor(getResources().getColor(white));
-			mRedialTitle.setTextColor(getResources().getColor(white));
-			mMusicTitle.setTextColor(getResources().getColor(blue));
-			mBluetoothTitle.setTextColor(getResources().getColor(white));
-			break;
-		case 4:
-			mCalllogsTitle.setTextColor(getResources().getColor(white));
-			mContactsTitle.setTextColor(getResources().getColor(white));
-			mRedialTitle.setTextColor(getResources().getColor(white));
-			mMusicTitle.setTextColor(getResources().getColor(white));
-			mBluetoothTitle.setTextColor(getResources().getColor(blue));
-			break;
-		}
-	}
+//	private void setChangeColor(int position) {
+//		switch (position) {
+//		case 0:
+//			mCalllogsTitle.setTextColor(getResources().getColor(blue));
+//			mContactsTitle.setTextColor(getResources().getColor(white));
+//			mRedialTitle.setTextColor(getResources().getColor(white));
+//			mMusicTitle.setTextColor(getResources().getColor(white));
+//			mBluetoothTitle.setTextColor(getResources().getColor(white));
+//			break;
+//		case 1:
+//			mCalllogsTitle.setTextColor(getResources().getColor(white));
+//			mContactsTitle.setTextColor(getResources().getColor(blue));
+//			mRedialTitle.setTextColor(getResources().getColor(white));
+//			mMusicTitle.setTextColor(getResources().getColor(white));
+//			mBluetoothTitle.setTextColor(getResources().getColor(white));
+//			break;
+//		case 2:
+//			mCalllogsTitle.setTextColor(getResources().getColor(white));
+//			mContactsTitle.setTextColor(getResources().getColor(white));
+//			mRedialTitle.setTextColor(getResources().getColor(blue));
+//			mMusicTitle.setTextColor(getResources().getColor(white));
+//			mBluetoothTitle.setTextColor(getResources().getColor(white));
+//			break;
+//		case 3:
+//			mCalllogsTitle.setTextColor(getResources().getColor(white));
+//			mContactsTitle.setTextColor(getResources().getColor(white));
+//			mRedialTitle.setTextColor(getResources().getColor(white));
+//			mMusicTitle.setTextColor(getResources().getColor(blue));
+//			mBluetoothTitle.setTextColor(getResources().getColor(white));
+//			break;
+//		case 4:
+//			mCalllogsTitle.setTextColor(getResources().getColor(white));
+//			mContactsTitle.setTextColor(getResources().getColor(white));
+//			mRedialTitle.setTextColor(getResources().getColor(white));
+//			mMusicTitle.setTextColor(getResources().getColor(white));
+//			mBluetoothTitle.setTextColor(getResources().getColor(blue));
+//			break;
+//		}
+//	}
 
 	@Override
 	public void onClick(View v) {
 		if (v == mBluetoothLayout) {
 			mDisconnectPhone();
-			setChangeColor(4);
+//			setChangeColor(4);
 		} else if (v == mDialButton) {
 			mLog("onClick mDialButton11111111111");
 			answerCall();
@@ -800,28 +803,28 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					mCallLogsFragment = new CallLogsFragment();
 				}
 				transaction.replace(R.id.id_fragment_content, mCallLogsFragment);
-				setChangeColor(0);
+//				setChangeColor(0);
 				break;
 			case R.id.contacts_layout:
 				if (mContactsFragment == null) {
 					mContactsFragment = new ContactsFragment();
 				}
 				transaction.replace(R.id.id_fragment_content, mContactsFragment);
-				setChangeColor(1);
+//				setChangeColor(1);
 				break;
 			case R.id.redial_layout:
 				if (mBluetoothFragment == null) {
 					mBluetoothFragment = new BluetoothFragment();
 				}
 				transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-				setChangeColor(2);
+//				setChangeColor(2);
 				break;
 			case R.id.music_layout:
 				if (mMusicFragment == null) {
 					mMusicFragment = new MusicFragment();
 				}
 				transaction.replace(R.id.id_fragment_content, mMusicFragment);
-				setChangeColor(3);
+//				setChangeColor(3);
 				break;
 			}
 			// transaction.addToBackStack();
@@ -980,7 +983,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					FragmentTransaction transaction = fm.beginTransaction();
 					if (!isOrso) {
 						new DialogFragment().mDismissDialog();
-					}else{
+					} else {
 						transaction.replace(R.id.add_bluetooth_music, mMusicFragment);
 						transaction.commit();
 					}
@@ -989,14 +992,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						moveTaskToBack(true);
 					}
 				} else {
-//					FragmentManager fm = getFragmentManager();
-//					FragmentTransaction transaction = fm.beginTransaction();
-//					if (!isOrso) {
-//						new DialogFragment().mDismissDialog();
-//					}else{
-//						transaction.replace(R.id.add_bluetooth_music, mMusicFragment);
-//						transaction.commit();
-//					}
+					// FragmentManager fm = getFragmentManager();
+					// FragmentTransaction transaction = fm.beginTransaction();
+					// if (!isOrso) {
+					// new DialogFragment().mDismissDialog();
+					// }else{
+					// transaction.replace(R.id.add_bluetooth_music,
+					// mMusicFragment);
+					// transaction.commit();
+					// }
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mLog("Receiver mActionCall mStatus NO_CALL  tempApp==" + tempApp);
 					if (tempApp) {

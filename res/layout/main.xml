@@ -5,72 +5,99 @@
     android:orientation="horizontal" >
 
     <LinearLayout
-        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/left_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="29dip"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/contect_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/disconnect_title"
+                android:textColor="@color/blue"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/bluetoot_name"
-                android:layout_width="150dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="10dip"
-                android:layout_marginTop="10dip"
+                android:layout_weight="1"
                 android:ellipsize="marquee"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:gravity="right"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="@string/device_name"
-                android:textColor="@color/textview_color"
-                android:textSize="20sp"
-                android:visibility="gone" />
+                android:textColor="@color/blue"
+                android:textSize="20sp" />
 
-            <include
-                android:id="@+id/id_ly_bottombar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                layout="@layout/left_bar" />
-
-            <TextView
-                android:id="@+id/contect_status"
-                android:layout_width="180dip"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dip"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:singleLine="true"
-                android:text="@string/disconnect_title"
-                android:textColor="@color/textview_color"
-                android:textSize="20sp"
-                android:visibility="gone" />
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/id_fragment_content"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_height="1dp"
+            android:background="@color/gray_61" />
 
-        <FrameLayout
-            android:id="@+id/add_bluetooth_music"
+        <LinearLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.1"
-            android:visibility="gone" />
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/left_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="29dip"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <include
+                    android:id="@+id/id_ly_bottombar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    layout="@layout/left_bar" />
+
+                <TextView
+                    android:layout_width="180dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip"
+                    android:ellipsize="end"
+                    android:gravity="center_horizontal"
+                    android:singleLine="true"
+                    android:text="@string/disconnect_title"
+                    android:textColor="@color/textview_color"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/id_fragment_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.1" />
+
+            <FrameLayout
+                android:id="@+id/add_bluetooth_music"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
- 
+
     <com.spreadwin.btc.utils.ControlVolume
         android:id="@+id/view_MyControlVolume"
         android:layout_width="wrap_content"

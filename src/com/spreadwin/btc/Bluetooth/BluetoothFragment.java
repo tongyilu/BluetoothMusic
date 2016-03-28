@@ -258,7 +258,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 		
 		private void clearInput() {
 			if (isAdded()) {
-				mInputText.setText(getResources().getString(R.string.default_title));				
+				mInputText.setHint(getResources().getString(R.string.default_title));				
 			}
 			mDisplayNumber.delete(0, mDisplayNumber.length());
 		}
@@ -309,7 +309,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 				mInputText.setText(mDisplayNumber.toString());
 			}else if(mDisplayNumber.length() == 1) {
 				mDisplayNumber.deleteCharAt(mDisplayNumber.length()-1);					
-				mInputText.setText(getResources().getString(R.string.default_title));
+				mInputText.setHint(getResources().getString(R.string.default_title));
 			}else{
 				mInputText.setText(getResources().getString(R.string.default_title));				
 			}

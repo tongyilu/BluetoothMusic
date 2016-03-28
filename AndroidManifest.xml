@@ -20,6 +20,7 @@
             android:label="@string/app_name"
             android:name="com.spreadwin.btc.MainActivity" 
             android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="landscape">

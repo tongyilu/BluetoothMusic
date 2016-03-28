@@ -74,10 +74,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer{
 		
 		viewHolder.name.setText(this.list.get(position).getName());
 		return view;
-
 	}
-	
-
 
 	final static class ViewHolder {
 		TextView name;

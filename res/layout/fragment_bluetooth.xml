@@ -51,7 +51,8 @@
                 android:layout_marginLeft="30dp"
                 android:singleLine="true"
                 android:hint="@string/default_title"
-                android:textColor="@color/gray_61"
+                android:textColorHint="@color/gray_61"
+                android:textColor="@color/white"
                 android:textSize="30sp" />
         </HorizontalScrollView>
 

@@ -378,11 +378,17 @@ public class ContactsFragment extends Fragment implements
 		menu.setHeaderTitle(((PhoneBookInfo_new) adapter.getItem(index))
 				.getName());
 		mLog("onCreateContextMenu index ==" + index);
-		for (int i = 0; i < ((PhoneBookInfo_new) adapter.getItem(index))
-				.getNumber().size(); i++) {
-			menu.add(i, 1, 0, "拨打:"
-					+ ((PhoneBookInfo_new) adapter.getItem(index)).getNumber()
-							.get(i));
+		if (((PhoneBookInfo_new) adapter.getItem(index))
+				.getNumber().size()>1) {
+			for (int i = 0; i < ((PhoneBookInfo_new) adapter.getItem(index))
+					.getNumber().size(); i++) {
+				menu.add(i, 1, 0, "拨打:"
+						+ ((PhoneBookInfo_new) adapter.getItem(index)).getNumber()
+								.get(i));
+			}
+		}else{
+			BtcNative.dialCall(((PhoneBookInfo_new) adapter.getItem(index)).getNumber()
+								.get(0));
 		}
 	}
 

@@ -298,18 +298,19 @@ public class CallLogsFragment extends Fragment {
 		public void onCreateContextMenu(ContextMenu menu, View v,
 				ContextMenuInfo menuInfo) {
 			mLog("onCreateContextMenu arg0 ==" + index);
-			if (mPhoneBookInfo.get(mTabTpye).getTelName(index).length() > 0) {
-				menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelName(
-						index));
-			} else {
+//			if (mPhoneBookInfo.get(mTabTpye).getTelName(index).length() > 0) {
+//				menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelName(
+//						index));
+//			} else {
 				menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelNumber(
 						index));
-			}
-			menu.add(mTabTpye, 1, 0, "拨打");
+				String number = mPhoneBookInfo.get(mTabTpye).getTelNumber(index);
+				BtcNative.dialCall(number);
+//			}
+//			menu.add(mTabTpye, 1, 0, "拨打");
 			// menu.add(0, 2, 0, "test2");
 			// menu.add(0, 3, 0, "test3");
 		}
-
 	}
 
 	// 长按菜单响应函数
