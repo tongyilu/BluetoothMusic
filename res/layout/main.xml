@@ -5,11 +5,13 @@
     android:orientation="horizontal" >
 
     <LinearLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal" >
 
         <LinearLayout
+            android:id="@+id/left_menu"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="29dip"
@@ -58,32 +60,17 @@
         <FrameLayout
             android:id="@+id/id_fragment_content"
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <FrameLayout
             android:id="@+id/add_bluetooth_music"
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:layout_height="match_parent" />
-   
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:visibility="gone" />
     </LinearLayout>
-     <!--
-	<fragment  
-        android:id="@+id/id_fragment_music"  
-        android:name="com.spreadwin.btc.MusicFragment"  
-        android:layout_width="fill_parent"  
-        android:layout_height="fill_parent"         
-        /> 
-	<fragment  
-        android:id="@+id/id_fragment_bluetooth"  
-        android:name="com.spreadwin.btc.BluetoothFragment"  
-        android:layout_width="fill_parent"  
-        android:layout_height="fill_parent"         
-        /> 
-
-        -->
+ 
     <com.spreadwin.btc.utils.ControlVolume
         android:id="@+id/view_MyControlVolume"
         android:layout_width="wrap_content"

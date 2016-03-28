@@ -1,8 +1,10 @@
 <resources>
+
     <style name="myTextStyle">
-        <item name="android:layout_marginTop">10dip</item> 
+        <item name="android:layout_marginTop">10dip</item>
         <item name="android:layout_marginBottom">10dip</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">25sp</item>  
-    </style>    
+        <item name="android:textSize">25sp</item>
+    </style>
+
 </resources>
