@@ -90,7 +90,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static BluetoothFragment mBluetoothFragment;
 	CallLogsFragment mCallLogsFragment;
 	ContactsFragment mContactsFragment;
-	LinearLayout mCallLogsLayout, mContactsLayout, mMusicLayout, mRedialLayout, mBluetoothLayout,mMusicLayoutAdd;
+	LinearLayout mCallLogsLayout, mContactsLayout, mMusicLayout, mRedialLayout, mBluetoothLayout, mMusicLayoutAdd;
+	TextView mcalllogsTitle, mContactsTitle, mRedialTitle, mMusicTitle, mBluetoothTitle;
 	private boolean binded;
 	LocalBroadcastManager mLocalBroadcastManager;
 	BroadcastReceiver mBroadcastReceiver;
@@ -118,7 +119,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	String callNumber;
 	String callName;
 	FrameLayout mAddLayout;
-
+	int blue = R.color.blue;
+	int white = R.color.white;
 	boolean tempApp = false; // 为true时，活动结束后退到后台
 
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
@@ -274,12 +276,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mContactsLayout = (LinearLayout) findViewById(R.id.contacts_layout);
 		mMusicLayout = (LinearLayout) findViewById(R.id.music_layout);
 		mRedialLayout = (LinearLayout) findViewById(R.id.redial_layout);
-		mMusicLayoutAdd = (LinearLayout)findViewById(R.id.music_layout_add);
+		mMusicLayoutAdd = (LinearLayout) findViewById(R.id.music_layout_add);
 		mBluetoothLayout = (LinearLayout) findViewById(R.id.bluetooth_layout);
 		mBluetoothStatus = (TextView) findViewById(R.id.contect_status);
 		mBluetoothName = (TextView) findViewById(R.id.bluetoot_name);
 		view_MyControlVolume = (ControlVolume) findViewById(R.id.view_MyControlVolume);
 		mAddLayout = (FrameLayout) findViewById(R.id.add_bluetooth_music);
+		mcalllogsTitle = (TextView) findViewById(R.id.calllogs_title);
+		mContactsTitle = (TextView) findViewById(R.id.contacts_title);
+		mRedialTitle = (TextView) findViewById(R.id.redial_title);
+		mMusicTitle = (TextView) findViewById(R.id.music_title);
+		mBluetoothTitle = (TextView) findViewById(R.id.bluetooth_title);
+		
+		mcalllogsTitle.setOnClickListener(this);
+		mContactsTitle.setOnClickListener(this);
+		mRedialTitle.setOnClickListener(this);
+		mBluetoothTitle.setOnClickListener(this);
+		mMusicTitle.setOnClickListener(this);
+		
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
@@ -417,6 +431,46 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		mBroadcast = true;
 		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, intentFilter);
+	}
+
+	public void setSelector(int temp) {
+		switch (temp) {
+		case 1:
+            mcalllogsTitle.setTextColor(blue);
+            mContactsTitle.setTextColor(white);
+            mRedialTitle.setText(white);
+            mMusicTitle.setTextColor(white);
+            mBluetoothTitle.setText(white);
+			break;
+		case 2:
+			mcalllogsTitle.setTextColor(white);
+            mContactsTitle.setTextColor(blue);
+            mRedialTitle.setText(white);
+            mMusicTitle.setTextColor(white);
+            mBluetoothTitle.setText(white);
+			break;
+		case 3:
+			mcalllogsTitle.setTextColor(white);
+            mContactsTitle.setTextColor(white);
+            mRedialTitle.setText(blue);
+            mMusicTitle.setTextColor(white);
+            mBluetoothTitle.setText(white);
+			break;
+		case 4:
+			mcalllogsTitle.setTextColor(white);
+            mContactsTitle.setTextColor(white);
+            mRedialTitle.setText(white);
+            mMusicTitle.setTextColor(blue);
+            mBluetoothTitle.setText(white);
+			break;
+		case 5:
+			mcalllogsTitle.setTextColor(white);
+            mContactsTitle.setTextColor(white);
+            mRedialTitle.setText(white);
+            mMusicTitle.setTextColor(white);
+            mBluetoothTitle.setText(blue);
+			break;
+		}
 	}
 
 	public Handler handler = new Handler() {
@@ -682,7 +736,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (v == mBluetoothLayout) {
+		if (mcalllogsTitle==v) {
+			setSelector(1);
+		}else if (mContactsTitle == v) {
+			setSelector(2);
+		}else if (mRedialTitle == v) {
+			setSelector(3);
+		}else if (mMusicTitle == v) {
+			setSelector(4);
+		}else if (mBluetoothTitle == v) {
+			setSelector(5);
+		}else if (v == mBluetoothLayout) {
 			mDisconnectPhone();
 		} else if (v == mDialButton) {
 			mLog("onClick mDialButton11111111111");

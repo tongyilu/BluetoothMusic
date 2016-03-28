@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,16 +28,13 @@
                 android:background="@drawable/tonghua_bj"
                 android:gravity="center_vertical" >
 
-                <RadioButton
+                <TextView
                     android:id="@+id/calllogs_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dip"
-                    android:button="@null"
-                   android:checked="false"
-                    android:clickable="true"
                     android:text="通话记录"
-                    android:textColor="@color/textview_color"
+                    android:textColor="@color/white"
                     android:textSize="25sp" />
             </LinearLayout>
         </LinearLayout>
@@ -70,16 +63,13 @@
 
            
 
-                <RadioButton
+                <TextViwe
                     android:id="@+id/contacts_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dip"
-                    android:button="@null"
-                    android:checked="false"
-                    android:clickable="true"
                     android:text="电话本"
-                    android:textColor="@color/textview_color"
+                    android:textColor="@color/white"
                     android:textSize="25sp" />
             </LinearLayout>
         </LinearLayout>
@@ -107,15 +97,13 @@
                 -->
                
 
-                <RadioButton
+                <TextView
                     android:id="@+id/redial_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dip"
-                    android:button="@null"
-                    android:checked="true"
                     android:text="拨号键盘"
-                    android:textColor="@color/textview_color"
+                    android:textColor="@color/blue"
                     android:textSize="25sp" />
             </LinearLayout>
         </LinearLayout>
@@ -144,16 +132,13 @@
                 android:background="@drawable/lanya_bj"
                 android:gravity="center_vertical" >
 
-                <RadioButton
+                <TextViwe
                     android:id="@+id/music_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dip"
-                    android:button="@null"
-                   android:checked="false"
-                    android:clickable="true"
                     android:text="蓝牙音乐"
-                    android:textColor="@color/textview_color"
+                    android:textColor="@color/white"
                     android:textSize="25sp" />
             </LinearLayout>
         </LinearLayout>
@@ -181,19 +166,15 @@
 
                 -->
 
-                <RadioButton
+                <TextView
                     android:id="@+id/bluetooth_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dip"
-                    android:button="@null"
-                    android:checked="false"
-                    android:clickable="true"
                     android:text="断开连接"
-                    android:textColor="@color/textview_color"
+                    android:textColor="@color/white"
                     android:textSize="25sp" />
             </LinearLayout>
         </LinearLayout>
-    </RadioGroup>
 
 </LinearLayout>
