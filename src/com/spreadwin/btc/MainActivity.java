@@ -303,6 +303,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main = (LinearLayout) findViewById(R.id.main);
 
 		mVto = main.getViewTreeObserver();
+		
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
@@ -388,7 +389,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						}
 					} else {
 						mContactsFragment.hideLoading();
-
 					}
 				} else if (intent.getAction().equals(mActionA2dp)) {
 					int mStatus = intent.getIntExtra("a2dp_status", BtcGlobalData.A2DP_DISCONNECT);
@@ -466,6 +466,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mBroadcast = true;
 		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, intentFilter);
 	}
+
 
 	public Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {

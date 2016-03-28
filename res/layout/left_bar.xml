@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -10,16 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1" >
-
-        <!--
-                 <ImageView
-                android:id="@+id/calllogs_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dip"
-                android:background="@drawable/button_call_logs" />
-
-        -->
 
         <LinearLayout
             android:id="@+id/calllogs_layout"
@@ -44,16 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1" >
-
-        <!--
-                 <ImageView
-                android:id="@+id/contacts_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dip"
-                android:background="@drawable/button_contacts" />
-
-        -->
 
         <LinearLayout
             android:id="@+id/contacts_layout"
@@ -86,16 +65,6 @@
             android:background="@drawable/bohaojianpan_bj"
             android:gravity="center_vertical" >
 
-            <!--
-                 <ImageView
-                android:id="@+id/redial_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dip"
-                android:background="@drawable/button_redial" />
-
-            -->
-
             <TextView
                 android:id="@+id/redial_title"
                 android:layout_width="wrap_content"
@@ -113,16 +82,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1" >
-
-        <!--
-                 <ImageView
-                android:id="@+id/music_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dip"
-                android:background="@drawable/button_music" />
-
-        -->
 
         <LinearLayout
             android:id="@+id/music_layout"
@@ -154,16 +113,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/duankailanya_bj"
             android:gravity="center_vertical" >
-
-            <!--
-                 <ImageView
-                android:id="@+id/bluetooth_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dip"
-                android:background="@drawable/button_bluetooth" />
-
-            -->
 
             <TextView
                 android:id="@+id/bluetooth_title"
