@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.spreadwin.btc.view.tipView;
 import com.spreadwin.btc.contacts.CharacterParser;
 import com.spreadwin.btc.contacts.PinyinComparator;
 import com.spreadwin.btc.utils.DBAdapter;
@@ -37,6 +38,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -53,6 +55,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 
 public class SyncService extends Service {
 	public static final String TAG = "SyncService";
@@ -976,6 +980,31 @@ public class SyncService extends Service {
 	/**
 	 * 蓝牙通话状态变化
 	 */
+	public Handler HandlerCallin = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			showCallDisplay(msg.what);
+			
+		}
+	};
+	protected boolean isFull()
+	{
+		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		int leftStackId = am.getRightStackId();
+		if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0)
+		{
+			mLog("full");
+			return true;
+		}
+		else 
+		{
+			mLog("notfull"+leftStackId+am.getWindowSizeStatus(leftStackId));
+			return false;
+		}
+		
+	}
+	
 	protected void onCallStatusChange() {	
 		mLog("setMute onCallStatusChange ==" + mTempStatus);
 		Intent mCallIntent = new Intent();
@@ -985,6 +1014,15 @@ public class SyncService extends Service {
 			case BtcGlobalData.CALL_IN:
 				setMute(true,mTempStatus);
 				mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);			
+				
+				Message msg = new Message();
+				if(isFull())
+					msg.what = 1; // 消息(一个整型值)
+				else 
+					msg.what = 0;
+			
+				HandlerCallin.sendMessage(msg);
+				
 				break;
 			case BtcGlobalData.IN_CALL:
 				setMute(false,mTempStatus);
@@ -1029,7 +1067,7 @@ public class SyncService extends Service {
 		//翼卡一键通返回结果
 		mECarOnline.onReturnCallState(mTempStatus);
 		
-		onMainActivity(mCallIntent);
+	//	onMainActivity(mCallIntent);
 		mLog("mScreenStatus ==" + mScreenStatus +"; mAccOff =="+mAccOff);
 		if (!mScreenStatus &&  !mAccOff) {
 			wakeUpAndUnlock();
@@ -1037,7 +1075,53 @@ public class SyncService extends Service {
 		mCallStatusOld = mCallStatus;
 		mCallStatus = mTempStatus;
 	} 
+	
 
+	private void showCallDisplay(int full)
+	{
+		
+		mLog("showCallDisplay"+full);
+
+		WindowManager wm = (WindowManager)getSystemService(
+			Context.WINDOW_SERVICE);
+		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+
+	
+		// wmParams.type = LayoutParams.TYPE_SYSTEM_ERROR |
+		// LayoutParams.TYPE_PHONE;
+		// 背景透明
+		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+		params.format = PixelFormat.RGBA_8888;
+		params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+				| WindowManager.LayoutParams.FLAG_FULLSCREEN
+				| WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+	/*
+	 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
+	 * wmParams.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL |
+	 * LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
+	 */
+
+	// 设置悬浮窗的长得宽
+		if(full == 1)
+		{
+			params.x = 800;
+			params.width = 625;
+			
+		}
+		else
+		{
+			params.x = 0;
+			params.width = WindowManager.LayoutParams.MATCH_PARENT;
+			
+		}
+		params.y = 0;
+		params.height = WindowManager.LayoutParams.MATCH_PARENT;
+		tipView gpsView = new tipView(this);
+		View view = gpsView.getVideoPlayView();
+	
+	
+		wm.addView(view, params);
+	}
 
 
 	//改变AudioFocus
