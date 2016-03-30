@@ -10,6 +10,7 @@
         android:orientation="vertical" >
 
         <LinearLayout
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
@@ -22,8 +23,8 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/disconnect_title"
-                android:textColor="@color/blue"
-                android:textSize="20sp" />
+                android:textColor="@color/blue_00"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/bluetoot_name"
@@ -38,15 +39,15 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="@string/device_name"
-                android:textColor="@color/blue"
-                android:textSize="20sp" />
+                android:textColor="@color/blue_00"
+                android:textSize="22sp" />
 
         </LinearLayout>
 
-        <View
+   <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray_61" />
+            android:background="@drawable/ic_divider" />
 
         <LinearLayout
             android:id="@+id/main"
@@ -87,13 +88,13 @@
                 android:id="@+id/id_fragment_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.1" />
+                android:layout_weight="1" />
 
             <FrameLayout
                 android:id="@+id/add_bluetooth_music"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.9"
+                android:layout_weight="1"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>

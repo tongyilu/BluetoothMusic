@@ -1325,6 +1325,7 @@ public class SyncService extends Service {
 			mCLDCall = true;
 			Intent mCustomerIntent = new Intent();
 			mCustomerIntent.setAction(ACTION_BTC_CALL);
+			
 			if (mCLDCallNum != null) {
 				mLog("onCLDCall mCLDCallNum=="+mCLDCallNum);
 				mCustomerIntent.putExtra("call_number", mCLDCallNum);				
@@ -1333,6 +1334,7 @@ public class SyncService extends Service {
 				mCustomerIntent.putExtra("call_number", onGetSetting(mCLDNum_key ,mCLDNum_default));		
 			}
 			mCustomerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			mCustomerIntent.addFlags(0x00000200);
 			startActivity(mCustomerIntent);					
 		}else{
 			onCLDCallResult(2);			

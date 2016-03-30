@@ -9,7 +9,7 @@
     <string name="music_not_play">车载蓝牙不可用</string>
     <string name="no_conntacts">联系人为空!</string>
     <string name="no_call_log">通话记录为空!</string>
-    <string name="device_name">本机:</string>
-    <string name="help_text">连接密码:0000</string>
+    <string name="device_name">设备名称:</string>
+    <string name="help_text">连接PIN码:0000</string>
 
 </resources>

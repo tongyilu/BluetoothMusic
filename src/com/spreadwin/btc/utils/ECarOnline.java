@@ -149,6 +149,7 @@ public class ECarOnline {
 	private void onECarCall(String name, String number) {
 		Intent mCustomerIntent = new Intent();
 		mCustomerIntent.setAction(mSyncService.ACTION_BTC_CALL);
+		
 		if (number != null) {
 			mLog("onECarCall number=="+number);
 			mCustomerIntent.putExtra("call_number", number);				

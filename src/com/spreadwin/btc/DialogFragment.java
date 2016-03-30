@@ -2,6 +2,7 @@ package com.spreadwin.btc;
 
 import com.spreadwin.btc.utils.BtcGlobalData;
 
+import android.R.drawable;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -70,9 +71,10 @@ public class DialogFragment extends Fragment implements OnClickListener {
 	}
 
 	void mDismissDialog() {
-		// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-		// sendBroadcast(mCallIntent);
-		getActivity().finish();
+//		Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+//		getActivity().sendBroadcast(mCallIntent);
+//		getActivity().finish();
+		android.os.Process.killProcess(android.os.Process.myPid()); 
 //		System.exit(-1);
 	}
 
