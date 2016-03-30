@@ -136,35 +136,35 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	public final Messenger mMessenger = new Messenger(mIncomingHandler);
 
-	public BroadcastReceiver mScreenSizeChangeReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (!phoneCall) {
-				Log.d(TAG, "mScreenSizeChangeReceiver =action" + intent.getAction());
-				if (intent.getAction().equals("android.intent.action.SPLIT_WINDOW_HAS_CHANGED")) {
-					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-					int leftStackId = am.getLeftStackId();
-					int rightStackId = am.getRightStackId();
-					if (rightStackId > 0 && am.getWindowSizeStatus(rightStackId) == 0) {
-						Log.d(TAG, " on left");
-						mAddLayout.setVisibility(View.GONE);
-						mMusicLayoutAdd.setVisibility(View.VISIBLE);
-					} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0) {
-						Log.d(TAG, " on right");
-					} else {
-						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
-							setDefaultFragment();
-						}
-						mAddLayout.setVisibility(View.VISIBLE);
-						mMusicLayoutAdd.setVisibility(View.GONE);
-						Log.d(TAG, " on full");
-					}
-				}
-			}
-		}
-	};
-	
+//	public BroadcastReceiver mScreenSizeChangeReceiver = new BroadcastReceiver() {
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			if (!phoneCall) {
+//				Log.d(TAG, "mScreenSizeChangeReceiver =action" + intent.getAction());
+//				if (intent.getAction().equals("android.intent.action.SPLIT_WINDOW_HAS_CHANGED")) {
+//					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//					int leftStackId = am.getLeftStackId();
+//					int rightStackId = am.getRightStackId();
+//					if (rightStackId > 0 && am.getWindowSizeStatus(rightStackId) == 0) {
+//						Log.d(TAG, " on left");
+//						mAddLayout.setVisibility(View.GONE);
+//						mMusicLayoutAdd.setVisibility(View.VISIBLE);
+//					} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0) {
+//						Log.d(TAG, " on right");
+//					} else {
+//						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
+//							setDefaultFragment();
+//						}
+//						mAddLayout.setVisibility(View.VISIBLE);
+//						mMusicLayoutAdd.setVisibility(View.GONE);
+//						Log.d(TAG, " on full");
+//					}
+//				}
+//			}
+//		}
+//	};
+//	
 
 
 	private ServiceConnection conn = new ServiceConnection() {
@@ -227,19 +227,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
 		// mShowDeviceNameDelayed);
 		// }
-		IntentFilter intent = new IntentFilter("android.intent.action.SPLIT_WINDOW_HAS_CHANGED");
-		registerReceiver(mScreenSizeChangeReceiver, intent);
-		Log.d(TAG, "onresume for MainWindows");
+//		IntentFilter intent = new IntentFilter("android.intent.action.SPLIT_WINDOW_HAS_CHANGED");
+//		registerReceiver(mScreenSizeChangeReceiver, intent);
+//		Log.d(TAG, "onresume for MainWindows");
 		
-		mFragmetContext.setVisibility(View.VISIBLE);
-		mLeftMenu.setVisibility(View.VISIBLE);
-		if (ScreenUtils.setBluetoothStatus(this) == 0) {
-			mAddLayout.setVisibility(View.GONE);
-			mMusicLayoutAdd.setVisibility(View.VISIBLE);
-		} else if (ScreenUtils.setBluetoothStatus(this) == 1) {
-			mAddLayout.setVisibility(View.VISIBLE);
-			mMusicLayoutAdd.setVisibility(View.GONE);
-		}
+//		mFragmetContext.setVisibility(View.VISIBLE);
+//		mLeftMenu.setVisibility(View.VISIBLE);
+//		if (ScreenUtils.setBluetoothStatus(this) == 0) {
+//			mAddLayout.setVisibility(View.GONE);
+//			mMusicLayoutAdd.setVisibility(View.VISIBLE);
+//		} else if (ScreenUtils.setBluetoothStatus(this) == 1) {
+//			mAddLayout.setVisibility(View.VISIBLE);
+//			mMusicLayoutAdd.setVisibility(View.GONE);
+//		}
 
 		tempApp = false;
 
@@ -275,7 +275,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		unregisterReceiver(mScreenSizeChangeReceiver);
+//		unregisterReceiver(mScreenSizeChangeReceiver);
 	}
 
 	@Override
@@ -347,14 +347,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					} else if (width == 800) {
 						Log.d(TAG, "左边屏");
 						isOrso = false;
+						mMusicLayoutAdd.setVisibility(View.VISIBLE);
 						mAddLayout.setVisibility(View.GONE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
 					} else {
 						Log.d(TAG, "全屏");
+						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
-						mFragmetContext.setVisibility(View.VISIBLE);
-						mLeftMenu.setVisibility(View.VISIBLE);
+						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
+							setDefaultFragment();
+						}
 					}
 				}
 			}
@@ -597,24 +600,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		// LayoutInflater inflater = LayoutInflater.from(this);
 		if (id == DIALOG1) {
-			phoneCall = true;
-			FragmentManager fm = getFragmentManager();
-			FragmentTransaction transaction = fm.beginTransaction();
-			mLeftMenu.setVisibility(View.GONE);
-			mDescription.setVisibility(View.GONE);
-			if (!isOrso) {
-				mAddLayout.setVisibility(View.GONE);
-				mFragmetContext.setVisibility(View.VISIBLE);
-				transaction.replace(R.id.id_fragment_content, mDialogFragment);
-				// mAddLayout.setVisibility(View.GONE);
-			} else {
-				// mFragmetContext.setVisibility(View.VISIBLE);
-				mFragmetContext.setVisibility(View.GONE);
-				mAddLayout.setVisibility(View.VISIBLE);
-				// mLeftMenu.setVisibility(View.VISIBLE);
-				transaction.replace(R.id.add_bluetooth_music, mDialogFragment);
-			}
-			transaction.commit();
+//			phoneCall = true;
+//			FragmentManager fm = getFragmentManager();
+//			FragmentTransaction transaction = fm.beginTransaction();
+//			mLeftMenu.setVisibility(View.GONE);
+//			mDescription.setVisibility(View.GONE);
+//			if (!isOrso) {
+//				mAddLayout.setVisibility(View.GONE);
+//				mFragmetContext.setVisibility(View.VISIBLE);
+//				transaction.replace(R.id.id_fragment_content, mDialogFragment);
+//				// mAddLayout.setVisibility(View.GONE);
+//			} else {
+//				// mFragmetContext.setVisibility(View.VISIBLE);
+//				mFragmetContext.setVisibility(View.GONE);
+//				mAddLayout.setVisibility(View.VISIBLE);
+//				// mLeftMenu.setVisibility(View.VISIBLE);
+//				transaction.replace(R.id.add_bluetooth_music, mDialogFragment);
+//			}
+//			transaction.commit();
 			// View mCallView = inflater.inflate(R.layout.display_call, null);
 			// builder.setView(mCallView, 0,0,0,0);
 			//
@@ -1014,6 +1017,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 //					setDefaultFragment();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
+					//来电时
+					
 //					if (!BluetoothFragment.isFlags) {
 //						finish();
 //					}
@@ -1031,6 +1036,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						moveTaskToBack(true);
 					}
 				} else {
+					//挂掉时
+					
 					// if (isCall) {
 					// FragmentManager fm = getFragmentManager();
 					// FragmentTransaction transaction = fm.beginTransaction();

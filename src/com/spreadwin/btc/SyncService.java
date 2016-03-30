@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.spreadwin.btc.view.tipView;
+import com.spreadwin.btc.view.DialogView;
 import com.spreadwin.btc.contacts.CharacterParser;
 import com.spreadwin.btc.contacts.PinyinComparator;
 import com.spreadwin.btc.utils.DBAdapter;
@@ -163,6 +163,10 @@ public class SyncService extends Service {
 	private ECarOnline mECarOnline;
 	
 	private boolean mAccOff = false;
+	
+	private WindowManager wm;
+	
+	private View view;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -1022,11 +1026,11 @@ public class SyncService extends Service {
 					msg.what = 0;
 			
 				HandlerCallin.sendMessage(msg);
-				
 				break;
 			case BtcGlobalData.IN_CALL:
 				setMute(false,mTempStatus);
 				setBtAudioMode(7);
+			
 				mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 				break;
 			case BtcGlobalData.CALL_OUT:
@@ -1082,8 +1086,7 @@ public class SyncService extends Service {
 		
 		mLog("showCallDisplay"+full);
 
-		WindowManager wm = (WindowManager)getSystemService(
-			Context.WINDOW_SERVICE);
+		wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 
 	
@@ -1091,11 +1094,13 @@ public class SyncService extends Service {
 		// LayoutParams.TYPE_PHONE;
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-		params.format = PixelFormat.RGBA_8888;
+		params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_FULLSCREEN
 				| WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-	/*
+		params.alpha = 1.0f;
+		
+		/*
 	 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
 	 * wmParams.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL |
 	 * LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
@@ -1104,22 +1109,19 @@ public class SyncService extends Service {
 	// 设置悬浮窗的长得宽
 		if(full == 1)
 		{
-			params.x = 800;
+			params.x = 314;
 			params.width = 625;
-			
 		}
 		else
 		{
-			params.x = 0;
+			params.x = -100;
 			params.width = WindowManager.LayoutParams.MATCH_PARENT;
 			
 		}
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
-		tipView gpsView = new tipView(this);
-		View view = gpsView.getVideoPlayView();
-	
-	
+		DialogView gpsView = new DialogView(this);
+		view = gpsView.getVideoPlayView();
 		wm.addView(view, params);
 	}
 
@@ -1389,11 +1391,14 @@ public class SyncService extends Service {
 				sendBroadcast(intent);
 			}else if (CallStatus == BtcGlobalData.CALL_IN || BtcNative.getVolume() != 0) {
 				return;
+			}else{
+				wm.removeView(view);
 			}
 			if (mOldBt == 0) {
 				mOldBt = mDefaultVoice;
 			}
 			BtcNative.setVolume(mOldBt);
+			
 			
 		}
 
