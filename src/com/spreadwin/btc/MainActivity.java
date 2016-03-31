@@ -594,39 +594,38 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	protected void mShowDialog(int id) {
-		if (id == DIALOG1) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			LayoutInflater inflater = LayoutInflater.from(this);
 			if (id == DIALOG1) {
-				View mCallView = inflater.inflate(R.layout.display_call, null);
-				builder.setView(mCallView);
-				mDialButton = (ImageButton) mCallView
-						.findViewById(R.id.mdial_button);
-				mdroppedbutton = (ImageButton) mCallView
-						.findViewById(R.id.mdropped_button);
-				mNumberText = (TextView) mCallView.findViewById(R.id.number_text);
-				mNameText = (TextView) mCallView.findViewById(R.id.name_text);
-
-				String getCallNumber = BtcNative.getCallNumber();
-				String getPhoneName = getCallName(getCallNumber);
-				mLog("onCreateDialog 1111111111");
-				mNameText.setText(getPhoneName);
-				mNumberText.setText(getCallNumber);
-				mDialButton.setOnClickListener(this);
-				mdroppedbutton.setOnClickListener(this);
-				if (mCallDialog != null) {
-					mCallDialog.dismiss();
-					mCallDialog = null;
-				}
-
-				mCallDialog = builder.create();
-				mCallDialog.setCanceledOnTouchOutside(false);
-				mCallDialog.show();
-
-				 Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-				 mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
-				 mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);			
-				 sendBroadcast(mCallIntent);
+//				View mCallView = inflater.inflate(R.layout.display_call, null);
+//				builder.setView(mCallView);
+//				mDialButton = (ImageButton) mCallView
+//						.findViewById(R.id.mdial_button);
+//				mdroppedbutton = (ImageButton) mCallView
+//						.findViewById(R.id.mdropped_button);
+//				mNumberText = (TextView) mCallView.findViewById(R.id.number_text);
+//				mNameText = (TextView) mCallView.findViewById(R.id.name_text);
+//
+//				String getCallNumber = BtcNative.getCallNumber();
+//				String getPhoneName = getCallName(getCallNumber);
+//				mLog("onCreateDialog 1111111111");
+//				mNameText.setText(getPhoneName);
+//				mNumberText.setText(getCallNumber);
+//				mDialButton.setOnClickListener(this);
+//				mdroppedbutton.setOnClickListener(this);
+//				if (mCallDialog != null) {
+//					mCallDialog.dismiss();
+//					mCallDialog = null;
+//				}
+//
+//				mCallDialog = builder.create();
+//				mCallDialog.setCanceledOnTouchOutside(false);
+//				mCallDialog.show();
+//
+//				 Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+//				 mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
+//				 mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);			
+//				 sendBroadcast(mCallIntent);
 		} else if (id == DIALOG2) {
 			builder.setTitle("提示");
 			builder.setMessage("确定断开连接吗");
@@ -653,7 +652,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mCallDialog.show();
 		}
 	  }
-	}
 
 	public String getCallNumber(String getCallName) {
 		String mCallNmber = null;
@@ -991,6 +989,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					transaction.replace(R.id.id_fragment_content,
 							mBluetoothFragment);
 					transaction.commit();
+					setDefaultColor();
 					mBluetoothFragment
 							.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {

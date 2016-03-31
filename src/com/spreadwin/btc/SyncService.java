@@ -1,12 +1,6 @@
 package com.spreadwin.btc;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1034,7 +1028,7 @@ public class SyncService extends Service {
 		// 翼卡一键通返回结果
 		mECarOnline.onReturnCallState(mTempStatus);
 
-		// onMainActivity(mCallIntent);
+		 onMainActivity(mCallIntent);
 		mLog("mScreenStatus ==" + mScreenStatus + "; mAccOff ==" + mAccOff);
 		if (!mScreenStatus && !mAccOff) {
 			wakeUpAndUnlock();
@@ -1101,8 +1095,8 @@ public class SyncService extends Service {
 						mLog("ainActivity.mBroadcast isTopMyself==" + true);
 						break;
 					}
-					mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(mCallIntent);
+//					mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//					startActivity(mCallIntent);
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -1336,6 +1330,7 @@ public class SyncService extends Service {
 				intent.putExtra(EXTRA_MUSIC_VOLUME_MUTED, true);
 				intent.putExtra("only_music", mOnlyMusic);
 				sendBroadcast(intent);
+				wm.removeView(view);
 			} else if (CallStatus == BtcGlobalData.NO_CALL && mOnlyMusic) {
 				mOnlyMusic = false;
 				Intent intent = new Intent(MUSIC_MUTE_RESTORE_ACTION);
@@ -1357,7 +1352,6 @@ public class SyncService extends Service {
 			BtcNative.setVolume(mOldBt);
 
 		}
-
 	}
 
 	// 凯立德一键通话

@@ -5,14 +5,11 @@ import android.media.AudioManager;
 
 public class OpenUtils {
 	private AudioManager mAudioManager;
-	private Context context;
+	private Context mcontext;
 
-	public OpenUtils(){
-		
-	}
-	
 	public OpenUtils(Context context) {
-		this.context = context;
+		this.mcontext = context;
+		mAudioManager = (AudioManager) mcontext.getSystemService(Context.AUDIO_SERVICE);
 	}
 
 	/**

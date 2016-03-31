@@ -89,10 +89,15 @@ public class ContactsFragment extends Fragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mLog("onCreate 111111111");
-		mContactsInfo = MainActivity.binder.getPhoneBookInfo_new();
+		try {
+			mContactsInfo = MainActivity.binder.getPhoneBookInfo_new();
+			characterParser = CharacterParser.getInstance();
+			pinyinComparator = new PinyinComparator();
+		} catch (Exception e) {
+			// TODO: handle exception
+            e.printStackTrace();
+		}
 		// 实例化汉字转拼音类
-		characterParser = CharacterParser.getInstance();
-		pinyinComparator = new PinyinComparator();
 	}
 
 	@Override
