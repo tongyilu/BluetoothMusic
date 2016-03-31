@@ -11,5 +11,7 @@
     <string name="no_call_log">通话记录为空!</string>
     <string name="device_name">设备名称:</string>
     <string name="help_text">连接PIN码:0000</string>
+    <string name="mute">静音</string>
+    <string name="hf">免提</string>
 
 </resources>

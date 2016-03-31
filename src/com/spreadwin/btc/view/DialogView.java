@@ -26,6 +26,7 @@ public class DialogView implements OnCheckedChangeListener, OnClickListener {
 	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
 
+	private TextView mMute, mHf;
 	ImageView mDialButton;
 	ImageView mdroppedbutton;
 	TextView mNumberText, mNameText;
@@ -34,6 +35,7 @@ public class DialogView implements OnCheckedChangeListener, OnClickListener {
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
 	private AnimationDrawable animDown = new AnimationDrawable();
+	private DilatingDotsProgressBar mDilatingDotsProgressBar;
 	private ImageView imgGameWord;
 
 	public DialogView(Context context) {
@@ -43,10 +45,13 @@ public class DialogView implements OnCheckedChangeListener, OnClickListener {
 	}
 
 	private void initView(View view) {
+		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view.findViewById(R.id.progress);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
 		mNumberText = (TextView) view.findViewById(R.id.number_text);
 		mNameText = (TextView) view.findViewById(R.id.name_text);
+		mMute = (TextView) view.findViewById(R.id.mute);
+		mHf = (TextView) view.findViewById(R.id.hf);
 		String getPhoneName = BtcNative.getPhoneName();
 		String getCallNumber = BtcNative.getCallNumber();
 		mNameText.setText(getPhoneName);
@@ -62,6 +67,7 @@ public class DialogView implements OnCheckedChangeListener, OnClickListener {
 		animDown = (AnimationDrawable) imgGameWord.getBackground();
 		animDown.start();
 		animDown.setOneShot(false);// 设置是否只播放一遍
+		mDilatingDotsProgressBar.show();
 	}
 
 	public View getVideoPlayView() {
@@ -96,8 +102,8 @@ public class DialogView implements OnCheckedChangeListener, OnClickListener {
 		// TODO Auto-generated method stub
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		wm.removeView(mView);
-		Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-		mContext.sendBroadcast(mCallIntent);
+		// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+		// mContext.sendBroadcast(mCallIntent);
 	}
 
 	@Override
