@@ -16,6 +16,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ActivityManager.TaskThumbnails;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -933,6 +934,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	private void UnLockScreen() {
+	
 		if (mWakeLock != null) {
 			try {
 				if (mWakeLock.isHeld()) {
@@ -996,16 +998,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					//来电时
 					mDismissDialog(DIALOG1);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
-					if (tempApp) {
-						moveTaskToBack(true);
-					}
+//					if (tempApp) {
+//						moveTaskToBack(true);
+//					}
 				} else {
 					mDismissDialog(DIALOG1);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mLog("Receiver mActionCall mStatus NO_CALL  tempApp==" + tempApp);
-					if (tempApp) {
-						moveTaskToBack(true);							
-					}
+//					if (tempApp) {
+//						moveTaskToBack(true);							
+//					}
 				}
 			} else if (intent.getAction().equals(mActionPair)) {
 				int mStatus = intent.getIntExtra("pair_status", BtcGlobalData.NOT_PAIR);

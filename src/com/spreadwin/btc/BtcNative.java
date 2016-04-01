@@ -23,7 +23,7 @@ public class BtcNative {
 	static native int startSyncPhoneBook(int type);
 	public static native int getPhoneBookRecordNum(int type);
 	public static native String getPhoneBookRecordNameByIndex(int type, int index);
-	static native String getPhoneBookRecordNumberByIndex(int type, int index);
+	public static native String getPhoneBookRecordNumberByIndex(int type, int index);
 	static native int writeCommands(int index, String param);
 	public static native int playMusic();
 	public static native int pauseMusic();

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,24 +64,23 @@ public class DialogView implements OnClickListener {
 		mNameText = (TextView) view.findViewById(R.id.name_text);
 		mHf = (TextView) view.findViewById(R.id.hf);
 		mMute = (TextView) view.findViewById(R.id.mute);
-//		String getPhoneName = BtcNative.getPhoneName();
+		String getPhoneName = BtcNative.getPhoneName();
 		String mNumber = BtcNative.getCallNumber();
-		// 添加联系人，SIM卡联系人+手机联系人 和总联系人比较
+		
 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
 		for (int i = 0; i < RecordNum; i++) {
 			mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_PHONE, i);
 //			mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
 		}
-		mNameText.setText(mName==null ? "---" : mName);
+		mNameText.setText(mName);
 		mNumberText.setText(mNumber);
-//		String nName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_SIM, i);
 		mMute.setOnClickListener(this);
 		mHf.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);
 		Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 		mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, mName);
-		mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, mNumber);
+		mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getPhoneName);
 		mContext.sendBroadcast(mCallIntent);
 		imgGameWord = (ImageView) view.findViewById(R.id.icon);
 		imgGameWord.setBackgroundResource(R.anim.call_anim);
@@ -141,11 +141,11 @@ public class DialogView implements OnClickListener {
 
 	private void answerCall() {
 		BtcNative.answerCall();
-		Intent mCallIntent = new Intent();
-		mCallIntent.setAction(MainActivity.mActionCall);
-		mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
-		mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		mContext.startActivity(mCallIntent);
+//		Intent mCallIntent = new Intent();
+//		mCallIntent.setAction(MainActivity.mActionCall);
+//		mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
+//		mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		mContext.startActivity(mCallIntent);
 		mDismissDialog();
 	}
 

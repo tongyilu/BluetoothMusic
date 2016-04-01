@@ -419,7 +419,6 @@ public class ContactsFragment extends Fragment implements
 		default:
 			break;
 		}
-
 		return true;
 	}
 

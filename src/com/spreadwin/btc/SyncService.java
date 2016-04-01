@@ -1330,7 +1330,12 @@ public class SyncService extends Service {
 				intent.putExtra(EXTRA_MUSIC_VOLUME_MUTED, true);
 				intent.putExtra("only_music", mOnlyMusic);
 				sendBroadcast(intent);
-				wm.removeView(view);
+				try {
+					wm.removeView(view);
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
 			} else if (CallStatus == BtcGlobalData.NO_CALL && mOnlyMusic) {
 				mOnlyMusic = false;
 				Intent intent = new Intent(MUSIC_MUTE_RESTORE_ACTION);
@@ -1342,7 +1347,6 @@ public class SyncService extends Service {
 				try {
 					wm.removeView(view);
 				} catch (Exception e) {
-					// TODO: handle exception
 					e.printStackTrace();
 				}
 			}

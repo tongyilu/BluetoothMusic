@@ -6,7 +6,7 @@
     <string name="default_title">请输入号码</string>
     <string name="disconnect_title">没有连接设备</string>
     <string name="connect_title">已连接</string>
-    <string name="music_not_play">车载蓝牙不可用</string>
+    <string name="music_not_play">蓝牙音乐不可用</string>
     <string name="no_conntacts">联系人为空!</string>
     <string name="no_call_log">通话记录为空!</string>
     <string name="device_name">设备名称:</string>
