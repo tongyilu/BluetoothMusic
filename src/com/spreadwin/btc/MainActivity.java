@@ -1015,8 +1015,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (mStatus == BtcGlobalData.NOT_PAIR) {
 
 				} else if (mStatus == BtcGlobalData.IN_PAIR) {
-
+ 
 				} else if (mStatus == BtcGlobalData.PAIRRED) {
+					
 				}
 			} else if (intent.getAction().equals(mActionBfp)) {
 				int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
