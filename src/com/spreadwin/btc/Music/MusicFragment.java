@@ -102,7 +102,7 @@ public class MusicFragment extends Fragment implements OnClickListener{
 			}else if (status == A2DP_DISCONNECT){
 				try {
 					mMusicPlay.setBackgroundResource(R.drawable.music_play);	
-					mA2dpText.setText(getActivity().getResources().getString(R.string.music_not_play));					
+//					mA2dpText.setText(getActivity().getResources().getString(R.string.music_not_play));					
 				} catch (Exception e) {
 					mLog("e =="+e);
 				}

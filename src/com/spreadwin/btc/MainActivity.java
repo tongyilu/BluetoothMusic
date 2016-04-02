@@ -596,7 +596,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	protected void mShowDialog(int id) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			LayoutInflater inflater = LayoutInflater.from(this);
+//			LayoutInflater inflater = LayoutInflater.from(this);
 			if (id == DIALOG1) {
 //				View mCallView = inflater.inflate(R.layout.display_call, null);
 //				builder.setView(mCallView);
