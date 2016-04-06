@@ -632,8 +632,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			builder.setMessage("确定断开连接吗");
 			builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					BtcNative.disconnectPhone();
+					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
+					setDefaultColor();
+					setDefaultFragment();
 				}
 			});
 			builder.setNegativeButton("取消", null);
@@ -779,11 +781,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mBluetoothTitle.setTextColor(getResources().getColor(white));
 			break;
 		case 2:
-			mCalllogsTitle.setTextColor(getResources().getColor(white));
-			mContactsTitle.setTextColor(getResources().getColor(white));
-			mRedialTitle.setTextColor(getResources().getColor(blue));
-			mMusicTitle.setTextColor(getResources().getColor(white));
-			mBluetoothTitle.setTextColor(getResources().getColor(white));
+			setDefaultColor();
 			break;
 		case 3:
 			mCalllogsTitle.setTextColor(getResources().getColor(white));

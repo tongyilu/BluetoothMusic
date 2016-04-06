@@ -84,16 +84,15 @@ public class CallLogsFragment extends Fragment {
 			mTabs.add(tab3);
 		}
 		mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
-		mLog("CallLogsFragment onCreate 11111111111==="
-				+ mPhoneBookInfo.get(CALL_IN_TYPE).getSize());
+		// mLog("CallLogsFragment onCreate 11111111111==="
+		// + mPhoneBookInfo.get(CALL_IN_TYPE).getSize());
 
 		initNumber();
 	}
 
 	private void initNumber() {
 		try {
-			InputStreamReader inputReader = new InputStreamReader(
-					getResources().getAssets().open("numbers.txt"));
+			InputStreamReader inputReader = new InputStreamReader(getResources().getAssets().open("numbers.txt"));
 			BufferedReader bufReader = new BufferedReader(inputReader);
 			String line = "";
 			String Result = "";
@@ -113,12 +112,10 @@ public class CallLogsFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mInflater = inflater;
 		mLog("onCreateView 222222222");
-		View rootView = inflater.inflate(R.layout.fragment_call_logs,
-				container, false);
+		View rootView = inflater.inflate(R.layout.fragment_call_logs, container, false);
 		mRootView = rootView;
 		viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 		mAdapter = new MyAdapter();
@@ -127,8 +124,7 @@ public class CallLogsFragment extends Fragment {
 		return rootView;
 	}
 
-	public class MyAdapter extends PagerAdapter implements
-			ViewPager.OnPageChangeListener {
+	public class MyAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
 		String[] mTitle = { "呼出电话", "呼入电话", "未接电话" };
 		int mCurPos = 0;
 
@@ -189,8 +185,7 @@ public class CallLogsFragment extends Fragment {
 		}
 	}
 
-	public class TabInfo implements OnItemClickListener,
-			OnItemLongClickListener, OnCreateContextMenuListener {
+	public class TabInfo implements OnItemClickListener, OnItemLongClickListener, OnCreateContextMenuListener {
 		public int mTabTpye;
 		public LayoutInflater mInflater;
 		public View mCallView = null;
@@ -198,24 +193,23 @@ public class CallLogsFragment extends Fragment {
 		CallLogsAdapter mCalllogAdapter = null;
 		int index;
 		TextView emptyView;
-		LinearLayout mLoading;	
+		LinearLayout mLoading;
 
 		public TabInfo(int tabTpye) {
 			mTabTpye = tabTpye;
 		}
 
-		public View build(LayoutInflater inflater, ViewGroup contentParent,
-				View contentChild) {
+		public View build(LayoutInflater inflater, ViewGroup contentParent, View contentChild) {
 			if (mCallView != null) {
-				mLog("mTabTpye ="+mTabTpye+";mCalllogAdapter ==" + mCalllogAdapter.getCount()
-						+ "build mRootView != null =="
-						+ mPhoneBookInfo.get(mTabTpye).getSize());
-				mLog("build getmUpdateStatus =="+MainActivity.binder.getmUpdateStatus()+"; mTabTpye=="+mTabTpye);
-				//有单个更新状态，打开loading
+				mLog("mTabTpye =" + mTabTpye + ";mCalllogAdapter ==" + mCalllogAdapter.getCount()
+						+ "build mRootView != null ==" + mPhoneBookInfo.get(mTabTpye).getSize());
+				mLog("build getmUpdateStatus ==" + MainActivity.binder.getmUpdateStatus() + "; mTabTpye==" + mTabTpye);
+				// 有单个更新状态，打开loading
 				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
 					showLoading();
-					//不是更新状态或有数据就隐藏loading
-				}else if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC || mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+					// 不是更新状态或有数据就隐藏loading
+				} else if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC
+						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 					hideLoading();
 				}
 				return mCallView;
@@ -223,17 +217,15 @@ public class CallLogsFragment extends Fragment {
 			mInflater = inflater;
 			mCallView = mInflater.inflate(R.layout.calllogs_list, null);
 			mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
-			mListView = (ListView) mCallView
-					.findViewById(R.id.call_logs_list);
+			mListView = (ListView) mCallView.findViewById(R.id.call_logs_list);
 			mListView.setOnItemClickListener(this);
 			mListView.setSaveEnabled(true);
 			mListView.setItemsCanFocus(true);
-			mListView.setTextFilterEnabled(true);			
-	
+			mListView.setTextFilterEnabled(true);
+
 			mLoading = (LinearLayout) mCallView.findViewById(R.id.loading);
 			mLog("mTabTpye ==" + mTabTpye);
-			mCalllogAdapter = new CallLogsAdapter(getActivity(), mInflater,
-					mPhoneBookInfo.get(mTabTpye));
+			mCalllogAdapter = new CallLogsAdapter(getActivity(), mInflater, mPhoneBookInfo.get(mTabTpye));
 
 			mListView.setAdapter(mCalllogAdapter);
 			mListView.setOnItemClickListener(this);
@@ -241,36 +233,37 @@ public class CallLogsFragment extends Fragment {
 			mListView.setOnCreateContextMenuListener(this);
 			// 设置通话记录为空的界面
 			emptyView = new TextView(getActivity());
-			emptyView.setLayoutParams(new LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+			emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 			emptyView.setText(getResources().getString(R.string.no_call_log));
 			emptyView.setTextSize(30);
-			emptyView.setGravity(Gravity.CENTER_HORIZONTAL
-					| Gravity.CENTER_VERTICAL);
+			emptyView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 			emptyView.setVisibility(View.GONE);
-			((ViewGroup) mListView.getParent()).addView(emptyView,1);
-			mLog("build getSyncStatus =="+MainActivity.binder.getSyncStatus()+"; getSize =="+mPhoneBookInfo.get(mTabTpye).getSize());
+			((ViewGroup) mListView.getParent()).addView(emptyView, 1);
+			mLog("build getSyncStatus ==" + MainActivity.binder.getSyncStatus() + "; getSize =="
+					+ mPhoneBookInfo.get(mTabTpye).getSize());
 			if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC || mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 				hideLoading();
-			}else if (BtcNative.getSyncStatus() == BtcGlobalData.IN_SYNC) {
+			} else if (BtcNative.getSyncStatus() == BtcGlobalData.IN_SYNC) {
 				showLoading();
 			}
-			mListView.setEmptyView(emptyView);				
+			mListView.setEmptyView(emptyView);
 			return mCallView;
 		}
-		
-		private void showLoading() {			
-			mLog("showLoading getmUpdateStatus =="+MainActivity.binder.getmUpdateStatus()+"; mTabTpye=="+mTabTpye);
-			if (MainActivity.binder.getmUpdateStatus() == mTabTpye || MainActivity.binder.getmUpdateStatus() == BtcGlobalData.NO_CALL) {
+
+		private void showLoading() {
+			mLog("showLoading getmUpdateStatus ==" + MainActivity.binder.getmUpdateStatus() + "; mTabTpye=="
+					+ mTabTpye);
+			if (MainActivity.binder.getmUpdateStatus() == mTabTpye
+					|| MainActivity.binder.getmUpdateStatus() == BtcGlobalData.NO_CALL) {
 				emptyView.setText("");
-				mLoading.setVisibility(View.VISIBLE);				
+				mLoading.setVisibility(View.VISIBLE);
 			}
 		}
-		
-		private void hideLoading() {	
+
+		private void hideLoading() {
 			mLog("hideLoading isAdded() ==" + isAdded());
 			if (isAdded()) {
-				emptyView.setText(getResources().getString(R.string.no_call_log));	
+				emptyView.setText(getResources().getString(R.string.no_call_log));
 				if (mLoading.getVisibility() == View.VISIBLE) {
 					mLoading.setVisibility(View.GONE);
 				}
@@ -278,36 +271,33 @@ public class CallLogsFragment extends Fragment {
 		}
 
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
-			mLog("onItemClick arg0 ==" + arg0.getId() + "arg1 =="
-					+ arg1.getId() + "; arg2 ==" + arg2 + "; arg3 ==" + arg3);
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			mLog("onItemClick arg0 ==" + arg0.getId() + "arg1 ==" + arg1.getId() + "; arg2 ==" + arg2 + "; arg3 =="
+					+ arg3);
 			arg1.showContextMenu();
 		}
 
 		@Override
-		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-				int arg2, long arg3) {
-			mLog("onItemLongClick arg0 ==" + arg0.getId() + "arg1 =="
-					+ arg1.getId() + "; arg2 ==" + arg2 + "; arg3 ==" + arg3);
+		public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			mLog("onItemLongClick arg0 ==" + arg0.getId() + "arg1 ==" + arg1.getId() + "; arg2 ==" + arg2 + "; arg3 =="
+					+ arg3);
 			index = arg2;
 			return false;
 		}
 
 		@Override
-		public void onCreateContextMenu(ContextMenu menu, View v,
-				ContextMenuInfo menuInfo) {
+		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 			mLog("onCreateContextMenu arg0 ==" + index);
-//			if (mPhoneBookInfo.get(mTabTpye).getTelName(index).length() > 0) {
-//				menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelName(
-//						index));
-//			} else {
-				menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelNumber(
-						index));
-				String number = mPhoneBookInfo.get(mTabTpye).getTelNumber(index);
-				BtcNative.dialCall(number);
-//			}
-//			menu.add(mTabTpye, 1, 0, "拨打");
+			// if (mPhoneBookInfo.get(mTabTpye).getTelName(index).length() > 0)
+			// {
+			// menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelName(
+			// index));
+			// } else {
+			menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelNumber(index));
+			String number = mPhoneBookInfo.get(mTabTpye).getTelNumber(index);
+			BtcNative.dialCall(number);
+			// }
+			// menu.add(mTabTpye, 1, 0, "拨打");
 			// menu.add(0, 2, 0, "test2");
 			// menu.add(0, 3, 0, "test3");
 		}
@@ -315,17 +305,14 @@ public class CallLogsFragment extends Fragment {
 
 	// 长按菜单响应函数
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int position = (int) info.id;// 这里的info.id对应的就是数据库中_id的值
-		mLog("onContextItemSelected arg0 ==" + position
-				+ "; item.getItemId() ==" + item.getItemId()
+		mLog("onContextItemSelected arg0 ==" + position + "; item.getItemId() ==" + item.getItemId()
 				+ ";item.getGroupId() ==" + item.getGroupId());
 		switch (item.getItemId()) {
 		case 1:
 			if (MainActivity.mBluetoothFragment != null) {
-				MainActivity.mBluetoothFragment.dialCall(mPhoneBookInfo.get(
-						item.getGroupId()).getTelNumber(position));
+				MainActivity.mBluetoothFragment.dialCall(mPhoneBookInfo.get(item.getGroupId()).getTelNumber(position));
 			}
 			break;
 		default:
@@ -345,22 +332,21 @@ public class CallLogsFragment extends Fragment {
 				mTabs.get(i).mCallView = null;
 				continue;
 			}
-			mLog("notifyDataSetChanged mCurPos ==" + mAdapter.mCurPos
-					+ "; mCurPos-i==" + Math.abs(mAdapter.mCurPos - i)+"; isAdded()=="+isAdded());
+			mLog("notifyDataSetChanged mCurPos ==" + mAdapter.mCurPos + "; mCurPos-i==" + Math.abs(mAdapter.mCurPos - i)
+					+ "; isAdded()==" + isAdded());
 			if (Math.abs(mAdapter.mCurPos - i) <= 1 && isAdded()) {
-				mLog("notifyDataSetChanged mTabs.get(i).mTabTpye ["
-						+ mTabs.get(i).mTabTpye + "] =="
+				mLog("notifyDataSetChanged mTabs.get(i).mTabTpye [" + mTabs.get(i).mTabTpye + "] =="
 						+ mPhoneBookInfo.get(mTabs.get(i).mTabTpye).getSize());
-					//判断是否是NOT_SYNC
-					if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC || BtcNative.getBfpStatus() == BtcGlobalData.BFP_DISCONNECT) {
-						mLog("notifyDataSetChanged hideLoading ");
-						mTabs.get(i).hideLoading();
-					}
-				mTabs.get(i).mCalllogAdapter.updateListView(mPhoneBookInfo
-						.get(mTabs.get(i).mTabTpye));				
+				// 判断是否是NOT_SYNC
+				if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC
+						|| BtcNative.getBfpStatus() == BtcGlobalData.BFP_DISCONNECT) {
+					mLog("notifyDataSetChanged hideLoading ");
+					mTabs.get(i).hideLoading();
+				}
+				mTabs.get(i).mCalllogAdapter.updateListView(mPhoneBookInfo.get(mTabs.get(i).mTabTpye));
 				mAdapter.notifyDataSetChanged();
 			} else {
-				mTabs.get(i).mCallView = null;	
+				mTabs.get(i).mCallView = null;
 			}
 		}
 	}
@@ -370,15 +356,15 @@ public class CallLogsFragment extends Fragment {
 			Log.d(TAG, string);
 		}
 	}
-	
+
 	@Override
-	public void onStop() {		
+	public void onStop() {
 		super.onStop();
 		mLog("onStop 22222");
 	}
-	
+
 	@Override
-	public void onStart() {		
+	public void onStart() {
 		super.onStart();
 		mLog("onStart 22222");
 	}
@@ -389,9 +375,9 @@ public class CallLogsFragment extends Fragment {
 				mTabs.get(i).mCallView = null;
 				continue;
 			}
-			mLog("showUpdateing111111111");			
+			mLog("showUpdateing111111111");
 			mTabs.get(i).showLoading();
 		}
 	}
-	
+
 }

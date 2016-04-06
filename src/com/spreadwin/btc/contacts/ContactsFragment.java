@@ -45,8 +45,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-public class ContactsFragment extends Fragment implements
-		OnCreateContextMenuListener, OnItemLongClickListener {
+public class ContactsFragment extends Fragment implements OnCreateContextMenuListener, OnItemLongClickListener {
 	public static final String TAG = "ContactsFragment";
 	public static final boolean DEBUG = MainActivity.DEBUG;
 
@@ -61,7 +60,7 @@ public class ContactsFragment extends Fragment implements
 	private TextView mContactsNumber;
 	private ContactsAdapter adapter;
 	private ClearEditText mClearEditText;
-	
+
 	TextView emptyView;
 	LinearLayout mLoading;
 
@@ -77,7 +76,7 @@ public class ContactsFragment extends Fragment implements
 	private PinyinComparator pinyinComparator;
 
 	public List<Fragment> fragments = new ArrayList<Fragment>();
-	private List<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
+	private ArrayList<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
 	PhoneBookInfo mPhoneContactsInfo, mSIMContactsInfo;
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;
@@ -90,58 +89,47 @@ public class ContactsFragment extends Fragment implements
 		super.onCreate(savedInstanceState);
 		mLog("onCreate 111111111");
 		try {
-			mContactsInfo = MainActivity.binder.getPhoneBookInfo_new();
+			mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
 			characterParser = CharacterParser.getInstance();
 			pinyinComparator = new PinyinComparator();
 		} catch (Exception e) {
 			// TODO: handle exception
-            e.printStackTrace();
+			e.printStackTrace();
 		}
 		// 实例化汉字转拼音类
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mInflater = inflater;
 		mLog("onCreateView 222222222");
-		mRootView = inflater.inflate(R.layout.fragment_contacts_new, container,
-				false);
+		mRootView = inflater.inflate(R.layout.fragment_contacts_new, container, false);
 		sideBar = (SideBar) mRootView.findViewById(R.id.sidrbar);
 		dialog = (TextView) mRootView.findViewById(R.id.dialog);
 		mContactsNumber = (TextView) mRootView.findViewById(R.id.mContactsNumber);
 		mLoading = (LinearLayout) mRootView.findViewById(R.id.loading);
 		sideBar.setTextView(dialog);
 		// 设置右侧触摸监听
-		sideBar
-				.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
-					@Override
-					public void onTouchingLetterChanged(String s) {
-						// 该字母首次出现的位置
-						int position = adapter.getPositionForSection(s
-								.charAt(0));
-						if (position != -1) {
-							sortListView.setSelection(position);
-						}
-					}
-				});
+		sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
+			@Override
+			public void onTouchingLetterChanged(String s) {
+				// 该字母首次出现的位置
+				int position = adapter.getPositionForSection(s.charAt(0));
+				if (position != -1) {
+					sortListView.setSelection(position);
+				}
+			}
+		});
 
-		sortListView = (ListView) mRootView
-				.findViewById(R.id.country_lvcountry);
+		sortListView = (ListView) mRootView.findViewById(R.id.country_lvcountry);
 		sortListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String str = "号码：";
-				mLog("mContactsInfo onItemClick =="
-						+ position
-						+ "; size =="
-						+ ((PhoneBookInfo_new) adapter.getItem(position))
-								.getNumber().size());
-				for (int i = 0; i < ((PhoneBookInfo_new) adapter
-						.getItem(position)).getNumber().size(); i++) {
-					str += ((PhoneBookInfo_new) adapter.getItem(position))
-							.getNumber().get(i);
+				mLog("mContactsInfo onItemClick ==" + position + "; size =="
+						+ ((PhoneBookInfo_new) adapter.getItem(position)).getNumber().size());
+				for (int i = 0; i < ((PhoneBookInfo_new) adapter.getItem(position)).getNumber().size(); i++) {
+					str += ((PhoneBookInfo_new) adapter.getItem(position)).getNumber().get(i);
 				}
 				// Toast.makeText(getActivity(), str,
 				// Toast.LENGTH_SHORT).show();
@@ -152,60 +140,56 @@ public class ContactsFragment extends Fragment implements
 		// mContactsInfo =
 		// filledData(getResources().getStringArray(R.array.date));
 		// 根据a-z进行排序源数据
-		try {			
+		try {
 			Collections.sort(mContactsInfo, pinyinComparator);
-		} catch (Exception e) {		
+		} catch (Exception e) {
 		}
-		adapter = new ContactsAdapter(getActivity(), mContactsInfo);
-		sortListView.setAdapter(adapter);		
+		adapter = new ContactsAdapter(getActivity());
+		adapter.clearPhoneBookInfoList();
+		adapter.setPhoneBookInfoList(mContactsInfo);
+		sortListView.setAdapter(adapter);
 		sortListView.setOnScrollListener(new OnScrollListener() {
-			
+
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		// 设置通话记录为空的界面
 		emptyView = new TextView(getActivity());
-		emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT));
+		emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
 		emptyView.setTextSize(30);
-		emptyView.setGravity(Gravity.CENTER_HORIZONTAL
-				| Gravity.CENTER_VERTICAL);
+		emptyView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 		emptyView.setVisibility(View.GONE);
 		((ViewGroup) sortListView.getParent()).addView(emptyView, 1);
 		sortListView.setEmptyView(emptyView);
-		mLog("onCreateView getSyncStatus =="+BtcNative.getSyncStatus());
-		mLog("mContactsInfo.size() =="+mContactsInfo.size());
+		mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus());
+		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
 		if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NOT_SYNC || mContactsInfo.size() > 0) {
 			hideLoading();
-		}else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.IN_SYNC && mContactsInfo.size() == 0) {
+		} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.IN_SYNC && mContactsInfo.size() == 0) {
 			showLoading();
 		}
 		sortListView.setOnCreateContextMenuListener(this);
-		mClearEditText = (ClearEditText) mRootView
-				.findViewById(R.id.filter_edit);
+		mClearEditText = (ClearEditText) mRootView.findViewById(R.id.filter_edit);
 		// 根据输入框输入值的改变来过滤搜索
 		mClearEditText.addTextChangedListener(new TextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// 当输入框里面的值为空，更新为原来的列表，否则为过滤数据列表
 				filterData(s.toString());
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
 			}
 
@@ -215,8 +199,8 @@ public class ContactsFragment extends Fragment implements
 		});
 		return mRootView;
 	}
-
-	public void showLoading() {		
+	
+	public void showLoading() {
 		if (emptyView == null) {
 			return;
 		}
@@ -224,21 +208,24 @@ public class ContactsFragment extends Fragment implements
 		mLoading.setVisibility(View.VISIBLE);
 		mContactsNumber.setVisibility(View.GONE);
 	}
-	
-	public void hideLoading() {		
+
+	public void hideLoading() {
 		if (!isAdded() || emptyView == null) {
 			return;
 		}
 		if (mContactsInfo.size() > 0) {
 			mContactsNumber.setVisibility(View.VISIBLE);
-			mContactsNumber.setText("联系人数量："+mContactsInfo.size());			
-		}else {
-			mContactsNumber.setVisibility(View.GONE);			
+			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
+		} else {
+			mContactsNumber.setVisibility(View.GONE);
 		}
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
 		mLoading.setVisibility(View.GONE);
 	}
 	
+	public void clearList(){
+		adapter.clearPhoneBookInfoList();
+	}
 	/**
 	 * 为ListView填充数据
 	 * 
@@ -249,8 +236,7 @@ public class ContactsFragment extends Fragment implements
 		List<PhoneBookInfo_new> mSortList = new ArrayList<PhoneBookInfo_new>();
 
 		for (int i = 0; i < date.length; i++) {
-			PhoneBookInfo_new sortModel = new PhoneBookInfo_new(date[i],
-					"10010");
+			PhoneBookInfo_new sortModel = new PhoneBookInfo_new(date[i], "10010");
 			// sortModel.setName(date[i]);
 			// sortModel.setNumber("10010");
 			// 汉字转换成拼音
@@ -279,26 +265,25 @@ public class ContactsFragment extends Fragment implements
 		List<PhoneBookInfo_new> filterDateList = new ArrayList<PhoneBookInfo_new>();
 
 		if (TextUtils.isEmpty(filterStr)) {
-			filterDateList = mContactsInfo;			
+			filterDateList = mContactsInfo;
 		} else {
 			filterDateList.clear();
 			List<PhoneBookInfo_new> mTempInfo = mContactsInfo;
 			for (PhoneBookInfo_new sortModel : mTempInfo) {
 				String name = sortModel.getName();
 				if (name.indexOf(filterStr.toString()) != -1
-						|| characterParser.getSelling(name).startsWith(
-								filterStr.toString())) {
+						|| characterParser.getSelling(name).startsWith(filterStr.toString())) {
 					filterDateList.add(sortModel);
 				}
 			}
 		}
-		
+
 		// 根据a-z进行排序
 		try {
-			Collections.sort(filterDateList, pinyinComparator);			
+			Collections.sort(filterDateList, pinyinComparator);
 		} catch (Exception e) {
 			// TODO: handle exception
-		}		
+		}
 		adapter.updateListView(filterDateList);
 		adapter.notifyDataSetChanged();
 	}
@@ -316,12 +301,11 @@ public class ContactsFragment extends Fragment implements
 			return;
 		}
 		mClearEditText.setText(null);
-		mContactsInfo = MainActivity.binder.getPhoneBookInfo_new();
-		mLog("notifyDataSetChanged mContactsInfo size =="
-				+ mContactsInfo.size());
+		mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+		mLog("notifyDataSetChanged mContactsInfo size ==" + mContactsInfo.size());
 		// 根据a-z进行排序
 		try {
-			Collections.sort(mContactsInfo, pinyinComparator);			
+			Collections.sort(mContactsInfo, pinyinComparator);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -330,32 +314,30 @@ public class ContactsFragment extends Fragment implements
 		}
 		adapter.updateListView(mContactsInfo);
 		adapter.notifyDataSetChanged();
-		
 
 	}
-	
+
 	Handler handler = new Handler();
 	Runnable runnable = new Runnable() {
-		
+
 		@Override
 		public void run() {
-//			if (mContactsInfo) {
+			// if (mContactsInfo) {
 			mLog("runnable  333333333");
-				adapter.updateListView(mContactsInfo);
-				adapter.notifyDataSetChanged();
-//			}
-			
+			adapter.updateListView(mContactsInfo);
+			adapter.notifyDataSetChanged();
+			// }
+
 		}
 	};
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
-		mLog("onItemLongClick111111111 arg0 ==" + arg0.getId() + "arg1 =="
-				+ arg1.getId() + "; arg2 ==" + arg2 + "; arg3 ==" + arg3);
+	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		mLog("onItemLongClick111111111 arg0 ==" + arg0.getId() + "arg1 ==" + arg1.getId() + "; arg2 ==" + arg2
+				+ "; arg3 ==" + arg3);
 		if (arg0 == sortListView) {
-			mLog("onItemLongClick222222222 arg0 ==" + arg0.getId() + "arg1 =="
-					+ arg1.getId() + "; arg2 ==" + arg2 + "; arg3 ==" + arg3);
+			mLog("onItemLongClick222222222 arg0 ==" + arg0.getId() + "arg1 ==" + arg1.getId() + "; arg2 ==" + arg2
+					+ "; arg3 ==" + arg3);
 			index = arg2;
 		}
 		hide();
@@ -365,54 +347,43 @@ public class ContactsFragment extends Fragment implements
 
 	private void hide() {
 		mLog("hide  111111111");
-		if (getActivity().getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) {
+		if (getActivity().getWindow()
+				.getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) {
 			mLog("hide  222222222222");
 			// 关闭输入法
 			InputMethodManager inputMethodManager = (InputMethodManager) getActivity()
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
-			 inputMethodManager.hideSoftInputFromWindow(mClearEditText.getWindowToken(),
-			 0);
-//			inputMethodManager.toggleSoftInput(0,
-//					InputMethodManager.HIDE_NOT_ALWAYS);
+			inputMethodManager.hideSoftInputFromWindow(mClearEditText.getWindowToken(), 0);
+			// inputMethodManager.toggleSoftInput(0,
+			// InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		menu.setHeaderTitle(((PhoneBookInfo_new) adapter.getItem(index))
-				.getName());
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		menu.setHeaderTitle(((PhoneBookInfo_new) adapter.getItem(index)).getName());
 		mLog("onCreateContextMenu index ==" + index);
-		if (((PhoneBookInfo_new) adapter.getItem(index))
-				.getNumber().size()>1) {
-			for (int i = 0; i < ((PhoneBookInfo_new) adapter.getItem(index))
-					.getNumber().size(); i++) {
-				menu.add(i, 1, 0, "拨打:"
-						+ ((PhoneBookInfo_new) adapter.getItem(index)).getNumber()
-								.get(i));
+		if (((PhoneBookInfo_new) adapter.getItem(index)).getNumber().size() > 1) {
+			for (int i = 0; i < ((PhoneBookInfo_new) adapter.getItem(index)).getNumber().size(); i++) {
+				menu.add(i, 1, 0, "拨打:" + ((PhoneBookInfo_new) adapter.getItem(index)).getNumber().get(i));
 			}
-		}else{
-			BtcNative.dialCall(((PhoneBookInfo_new) adapter.getItem(index)).getNumber()
-								.get(0));
+		} else {
+			BtcNative.dialCall(((PhoneBookInfo_new) adapter.getItem(index)).getNumber().get(0));
 		}
 	}
 
 	// 长按菜单响应函数
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int position = (int) info.id;// 这里的info.id对应的就是数据库中_id的值
-		mLog("onContextItemSelected arg0 ==" + position
-				+ "; item.getItemId() ==" + item.getItemId()
+		mLog("onContextItemSelected arg0 ==" + position + "; item.getItemId() ==" + item.getItemId()
 				+ ";item.getGroupId() ==" + item.getGroupId());
 		switch (item.getItemId()) {
 		case 1:
 			if (MainActivity.mBluetoothFragment != null) {
 
 				MainActivity.mBluetoothFragment
-						.dialCall(((PhoneBookInfo_new) adapter
-								.getItem(position)).getNumber().get(
-								item.getGroupId()));
+						.dialCall(((PhoneBookInfo_new) adapter.getItem(position)).getNumber().get(item.getGroupId()));
 				// MainActivity.mBluetoothFragment.dialCall(mContactsInfo.get(position).getNumber().get(item.getGroupId()));
 			}
 			break;

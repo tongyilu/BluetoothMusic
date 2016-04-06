@@ -49,7 +49,7 @@ public class MusicFragment extends Fragment implements OnClickListener{
 			mInflater = inflater;
 			mRootView = inflater.inflate(R.layout.fragment_music, container, false);
 			mMusicPrevious = (ImageButton) mRootView.findViewById(R.id.music_previous);
-			mMusicPlay = (ImageButton) mRootView.findViewById(R.id.music_play);
+			mMusicPlay = (ImageButton) mRootView. findViewById(R.id.music_play);
 			mMusicNext = (ImageButton) mRootView.findViewById(R.id.music_next);
 			mA2dpText = (TextView) mRootView.findViewById(R.id.a2dp_text);
 			mMusicPrevious.setOnClickListener(this);
