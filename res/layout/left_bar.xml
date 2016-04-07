@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="65dip"
                 android:text="断开连接"
-                android:textColor="@color/white"
+                android:textColor="@drawable/button_font_style"
                 android:textSize="25sp" />
         </LinearLayout>
     </LinearLayout>

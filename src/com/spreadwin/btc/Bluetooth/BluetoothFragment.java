@@ -291,7 +291,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 			if (bool) {
 				handler.postDelayed(this, 1000);
 			}
-			mIncallText.setTextColor(getResources().getColor(R.color.white));
 		}
 	};
 

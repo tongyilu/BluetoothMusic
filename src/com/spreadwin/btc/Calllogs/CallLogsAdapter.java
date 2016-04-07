@@ -47,6 +47,11 @@ public class CallLogsAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		return position;
 	}
+	
+	public void clearCallLogsList(){
+		mCallLogsInfo.clear();
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public long getItemId(int position) {
