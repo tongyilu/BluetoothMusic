@@ -96,11 +96,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 		mDialButton.setOnClickListener(this);
 		mDroppedButton.setOnClickListener(this);
 		checkCallStatus();
-		if (mInputText.getText().equals(getResources().getText(R.string.default_title))) {
-			mInputText.setTextColor(getResources().getColor(R.color.gray_61));
-		} else {
-			mInputText.setTextColor(getResources().getColor(R.color.white));
-		}
 	}
 
 	@Override
@@ -263,7 +258,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 	private void clearInput() {
 		if (isAdded()) {
 			mInputText.setText(getResources().getString(R.string.default_title));
-			mIncallText.setTextColor(getResources().getColor(R.color.gray_61));
 		}
 		mDisplayNumber.delete(0, mDisplayNumber.length());
 	}
@@ -316,9 +310,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 		} else {
 			mInputText.setText(getResources().getString(R.string.default_title));
 		}
-        
-		mIncallText.setTextColor(getResources().getColor(R.color.gray_61));
-
 	}
 
 	public static void mLog(String string) {

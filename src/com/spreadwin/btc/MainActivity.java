@@ -980,7 +980,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mBluetoothFragment = new BluetoothFragment();
 					}
 					transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-					transaction.commit();
+					transaction. commitAllowingStateLoss();
 					setDefaultColor();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
