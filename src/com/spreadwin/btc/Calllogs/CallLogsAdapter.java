@@ -47,8 +47,8 @@ public class CallLogsAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		return position;
 	}
-	
-	public void clearCallLogsList(){
+
+	public void clearCallLogsList() {
 		mCallLogsInfo.clear();
 		notifyDataSetChanged();
 	}
@@ -121,7 +121,6 @@ public class CallLogsAdapter extends BaseAdapter {
 		} else {
 			mTextView.setText("未知");
 		}
-
 	}
 
 	public void updateListView(PhoneBookInfo phoneBookInfo) {

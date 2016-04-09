@@ -146,7 +146,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		}
 		adapter = new ContactsAdapter(getActivity());
 		adapter.clearPhoneBookInfoList();
-		adapter.setPhoneBookInfoList(mContactsInfo);
+		adapter.addPhoneBookInfoList(mContactsInfo);
 		sortListView.setAdapter(adapter);
 		sortListView.setOnScrollListener(new OnScrollListener() {
 
@@ -224,7 +224,9 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	}
 	
 	public void clearList(){
-		adapter.clearPhoneBookInfoList();
+		if (adapter!=null) {
+			adapter.clearPhoneBookInfoList();
+		}
 	}
 	/**
 	 * 为ListView填充数据
@@ -285,7 +287,6 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			// TODO: handle exception
 		}
 		adapter.updateListView(filterDateList);
-		adapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -313,8 +314,6 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			hideLoading();
 		}
 		adapter.updateListView(mContactsInfo);
-		adapter.notifyDataSetChanged();
-
 	}
 
 	Handler handler = new Handler();
@@ -325,7 +324,6 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			// if (mContactsInfo) {
 			mLog("runnable  333333333");
 			adapter.updateListView(mContactsInfo);
-			adapter.notifyDataSetChanged();
 			// }
 
 		}

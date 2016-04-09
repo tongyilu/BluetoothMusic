@@ -480,9 +480,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						// UnLockScreen();
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
-
-						mContactsFragment.clearList();
-						mCallLogsFragment.clearList();
 						handler.sendEmptyMessage(mMessageNotifyData);
 						mDismissDialog(DIALOG1);
 					}
@@ -575,14 +572,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 				break;
 			case mMessageNotifyData:
-				try {
-					Thread.sleep(100);
-					mCallLogsFragment.notifyDataSetChanged();
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// try {
+				// Thread.sleep(100);
+				mCallLogsFragment.notifyDataSetChanged();
+				// Thread.sleep(100);
+				// } catch (InterruptedException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
 				mContactsFragment.notifyDataSetChanged();
 				break;
 			default:
@@ -718,7 +715,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mBluetoothFragment = new BluetoothFragment();
 		}
 		transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-		transaction.commit();
+		transaction.commitAllowingStateLoss();
 	}
 
 	private void setDefaultColor() {
@@ -980,7 +977,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mBluetoothFragment = new BluetoothFragment();
 					}
 					transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-					transaction. commitAllowingStateLoss();
+					transaction.commitAllowingStateLoss();
 					setDefaultColor();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {

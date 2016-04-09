@@ -38,6 +38,7 @@ public class ContactsAdapter_old extends BaseAdapter {
 		mInflater = _Inflater;
 	}
 
+	
 	@Override
 	public int getCount() {
 		 ContactsFragment.mLog("ContactsAdapter getCount =="+mContactsInfo.getSize());

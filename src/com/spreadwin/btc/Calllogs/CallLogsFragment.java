@@ -83,10 +83,6 @@ public class CallLogsFragment extends Fragment {
 			TabInfo tab3 = new TabInfo(CALL_MISS_TYPE);
 			mTabs.add(tab3);
 		}
-
-		mCurTab = new TabInfo(CALL_IN_TYPE);
-		mCurTab = new TabInfo(CALL_MISS_TYPE);
-		mCurTab = new TabInfo(CALL_OUT_TYPE);
 		mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
 		// mLog("CallLogsFragment onCreate 11111111111==="
 		// + mPhoneBookInfo.get(CALL_IN_TYPE).getSize());
@@ -274,10 +270,6 @@ public class CallLogsFragment extends Fragment {
 			}
 		}
 
-		public void clearList() {
-			mCalllogAdapter.clearCallLogsList();
-		}
-
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			mLog("onItemClick arg0 ==" + arg0.getId() + "arg1 ==" + arg1.getId() + "; arg2 ==" + arg2 + "; arg3 =="
@@ -330,10 +322,6 @@ public class CallLogsFragment extends Fragment {
 		return true;
 	}
 
-	public void clearList() {
-		mCurTab.clearList();
-	}
-
 	public void notifyDataSetChanged() {
 		if (mAdapter == null) {
 			return;
@@ -356,7 +344,6 @@ public class CallLogsFragment extends Fragment {
 					mTabs.get(i).hideLoading();
 				}
 				mTabs.get(i).mCalllogAdapter.updateListView(mPhoneBookInfo.get(mTabs.get(i).mTabTpye));
-				mAdapter.notifyDataSetChanged();
 			} else {
 				mTabs.get(i).mCallView = null;
 			}

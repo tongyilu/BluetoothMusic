@@ -16,25 +16,25 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
-	private List<PhoneBookInfo_new> list = null;
+	private List<PhoneBookInfo_new> list = new ArrayList<PhoneBookInfo_new>();
 	private Context mContext;
 
 	public ContactsAdapter(Context mContext) {
 		this.mContext = mContext;
 	}
 
-	public void setPhoneBookInfoList(ArrayList<PhoneBookInfo_new> list) {
+	public void addPhoneBookInfoList(ArrayList<PhoneBookInfo_new> list) {
 		if (list != null) {
-			this.list = list;
-			notifyDataSetChanged();
+			this.list.addAll(list);
 		}
+		notifyDataSetChanged();
 	}
 
 	public void clearPhoneBookInfoList() {
 		if (list != null) {
-			list.clear();
+			this.list.clear();
+			notifyDataSetChanged();
 		}
-		notifyDataSetChanged();
 	}
 
 	/**
@@ -43,7 +43,9 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 	 * @param list
 	 */
 	public void updateListView(List<PhoneBookInfo_new> list) {
-		this.list = list;
+		clearPhoneBookInfoList();
+		this.list.addAll(list);
+		notifyDataSetChanged();
 	}
 
 	public int getCount() {
