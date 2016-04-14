@@ -3,27 +3,16 @@ package com.spreadwin.btc.view;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
-import com.spreadwin.btc.SyncService;
-import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.OpenUtils;
-
-import android.R.bool;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,8 +23,8 @@ public class DialogView implements OnClickListener {
 	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
 
-	public boolean isMuteState = false;
-	public boolean isHfState = false;
+	public boolean isMuteState;
+	public boolean isHfState;
 
 	private TextView mMute, mHf;
 	private ImageView mDialButton;
@@ -49,16 +38,20 @@ public class DialogView implements OnClickListener {
 	private DilatingDotsProgressBar mDilatingDotsProgressBar;
 	private ImageView imgGameWord;
 	private OpenUtils openUtils;
+	private boolean isStart;
 
-	public DialogView(Context context) {
+	public DialogView(Context context, boolean isFlags) {
 		this.mContext = context;
-		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
+		this.isStart = isFlags;
+		mView = LayoutInflater.from(context).inflate(R.layout.display_call,
+				null);
 		initView(mView);
 	}
 
 	private void initView(View view) {
 		openUtils = new OpenUtils(mContext);
-		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view.findViewById(R.id.progress);
+		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view
+				.findViewById(R.id.progress);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
 		mNumberText = (TextView) view.findViewById(R.id.number_text);
@@ -73,23 +66,32 @@ public class DialogView implements OnClickListener {
 		mHf.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);
-		Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-		mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
-		mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
-		mContext.sendBroadcast(mCallIntent);
 		imgGameWord = (ImageView) view.findViewById(R.id.icon);
 		imgGameWord.setBackgroundResource(R.anim.call_anim);
 		animDown = (AnimationDrawable) imgGameWord.getBackground();
 		animDown.start();
 		animDown.setOneShot(false);
 		mDilatingDotsProgressBar.show();
+		if (!isStart) {
+			mMute.setVisibility(View.GONE);
+			mDialButton.setVisibility(View.GONE);
+		} else {
+			mMute.setVisibility(View.VISIBLE);
+			mDialButton.setVisibility(View.VISIBLE);
+			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
+			Log.d("getCallNumber", getCallNumber);
+			Log.d("getPhoneName", getPhoneName);
+			mContext.sendBroadcast(mCallIntent);
+		}
 	}
 
 	public View getVideoPlayView() {
 		return mView;
 	}
-	
-	//获取来电时名字
+
+	// 获取来电时名字
 	private String getCallName(String getCallNumber) {
 		String mCallName = "";
 		if (MainActivity.binder != null) {
@@ -109,13 +111,13 @@ public class DialogView implements OnClickListener {
 			break;
 		case R.id.mute:
 			if (isMuteState) {
-				isMuteState = false;
-				openUtils.setRingerMode(true);
-				setMuteImageView(false);
-			} else {
-				isMuteState = true;
 				openUtils.setRingerMode(false);
 				setMuteImageView(true);
+				isMuteState = false;
+			} else {
+				openUtils.setRingerMode(true);
+				setMuteImageView(false);
+				isMuteState = true;
 			}
 			break;
 		case R.id.hf:
@@ -131,36 +133,44 @@ public class DialogView implements OnClickListener {
 	}
 
 	public void setMuteImageView(boolean isState) {
-		Drawable drawable = mContext.getResources().getDrawable(isState ? R.drawable.mute_u : R.drawable.mute_d);
-		drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+		Drawable drawable = mContext.getResources().getDrawable(
+				isState ? R.drawable.mute_u : R.drawable.mute_d);
+		drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+				drawable.getMinimumHeight());
 		mMute.setCompoundDrawables(null, drawable, null, null);
 	}
 
 	public void setHfImage(boolean isState1) {
-		Drawable drawable1 = mContext.getResources()
-				.getDrawable(isState1 ? R.drawable.handsfree_u : R.drawable.handsfree_d);
-		drawable1.setBounds(0, 0, drawable1.getMinimumWidth(), drawable1.getMinimumHeight());
+		Drawable drawable1 = mContext.getResources().getDrawable(
+				isState1 ? R.drawable.handsfree_u : R.drawable.handsfree_d);
+		drawable1.setBounds(0, 0, drawable1.getMinimumWidth(),
+				drawable1.getMinimumHeight());
 		mHf.setCompoundDrawables(null, drawable1, null, null);
 	}
 
 	private void answerCall() {
 		BtcNative.answerCall();
-//		Intent mCallIntent = new Intent();
-//		mCallIntent.setAction(MainActivity.mActionCall);
-//		mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
-//		mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		mContext.startActivity(mCallIntent);
-		mDismissDialog();
+		// Intent mCallIntent = new Intent();
+		// mCallIntent.setAction(MainActivity.mActionCall);
+		// mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
+		// mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		// mContext.startActivity(mCallIntent);
+		// mDismissDialog();
 	}
 
 	private void denyCall() {
-		BtcNative.denyCall();
+		if (!isStart) {
+			BtcNative.hangupCall();
+		} else {
+			BtcNative.denyCall();
+		}
 		mDismissDialog();
 	}
-	
+
 	private void mDismissDialog() {
 		// TODO Auto-generated method stub
-		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) mContext
+				.getSystemService(Context.WINDOW_SERVICE);
 		wm.removeView(mView);
 		// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 		// mContext.sendBroadcast(mCallIntent);
