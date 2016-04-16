@@ -27,8 +27,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 	public static final String TAG = "BluetoothFragment";
 	public static final boolean DEBUG = MainActivity.DEBUG;
 	public static boolean isFlags = false;
-	private LayoutInflater mInflater;
-	private ViewGroup mContentContainer;
 	private View mRootView;
 	ImageButton mDeleteButton, mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
 			mNumberEight, mNumberNine, mNumberZero, mNumberJin, mNumberXing, mDialButton, mDroppedButton;
@@ -41,7 +39,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 	private int minute = 0;
 	private int second = 0;
 	private boolean bool = false;
-	private int mRootViewWidth = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +49,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mInflater = inflater;
 		mRootView = inflater.inflate(R.layout.fragment_bluetooth, container, false);
 		init();
 		// mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);

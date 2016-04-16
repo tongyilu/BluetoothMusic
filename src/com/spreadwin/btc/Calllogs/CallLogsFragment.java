@@ -83,7 +83,9 @@ public class CallLogsFragment extends Fragment {
 			TabInfo tab3 = new TabInfo(CALL_MISS_TYPE);
 			mTabs.add(tab3);
 		}
-		mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
+		if (MainActivity.binder.getPhoneBookInfo()!=null) {
+			mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
+		}
 		// mLog("CallLogsFragment onCreate 11111111111==="
 		// + mPhoneBookInfo.get(CALL_IN_TYPE).getSize());
 

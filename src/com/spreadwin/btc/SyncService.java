@@ -1011,11 +1011,14 @@ public class SyncService extends Service {
 			mLog("notfull" + leftStackId + am.getWindowSizeStatus(leftStackId));
 			return false;
 		}
-
 	}
 
 	protected void onCallStatusChange() {
 		mLog("setMute onCallStatusChange ==" + mTempStatus);
+		int lastCallStatus = mCallStatus;
+		mCallStatus = mTempStatus;
+		
+		
 		Intent mCallIntent = new Intent();
 		mCallIntent.setAction(MainActivity.mActionCall);
 		onChaneAudioFocus(mTempStatus);
@@ -1024,19 +1027,13 @@ public class SyncService extends Service {
 			setMute(true, mTempStatus);
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
 			isSater = true;
-			Message msg = new Message();
-			if (isFull())
-				msg.what = 1; // 消息(一个整型值)
-			else
-				msg.what = 0;
-
-			HandlerCallin.sendMessage(msg);
+			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
 			setMute(false, mTempStatus);
 			setBtAudioMode(7);
-
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
+			removeCallView();
 			break;
 		case BtcGlobalData.CALL_OUT:
 			setMute(false, mTempStatus);
@@ -1045,26 +1042,20 @@ public class SyncService extends Service {
 			}
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
 			isSater = false;
-			Message msg1 = new Message();
-			if (isFull())
-				msg1.what = 1; // 消息(一个整型值)
-			else
-				msg1.what = 0;
-			HandlerCallin.sendMessage(msg1);
-
+			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
 			setMute(false, mTempStatus);
 			setBtAudioMode(6);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld
-						+ "; mCallStatus ==" + mCallStatus);
-				if (mCallStatus == BtcGlobalData.CALL_IN) {
+						+ "; lastCallStatus ==" + lastCallStatus);
+				if (lastCallStatus == BtcGlobalData.CALL_IN) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
 					mUpdateCalllog = BtcGlobalData.PB_IN;
-				} else if (mCallStatus == BtcGlobalData.CALL_OUT
-						|| (mCallStatus == BtcGlobalData.IN_CALL && mCallStatusOld == BtcGlobalData.CALL_OUT)) {
+				} else if (lastCallStatus == BtcGlobalData.CALL_OUT
+						|| (lastCallStatus == BtcGlobalData.IN_CALL && mCallStatusOld == BtcGlobalData.CALL_OUT)) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_OUT");
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_OUT);
 					mUpdateCalllog = BtcGlobalData.PB_OUT;
@@ -1074,6 +1065,7 @@ public class SyncService extends Service {
 					mUpdateCalllog = BtcGlobalData.PB_MISS;
 				}
 			}
+			removeCallView();
 			mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
 			// 凯立德一键通的返回结果
 			if (mCLDCall) {
@@ -1090,8 +1082,29 @@ public class SyncService extends Service {
 		if (!mScreenStatus && !mAccOff) {
 			wakeUpAndUnlock();
 		}
-		mCallStatusOld = mCallStatus;
-		mCallStatus = mTempStatus;
+		mCallStatusOld = lastCallStatus;
+		
+	}
+	
+	private void addCallView(){
+		Message msg1 = new Message();
+		if (isFull()){
+			msg1.what = 1; // 消息(一个整型值)
+		}else{
+			msg1.what = 0;
+		}
+		HandlerCallin.sendMessage(msg1);
+	}
+	
+	private void removeCallView(){
+		try {
+			if (wm != null && view != null) {
+				wm.removeView(view);
+//				wm.removeViewImmediate(view);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void showCallDisplay(int full) {
@@ -1107,12 +1120,6 @@ public class SyncService extends Service {
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
-
-		/*
-		 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
-		 * wmParams.flags=LayoutParams.FLAG_NOT_TOUCH_MODAL |
-		 * LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
-		 */
 
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
@@ -1378,7 +1385,7 @@ public class SyncService extends Service {
 				} else {
 					mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
 				}
-			}else if(action.equals(ACTION_BFP_CONNECT_CLOSE)){
+			} else if (action.equals(ACTION_BFP_CONNECT_CLOSE)) {
 				BtcNative.disconnectPhone();
 			}
 		}
@@ -1396,14 +1403,7 @@ public class SyncService extends Service {
 				intent.putExtra(EXTRA_MUSIC_VOLUME_MUTED, true);
 				intent.putExtra("only_music", mOnlyMusic);
 				sendBroadcast(intent);
-				try {
-					if (wm != null) {
-						wm.removeView(view);
-					}
-				} catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
+				
 			} else if (CallStatus == BtcGlobalData.NO_CALL && mOnlyMusic) {
 				mOnlyMusic = false;
 				Intent intent = new Intent(MUSIC_MUTE_RESTORE_ACTION);
@@ -1411,23 +1411,8 @@ public class SyncService extends Service {
 				sendBroadcast(intent);
 			} else if (CallStatus == BtcGlobalData.CALL_IN
 					|| BtcNative.getVolume() != 0) {
-				try {
-					if (wm != null) {
-						wm.removeView(view);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 				return;
-			} else {
-				try {
-					if (wm != null) {
-						wm.removeView(view);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+			} 
 			if (mOldBt == 0) {
 				mOldBt = mDefaultVoice;
 			}

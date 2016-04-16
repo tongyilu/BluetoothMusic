@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@anim/call_anim" />
 
     <TextView
@@ -19,7 +19,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
         android:textColor="@color/blue"
         android:textSize="30sp" />
 
@@ -36,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="15dp"
         android:radius="6dp"
         app:dd_animationDuration="500"
         app:dd_horizontalSpacing="8dp"

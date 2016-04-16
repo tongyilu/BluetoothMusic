@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ public class DialogView implements OnClickListener {
 
 	private View mView;
 	private Context mContext;
-	public static final String TAG = "MainActivity";
+	public static final String TAG = "DialogView";
 	public static final boolean DEBUG = true;
 
 	public boolean isMuteState;
@@ -43,15 +44,13 @@ public class DialogView implements OnClickListener {
 	public DialogView(Context context, boolean isFlags) {
 		this.mContext = context;
 		this.isStart = isFlags;
-		mView = LayoutInflater.from(context).inflate(R.layout.display_call,
-				null);
+		mView = LayoutInflater.from(context).inflate(R.layout.display_call,null);
 		initView(mView);
 	}
 
 	private void initView(View view) {
 		openUtils = new OpenUtils(mContext);
-		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view
-				.findViewById(R.id.progress);
+		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view.findViewById(R.id.progress);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
 		mNumberText = (TextView) view.findViewById(R.id.number_text);
@@ -60,7 +59,11 @@ public class DialogView implements OnClickListener {
 		mMute = (TextView) view.findViewById(R.id.mute);
 		String getCallNumber = BtcNative.getCallNumber();
 		String getPhoneName = getCallName(getCallNumber);
-		mNameText.setText(getPhoneName);
+		if (!TextUtils.isEmpty(getPhoneName)) {
+			mNameText.setText(getPhoneName);
+		}else{
+            mNameText.setText("未知");
+		}
 		mNumberText.setText(getCallNumber);
 		mMute.setOnClickListener(this);
 		mHf.setOnClickListener(this);
@@ -81,8 +84,8 @@ public class DialogView implements OnClickListener {
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
-			Log.d("getCallNumber", getCallNumber);
-			Log.d("getPhoneName", getPhoneName);
+			Log.d(TAG, getCallNumber);
+			Log.d(TAG, getPhoneName);
 			mContext.sendBroadcast(mCallIntent);
 		}
 	}
@@ -169,8 +172,7 @@ public class DialogView implements OnClickListener {
 
 	private void mDismissDialog() {
 		// TODO Auto-generated method stub
-		WindowManager wm = (WindowManager) mContext
-				.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		wm.removeView(mView);
 		// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 		// mContext.sendBroadcast(mCallIntent);
