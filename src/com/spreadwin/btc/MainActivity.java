@@ -1020,7 +1020,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
 							mShowDeviceNameDelayed);
-					saySomething("蓝牙已连接");//语音提示
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
@@ -1034,12 +1033,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 			}
 		}
-	}
-
-	public void saySomething(String something) {
-		Intent i = new Intent("ACTION_SAY_SOMETHING");
-		i.putExtra("EXTRA_SAY_SOMETHING", something);
-		sendBroadcast(i);
 	}
 
 	public static void mLog(String string) {

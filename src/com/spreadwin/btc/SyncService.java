@@ -466,6 +466,7 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification,
 					MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
+			saySomething("蓝牙已连接");//语音提示
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			m_DBAdapter.close();
 			// audioManager.setMode(AudioStream.MODE_NORMAL);
@@ -481,6 +482,7 @@ public class SyncService extends Service {
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
+			saySomething("蓝牙已断开");//语音提示
 		}
 		sendObjMessage(1, mBfpIntent);
 		// lbm.sendBroadcast(mBfpIntent);
@@ -1172,8 +1174,8 @@ public class SyncService extends Service {
 			sendObjMessage(1, mCallIntent);
 			// lbm.sendBroadcast(mCallIntent);
 		} else {
-			mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(mCallIntent);
+//			mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//			startActivity(mCallIntent);
 		}
 		mLog("ainActivity.mBroadcast ==" + MainActivity.mBroadcast);
 		sendBroadcast(mCallIntent);
@@ -1390,6 +1392,12 @@ public class SyncService extends Service {
 			}
 		}
 	};
+	
+	public void saySomething(String something) {
+		Intent i = new Intent("ACTION_SAY_SOMETHING");
+		i.putExtra("EXTRA_SAY_SOMETHING", something);
+		sendBroadcast(i);
+	}
 
 	private void setMute(boolean status, int CallStatus) {
 		mLog("setMute status ==" + status + "; CallStatus ==" + CallStatus

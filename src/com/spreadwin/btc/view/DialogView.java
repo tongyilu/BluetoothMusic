@@ -84,8 +84,6 @@ public class DialogView implements OnClickListener {
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
-			Log.d(TAG, getCallNumber);
-			Log.d(TAG, getPhoneName);
 			mContext.sendBroadcast(mCallIntent);
 		}
 	}
@@ -107,7 +105,7 @@ public class DialogView implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.mdial_button:
-			answerCall();
+			BtcNative.answerCall();
 			break;
 		case R.id.mdropped_button:
 			denyCall();
@@ -151,15 +149,6 @@ public class DialogView implements OnClickListener {
 		mHf.setCompoundDrawables(null, drawable1, null, null);
 	}
 
-	private void answerCall() {
-		BtcNative.answerCall();
-		// Intent mCallIntent = new Intent();
-		// mCallIntent.setAction(MainActivity.mActionCall);
-		// mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
-		// mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		// mContext.startActivity(mCallIntent);
-		// mDismissDialog();
-	}
 
 	private void denyCall() {
 		if (!isStart) {
