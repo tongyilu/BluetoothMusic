@@ -56,24 +56,24 @@ import android.view.WindowManager;
 public class SyncService extends Service {
 	public static final String TAG = "SyncService";
 	public static final boolean DEBUG = true;
-	public static final String BLUETOOTH_MUTE_CHANGED_ACTION = "android.media.BLUETOOTH_MUTE_CHANGED_ACTION";
-	public static final String EXTRA_BLUETOOTH_VOLUME_MUTED = "android.media.EXTRA_BLUETOOTH_VOLUME_MUTED";
-	public static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
-	public static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
-
-	public static final String ACTION_BT_CALL_ANSWER = "ACTION_BT_CALL_ANSWER";// 接听
-	public static final String ACTION_BT_CALL_REJECT = "ACTION_BT_CALL_REJECT";// 拒听
-	public static final String ACTION_BT_CALL_HANGUP = "ACTION_BT_CALL_HANGUP";// 挂断
-	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";// 断开连接广播
-	public static final String ACTION_FACTORY_TEST = "ACTION_FACTORY_TEST";
-	public static final String ACTION_FACTORY_RETURN = "ACTION_FACTORY_RETURN";
-	public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
-	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
-
-	public static final String ACTION_BTC_CALL = "MYACTION.BTC.CALL";// 通过蓝牙拨打电话
-
-	public static final String BLUETOOTH_CONNECT_CHANGE = "BLUETOOTH_CONNECT_CHANGE";
-
+    public static final String BLUETOOTH_MUTE_CHANGED_ACTION = "android.media.BLUETOOTH_MUTE_CHANGED_ACTION";
+    public static final String EXTRA_BLUETOOTH_VOLUME_MUTED = "android.media.EXTRA_BLUETOOTH_VOLUME_MUTED";
+    public static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
+    public static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
+    
+    public static final String ACTION_BT_CALL_ANSWER = "ACTION_BT_CALL_ANSWER";//接听
+    public static final String ACTION_BT_CALL_REJECT = "ACTION_BT_CALL_REJECT";//拒听
+    public static final String ACTION_BT_CALL_HANGUP = "ACTION_BT_CALL_HANGUP";//挂断
+    public static final String ACTION_FACTORY_TEST = "ACTION_FACTORY_TEST";
+    public static final String ACTION_FACTORY_RETURN = "ACTION_FACTORY_RETURN";
+    public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
+    public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
+    public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
+    
+    public static final String ACTION_BTC_CALL = "MYACTION.BTC.CALL";//通过蓝牙拨打电话
+    
+    public static final String BLUETOOTH_CONNECT_CHANGE = "BLUETOOTH_CONNECT_CHANGE";
+    
 	public static final String EXTRA_MUSIC_VOLUME_MUTED = "android.media.EXTRA_MUSIC_VOLUME_MUTED";
 	public static final String MUSIC_MUTE_SET_OTHER_ACTION = "android.media.MUSIC_MUTE_SET_OTHER_ACTION";
 	public static final String MUSIC_MUTE_RESTORE_ACTION = "android.media.MUSIC_MUTE_RESTORE_ACTION";
@@ -221,6 +221,7 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_BFP_CONNECT_CLOSE);
 		filter.addAction(ACTION_FACTORY_TEST);
 		filter.addAction(ACTION_BFP_STATUS_UPDATE);
+		filter.addAction(ACTION_BFP_CONNECT_CLOSE);
 		filter.addAction(ACTION_CALL_CUSTOMER_SERVICE);
 		// filter.addAction(ACTION_NOTIFY_SERVICE_CONNECTED);
 		filter.addAction(ACTION_CUSTOMER_SERVICE_NUMBER);
@@ -1388,8 +1389,14 @@ public class SyncService extends Service {
 				} else {
 					mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
 				}
-			} else if (action.equals(ACTION_BFP_CONNECT_CLOSE)) {
-				BtcNative.disconnectPhone();
+			}else if (action.equals(ACTION_BFP_CONNECT_CLOSE)) {
+				if (mBfpStatus == BtcGlobalData.BFP_CONNECTED) {
+					Intent mCallIntent = new Intent();
+					mCallIntent.setAction(MainActivity.mActionCall);	
+					mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
+					sendObjMessage(1, mCallIntent);
+					BtcNative.disconnectPhone();
+				}
 			}
 		}
 	};
