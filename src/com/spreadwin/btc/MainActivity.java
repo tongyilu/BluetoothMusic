@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.spreadwin.btc.Bluetooth.BluetoothFragment;
 import com.spreadwin.btc.Calllogs.CallLogsFragment;
+import com.spreadwin.btc.Music.BtAudioManager;
 import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
@@ -124,6 +125,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	boolean tempApp = false; // 为true时，活动结束后退到后台
 
+	private BtAudioManager mBtAudioManager;
 	boolean phoneCall;
 	boolean isOrso;
 	boolean isCall;
@@ -164,7 +166,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		init();
-		Log.d(TAG, "onresume for MainWindows");
 		mLog("MainActivity onCreate1111");
 		// 读取状态
 		// try {
@@ -175,7 +176,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// } catch (Exception e) {
 		// e.printStackTrace();
 		// }
-		setVolumeControlStream(10);
+		mBtAudioManager = BtAudioManager.getInstance(this);
+		setVolumeControlStream(10);	
 	}
 
 	// @Override
@@ -209,48 +211,84 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// mMusicLayoutAdd.setVisibility(View.GONE);
 		// }
 
-		tempApp = false;
+//		tempApp = false;
+//
+//		String action = getIntent().getAction();
+//		mLog("MainActivity onResume action ==" + action);
+//		if (action != null) {
+//			if (action.equals("MYACTION.BTC.CALL")) {
+//				callNumber = getIntent().getStringExtra("call_number");
+//				callName = getIntent().getStringExtra("call_name");
+//				tempApp = true;
+//				if (callNumber != null || callName != null) {
+//					// FragmentManager fm = getFragmentManager();
+//					// FragmentTransaction transaction = fm.beginTransaction();
+//					// if (mBluetoothFragment == null) {
+//					// mBluetoothFragment = new BluetoothFragment();
+//					// }
+//					// transaction.replace(R.id.id_fragment_content,
+//					// mBluetoothFragment);
+//					// transaction.commit();
+//					setDefaultFragment();
+//					handler.sendEmptyMessage(mMessageCall);
+//				}
+//			} else if (action.equals(mActionCall)) {
+//				tempApp = true;
+//				mLog("MainActivity onResume action222222222 ==" + mActionCall);
+//				handler.sendEmptyMessageDelayed(mMessageActionCall, 100);
+//			}
+//		}
+		mLog("MainActivity onResume");
+		parserIntent();
 
+	}
+	
+	
+	@Override
+	protected void onNewIntent(Intent intent) {		
+		super.onNewIntent(intent);
+		mLog("MainActivity onNewIntent action ==" + intent.getAction());
+		setIntent(intent);
+		if (getIntent().getAction() != null && binder != null) {
+			mMusicFragment.setCallStatus(binder.getCallStatus());
+		}
+	}
+
+	/**
+	 * 解析intent
+	 */
+	private void parserIntent() {
+		tempApp = false;		
 		String action = getIntent().getAction();
-		mLog("MainActivity onResume action ==" + action);
+		mLog("MainActivity parserIntent action ==" + action);
 		if (action != null) {
 			if (action.equals("MYACTION.BTC.CALL")) {
 				callNumber = getIntent().getStringExtra("call_number");
 				callName = getIntent().getStringExtra("call_name");
 				tempApp = true;
 				if (callNumber != null || callName != null) {
-					// FragmentManager fm = getFragmentManager();
-					// FragmentTransaction transaction = fm.beginTransaction();
-					// if (mBluetoothFragment == null) {
-					// mBluetoothFragment = new BluetoothFragment();
-					// }
-					// transaction.replace(R.id.id_fragment_content,
-					// mBluetoothFragment);
-					// transaction.commit();
-					setDefaultFragment();
+					FragmentManager fm = getFragmentManager();
+					FragmentTransaction transaction = fm.beginTransaction();
+					if (mBluetoothFragment == null) {
+						mBluetoothFragment = new BluetoothFragment();
+					}
+					transaction.replace(R.id.id_fragment_content,
+							mBluetoothFragment);
+					transaction.commit();
 					handler.sendEmptyMessage(mMessageCall);
 				}
 			} else if (action.equals(mActionCall)) {
 				tempApp = true;
-				mLog("MainActivity onResume action222222222 ==" + mActionCall);
+				mLog("MainActivity parserIntent action222222222 ==" + mActionCall);
 				handler.sendEmptyMessageDelayed(mMessageActionCall, 100);
-			}
+			}	
 		}
-
 	}
-
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
 		// unregisterReceiver(mScreenSizeChangeReceiver);
-	}
-
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		mLog("MainActivity onNewIntent action ==" + intent.getAction());
-		setIntent(intent);
 	}
 
 	@Override
@@ -450,6 +488,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 								R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
 								mShowDeviceNameDelayed);
+						if (mMusicFragment.isVisible()) {
+							mMusicFragment.openAudioMode();
+						}
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
@@ -620,6 +661,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
 			// mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
 			// sendBroadcast(mCallIntent);
+			if (mCallDialog != null && mCallDialog.isShowing()) {
+				return;
+			}
 		} else if (id == DIALOG2) {
 			builder.setTitle("提示");
 			builder.setMessage("确定断开连接吗");
@@ -845,10 +889,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		} else if (keyCode == event.KEYCODE_VOLUME_UP) {
 			setBTVolume(true);
 			return true;
-		} else
-		// int mCurV = BtcNative.getVolume();
-		// mLog("setBTVolume mCurV ==" + mCurV);
-		if (keyCode == event.KEYCODE_BACK) {
+		} else 	if (keyCode == event.KEYCODE_BACK) {
 			moveTaskToBack(true);
 			return true;
 		}

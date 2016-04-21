@@ -29,7 +29,7 @@ public class MusicFragment extends Fragment implements OnClickListener{
 	    public  int A2DP_PLAYING = BtcGlobalData.A2DP_PLAYING;
 	    
 //	    public  int mCurStatus = BtcGlobalData.A2DP_DISCONNECT;
-	    
+	    private int mCallStatus = 0;
 	    public static final int CHECK_A2DP_STATUS = 1;
 	    
 		ImageButton mMusicPrevious,mMusicPlay,mMusicNext;
@@ -41,6 +41,22 @@ public class MusicFragment extends Fragment implements OnClickListener{
 		public void onCreate(Bundle savedInstanceState) {		
 			super.onCreate(savedInstanceState);
 			mLog("MusicFragment onCreate");
+		}
+		
+		@Override
+		public void onStart() {
+			super.onStart();
+			mLog("MusicFragment onStart mCallStatus =="+mCallStatus);			
+			if (mCallStatus == BtcGlobalData.NO_CALL) {
+				openAudioMode();					
+			}else{
+				mCallStatus = BtcGlobalData.NO_CALL;
+			}
+		}	
+		
+		public void openAudioMode() {
+			BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
+			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);		
 		}
 		
 		@Override
@@ -156,6 +172,10 @@ public class MusicFragment extends Fragment implements OnClickListener{
 			if (DEBUG) {
 				Log.d(TAG, string);				
 			}
+		}
+		
+		public void setCallStatus(int callStatus) {
+			mCallStatus = callStatus;			
 		}
 
 }

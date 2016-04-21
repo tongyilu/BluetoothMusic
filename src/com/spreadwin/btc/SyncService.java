@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spreadwin.btc.view.DialogView;
+import com.spreadwin.btc.Music.BtAudioManager;
 import com.spreadwin.btc.contacts.CharacterParser;
 import com.spreadwin.btc.contacts.PinyinComparator;
 import com.spreadwin.btc.utils.DBAdapter;
@@ -258,6 +259,8 @@ public class SyncService extends Service {
 
 				// 更新Bfp状态
 				mTempStatus = BtcNative.getBfpStatus();
+				mLog("mTempStatus ==" + mTempStatus + "; mBfpStatus =="
+						+ mBfpStatus);
 				if (mBfpStatus != mTempStatus || bfpUpdateTime >= 3) {
 					onBfpStatusChange();
 				}
@@ -447,9 +450,9 @@ public class SyncService extends Service {
 	}
 
 	void setBtAudioMode(int mode) {
-		// 0 normal
-		// 6 bt audio
-		// 7 bt call
+//		 0 normal
+//		 6 bt audio
+//		 7 bt call
 		Log.d(TAG, "setBtAudioMode " + mode);
 		audioManager.setParameters("cdr_mode=" + mode);
 	}
@@ -458,21 +461,15 @@ public class SyncService extends Service {
 		Intent mBfpIntent = new Intent();
 		mBfpIntent.setAction(MainActivity.mActionBfp);
 		if (mTempStatus == BtcGlobalData.BFP_CONNECTED) {
-			// audioManager.setMode(5);
-
-			// Log.e(TAG,"####enter keyValuePairs = 6");
-			// audioManager.setParameters("cdr_mode=6");
-			setBtAudioMode(6);
 			handler.sendEmptyMessageDelayed(mShowNotification,
 					MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
+
+			setBtAudioMode(6);
 			saySomething("蓝牙已连接");//语音提示
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			m_DBAdapter.close();
-			// audioManager.setMode(AudioStream.MODE_NORMAL);
-			// Log.e(TAG,"####enter keyValuePairs = 0");
-			// audioManager.setParameters("cdr_mode=0");
-			setBtAudioMode(0);
+			BtAudioManager.getInstance(this).setAudioMode(AudioStream.MODE_NORMAL);
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
@@ -482,6 +479,7 @@ public class SyncService extends Service {
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
+			setBtAudioMode(0);
 			saySomething("蓝牙已断开");//语音提示
 		}
 		sendObjMessage(1, mBfpIntent);
@@ -536,6 +534,7 @@ public class SyncService extends Service {
 		long when = System.currentTimeMillis();
 		Notification notification = new Notification(R.drawable.ic_launcher,
 				"蓝牙", when);
+		notification.flags |= Notification.FLAG_NO_CLEAR;
 		// define the notification's expand message and intent
 		CharSequence contentTitle = "车载蓝牙";
 		CharSequence contentText;
@@ -1020,39 +1019,40 @@ public class SyncService extends Service {
 		int lastCallStatus = mCallStatus;
 		mCallStatus = mTempStatus;
 		
-		
 		Intent mCallIntent = new Intent();
 		mCallIntent.setAction(MainActivity.mActionCall);
 		onChaneAudioFocus(mTempStatus);
 		switch (mTempStatus) {
-		case BtcGlobalData.CALL_IN:
-			setMute(true, mTempStatus);
-			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
-			isSater = true;
+		case BtcGlobalData.CALL_IN:				
+//			setMute(true,mTempStatus);	
+//			setBtAudioMode(7);
+			BtAudioManager.getInstance(this).onCallChange(true);
+			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);	
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
-			setMute(false, mTempStatus);
+//			setMute(false,mTempStatus);
+//			BtAudioManager.getInstance(this).onCallChange(true);
 			setBtAudioMode(7);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			removeCallView();
 			break;
 		case BtcGlobalData.CALL_OUT:
-			setMute(false, mTempStatus);
+//			setMute(false,mTempStatus);
+			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
 				mCLDCallResult = 0;
 			}
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
-			isSater = false;
 			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
-			setMute(false, mTempStatus);
+//			setMute(false, mTempStatus);
+//			BtAudioManager.getInstance(this).onCallChange(false);
 			setBtAudioMode(6);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
-				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld
-						+ "; lastCallStatus ==" + lastCallStatus);
-				if (lastCallStatus == BtcGlobalData.CALL_IN) {
+				mLog("startSyncPhoneBook mCallStatusOld =="+mCallStatusOld+"; lastCallStatus =="+lastCallStatus);
+				if ( lastCallStatus == BtcGlobalData.CALL_IN) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
 					mUpdateCalllog = BtcGlobalData.PB_IN;
@@ -1069,11 +1069,11 @@ public class SyncService extends Service {
 			}
 			removeCallView();
 			mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
-			// 凯立德一键通的返回结果
+			//凯立德一键通的返回结果
 			if (mCLDCall) {
 				onCLDCallConnect();
 				mCLDCall = false;
-			}
+			}			
 			break;
 		}
 		// 翼卡一键通返回结果
@@ -1140,12 +1140,12 @@ public class SyncService extends Service {
 
 	// 改变AudioFocus
 	private void onChaneAudioFocus(int mStatus) {
-		if (mStatus != BtcGlobalData.NO_CALL) {
-			audioManager.requestAudioFocus(null, 10,
-					AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-		} else {
-			audioManager.abandonAudioFocus(null);
-		}
+//		if (mStatus != BtcGlobalData.NO_CALL) {
+//			audioManager.requestAudioFocus(null, 10,
+//					AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+//		} else {
+//			audioManager.abandonAudioFocus(null);
+//		}
 
 	}
 
@@ -1306,21 +1306,22 @@ public class SyncService extends Service {
 				mScreenStatus = false;
 			} else if (action.equals("ACTION_ACC_OFF")) {
 				if (mBfpStatus == BtcGlobalData.BFP_CONNECTED) {
-					m_DBAdapter.close();
-					audioManager.setMode(AudioStream.MODE_NORMAL);
-					handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
-					mPhoneBook.clear();
-					mContactsInfo.clear();
-					for (int i = 0; i < mPhoneBookInfo.size(); i++) {
-						mPhoneBookInfo.get(i).clear();
-					}
-					mBfpStatus = BtcGlobalData.BFP_DISCONNECT;
-					Intent mBfpIntent = new Intent();
-					mBfpIntent.setAction(MainActivity.mActionBfp);
-					mBfpIntent.putExtra("bfp_status",
-							BtcGlobalData.BFP_DISCONNECT);
-					// lbm.sendBroadcast(mBfpIntent);
-					sendObjMessage(1, mBfpIntent);
+					BtAudioManager.getInstance(context).setAudioMode(AudioStream.MODE_NORMAL);
+//					m_DBAdapter.close();
+//					audioManager.setMode(AudioStream.MODE_NORMAL);
+//					handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
+//					mPhoneBook.clear();
+//					mContactsInfo.clear();
+//					for (int i = 0; i < mPhoneBookInfo.size(); i++) {
+//						mPhoneBookInfo.get(i).clear();
+//					}
+//					mBfpStatus = BtcGlobalData.BFP_DISCONNECT;
+//					Intent mBfpIntent = new Intent();
+//					mBfpIntent.setAction(MainActivity.mActionBfp);
+//					mBfpIntent.putExtra("bfp_status",
+//							BtcGlobalData.BFP_DISCONNECT);
+//					// lbm.sendBroadcast(mBfpIntent);
+//					sendObjMessage(1, mBfpIntent);
 				}
 			} else if (action.equals(BLUETOOTH_MUTE_CHANGED_ACTION)) {
 				mLog("mBatInfoReceiver MUSIC_MUTE_CHANGED_ACTION =="
@@ -1402,30 +1403,31 @@ public class SyncService extends Service {
 	private void setMute(boolean status, int CallStatus) {
 		mLog("setMute status ==" + status + "; CallStatus ==" + CallStatus
 				+ ";BtcNative.getVolume() ==" + BtcNative.getVolume());
-		if (status) {
-			BtcNative.setVolume(0);
-		} else {
-			if (CallStatus == BtcGlobalData.IN_CALL) {
-				mOnlyMusic = true;
-				Intent intent = new Intent(MUSIC_MUTE_SET_OTHER_ACTION);
-				intent.putExtra(EXTRA_MUSIC_VOLUME_MUTED, true);
-				intent.putExtra("only_music", mOnlyMusic);
-				sendBroadcast(intent);
-				
-			} else if (CallStatus == BtcGlobalData.NO_CALL && mOnlyMusic) {
-				mOnlyMusic = false;
-				Intent intent = new Intent(MUSIC_MUTE_RESTORE_ACTION);
-				intent.putExtra("only_music", mOnlyMusic);
-				sendBroadcast(intent);
-			} else if (CallStatus == BtcGlobalData.CALL_IN
-					|| BtcNative.getVolume() != 0) {
-				return;
-			} 
-			if (mOldBt == 0) {
-				mOldBt = mDefaultVoice;
-			}
-			BtcNative.setVolume(mOldBt);
-		}
+		BtAudioManager.getInstance(this).onAudioMuteChange(status);
+		//		if (status) {
+//			BtcNative.setVolume(0);
+//		} else {
+//			if (CallStatus == BtcGlobalData.IN_CALL) {
+//				mOnlyMusic = true;
+//				Intent intent = new Intent(MUSIC_MUTE_SET_OTHER_ACTION);
+//				intent.putExtra(EXTRA_MUSIC_VOLUME_MUTED, true);
+//				intent.putExtra("only_music", mOnlyMusic);
+//				sendBroadcast(intent);
+//				
+//			} else if (CallStatus == BtcGlobalData.NO_CALL && mOnlyMusic) {
+//				mOnlyMusic = false;
+//				Intent intent = new Intent(MUSIC_MUTE_RESTORE_ACTION);
+//				intent.putExtra("only_music", mOnlyMusic);
+//				sendBroadcast(intent);
+//			} else if (CallStatus == BtcGlobalData.CALL_IN
+//					|| BtcNative.getVolume() != 0) {
+//				return;
+//			} 
+//			if (mOldBt == 0) {
+//				mOldBt = mDefaultVoice;
+//			}
+//			BtcNative.setVolume(mOldBt);
+//		}
 	}
 
 	// 凯立德一键通话
