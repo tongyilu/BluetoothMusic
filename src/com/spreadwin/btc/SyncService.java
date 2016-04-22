@@ -221,7 +221,7 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_BFP_CONNECT_CLOSE);
 		filter.addAction(ACTION_FACTORY_TEST);
 		filter.addAction(ACTION_BFP_STATUS_UPDATE);
-		filter.addAction(ACTION_BFP_CONNECT_CLOSE);
+//		filter.addAction(ACTION_BFP_CONNECT_CLOSE);
 		filter.addAction(ACTION_CALL_CUSTOMER_SERVICE);
 		// filter.addAction(ACTION_NOTIFY_SERVICE_CONNECTED);
 		filter.addAction(ACTION_CUSTOMER_SERVICE_NUMBER);
@@ -455,7 +455,8 @@ public class SyncService extends Service {
 //		 6 bt audio
 //		 7 bt call
 		Log.d(TAG, "setBtAudioMode " + mode);
-		audioManager.setParameters("cdr_mode=" + mode);
+//		audioManager.setParameters("cdr_mode=" + mode);
+		BtAudioManager.getInstance(this).setAudioMode(mode);
 	}
 
 	protected void onBfpStatusChange() {
@@ -465,12 +466,11 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification,
 					MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
-
 			setBtAudioMode(6);
 			saySomething("蓝牙已连接");//语音提示
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			m_DBAdapter.close();
-			BtAudioManager.getInstance(this).setAudioMode(AudioStream.MODE_NORMAL);
+//			BtAudioManager.getInstance(this).setAudioMode(AudioStream.MODE_NORMAL);
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据

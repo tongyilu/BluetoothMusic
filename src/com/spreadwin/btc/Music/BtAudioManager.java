@@ -171,6 +171,7 @@ public class BtAudioManager {
                 case AudioManager.AUDIOFOCUS_LOSS:
                 	mLog("mAudioFocusListener AUDIOFOCUS_LOSS");
                 	onBtAudioFocusChange(false);
+                	BtcNative.pauseMusic();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
