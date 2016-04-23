@@ -37,6 +37,16 @@ public class MusicFragment extends Fragment implements OnClickListener{
 		private LayoutInflater mInflater;
 		private ViewGroup mContentContainer;
 		private View mRootView;
+		
+		private boolean mRight = false;//true:为右边
+		
+		public MusicFragment() {
+		}
+		
+		public MusicFragment(boolean isRight) {
+			mRight = isRight;
+		}
+
 		@Override
 		public void onCreate(Bundle savedInstanceState) {		
 			super.onCreate(savedInstanceState);
@@ -46,17 +56,22 @@ public class MusicFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onStart() {
 			super.onStart();
-			mLog("MusicFragment onStart mCallStatus =="+mCallStatus);			
-			if (mCallStatus == BtcGlobalData.NO_CALL) {
-				openAudioMode();					
-			}else{
-				mCallStatus = BtcGlobalData.NO_CALL;
+			mLog("MusicFragment onStart mCallStatus =="+mCallStatus+"; mRight =="+mRight);	
+			if (!mRight) {
+				if (mCallStatus == BtcGlobalData.NO_CALL) {
+					openAudioMode();					
+				}else{
+					mCallStatus = BtcGlobalData.NO_CALL;
+				}				
 			}
 		}	
 		
 		public void openAudioMode() {
-			BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
-			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);		
+			mLog("MusicFragment openAudioMode BfpStatus =="+BtcNative.getBfpStatus());
+			if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+				BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
+				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
+			}
 		}
 		
 		@Override

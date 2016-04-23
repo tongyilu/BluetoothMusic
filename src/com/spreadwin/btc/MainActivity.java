@@ -47,7 +47,7 @@ import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
-	public static final String TAG = "-------->>>>>>>>";
+	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
 
 	public static final String MUSIC_MUTE_CHANGED_ACTION = "android.media.MUSIC_MUTE_CHANGED_ACTION";
@@ -129,6 +129,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	boolean phoneCall;
 	boolean isOrso;
 	boolean isCall;
+	
+	private int mLeftMode = 1;
+	private int mRightMode = 2;
+	private int mFullMode = 3;
+	private int mLayoutMode = 0;
 
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
@@ -331,8 +336,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mContactsFragment = new ContactsFragment();
 		mBluetoothFragment = new BluetoothFragment();
 		mMusicFragment = new MusicFragment();
-		mMusicRightFragment = new MusicFragment();
-		mDialogFragment = new DialogFragment();
+		mDialogFragment = new DialogFragment();		
+		mMusicRightFragment = new MusicFragment(true);
 		mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 		mAddFragment.commitAllowingStateLoss();
 
@@ -340,26 +345,31 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 			@Override
 			public void onGlobalLayout() {
-				// TODO Auto-generated method stub
+				mLog("onGlobalLayout phoneCall =="+phoneCall);
 				if (!phoneCall) {
 					int width = main.getWidth();
-					if (width == 625) {
-						Log.d(TAG, "右边屏");
+					Log.d(TAG, "width =="+width);
+					if (width == 625 && mLayoutMode != mRightMode) {
+						Log.d(TAG, "mRightMode");
 						isOrso = true;
+						mLayoutMode = mRightMode;
 						mFragmetContext.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.GONE);
-					} else if (width == 800) {
-						Log.d(TAG, "左边屏");
+					} else if (width == 800 && mLayoutMode != mLeftMode) {
+						Log.d(TAG, "mLeftMode");
 						isOrso = false;
+						mLayoutMode = mLeftMode;
 						mMusicLayoutAdd.setVisibility(View.VISIBLE);
 						mAddLayout.setVisibility(View.GONE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
-					} else {
-						Log.d(TAG, "全屏");
+					} else if (width == 1425 && mLayoutMode != mFullMode) {
+						Log.d(TAG, "mFullMode");
+						mLayoutMode = mFullMode;
 						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
+						mMusicRightFragment.openAudioMode();
 						if (getFragmentManager().findFragmentById(
 								R.id.id_fragment_content) == mMusicFragment) {
 							setDefaultFragment();
@@ -488,6 +498,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 								R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
 								mShowDeviceNameDelayed);
+						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
 						if (mMusicFragment.isVisible()) {
 							mMusicFragment.openAudioMode();
 						}

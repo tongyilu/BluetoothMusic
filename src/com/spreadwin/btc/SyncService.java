@@ -450,11 +450,11 @@ public class SyncService extends Service {
 		}
 	}
 
-	void setBtAudioMode(int mode) {
+	public void setBtAudioMode(int mode) {
 //		 0 normal
 //		 6 bt audio
 //		 7 bt call
-		Log.d(TAG, "setBtAudioMode " + mode);
+		mLog("setBtAudioMode mode ==" + mode);
 //		audioManager.setParameters("cdr_mode=" + mode);
 		BtAudioManager.getInstance(this).setAudioMode(mode);
 	}
@@ -466,11 +466,11 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification,
 					MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
-			setBtAudioMode(6);
+			//不自动打开蓝牙音频
+//			setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
 			saySomething("蓝牙已连接");//语音提示
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			m_DBAdapter.close();
-//			BtAudioManager.getInstance(this).setAudioMode(AudioStream.MODE_NORMAL);
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
@@ -480,7 +480,7 @@ public class SyncService extends Service {
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
-			setBtAudioMode(0);
+			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 			saySomething("蓝牙已断开");//语音提示
 		}
 		sendObjMessage(1, mBfpIntent);
@@ -1025,16 +1025,16 @@ public class SyncService extends Service {
 		onChaneAudioFocus(mTempStatus);
 		switch (mTempStatus) {
 		case BtcGlobalData.CALL_IN:				
-//			setMute(true,mTempStatus);	
-//			setBtAudioMode(7);
+//			setMute(true,mTempStatus);
+			isSater = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);	
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
 //			setMute(false,mTempStatus);
-//			BtAudioManager.getInstance(this).onCallChange(true);
-			setBtAudioMode(7);
+			BtAudioManager.getInstance(this).onCallChange(true);
+			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			removeCallView();
 			break;
@@ -1049,8 +1049,9 @@ public class SyncService extends Service {
 			break;
 		case BtcGlobalData.NO_CALL:
 //			setMute(false, mTempStatus);
-//			BtAudioManager.getInstance(this).onCallChange(false);
-			setBtAudioMode(6);
+//			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
+			isSater = false;
+			BtAudioManager.getInstance(this).onCallChange(false);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld =="+mCallStatusOld+"; lastCallStatus =="+lastCallStatus);
 				if ( lastCallStatus == BtcGlobalData.CALL_IN) {
@@ -1251,6 +1252,7 @@ public class SyncService extends Service {
 					handler.removeMessages(mPhoneBookSyncBroadcast);
 					handler.sendMessageDelayed(message, 100);
 				} catch (Exception e) {
+					e.printStackTrace();
 					mLog("PullContacts e ==" + e);
 				}
 			}
@@ -1307,7 +1309,7 @@ public class SyncService extends Service {
 				mScreenStatus = false;
 			} else if (action.equals("ACTION_ACC_OFF")) {
 				if (mBfpStatus == BtcGlobalData.BFP_CONNECTED) {
-					BtAudioManager.getInstance(context).setAudioMode(AudioStream.MODE_NORMAL);
+					setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 //					m_DBAdapter.close();
 //					audioManager.setMode(AudioStream.MODE_NORMAL);
 //					handler.sendEmptyMessageDelayed(mCancelNotification, 1000);

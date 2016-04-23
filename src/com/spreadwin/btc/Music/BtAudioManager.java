@@ -36,7 +36,9 @@ public class BtAudioManager {
     private int VolumeNormal = 13;
     private int VolumeMute = 0;
     
-    public static  int AUDIO_MODE_BT = 6; //蓝牙的通路模式
+    public static  int AUDIO_MODE_NORMAL = AudioStream.MODE_NORMAL;//正常模式
+    public static  int AUDIO_MODE_BT = 6; //蓝牙的通路模式    
+    public static  int AUDIO_MODE_CALL = 7;//蓝牙通话的音频通路
     
     public final String ACTION_SCREENSAVER_CLOSE = "ACTION_SCREENSAVER_CLOSE";
 
@@ -96,7 +98,8 @@ public class BtAudioManager {
 	 */
 	public void setAudioMode(int mode) {
 		mLog("setAudioMode mode =="+mode);
-		audioManager.setMode(mode);
+//		audioManager.setMode(mode);
+		audioManager.setParameters("cdr_mode=" + mode);
 		if (mode == AudioStream.MODE_NORMAL) {
 			audioManager.abandonAudioFocus(mAudioFocusListener);	
 		}
@@ -171,7 +174,7 @@ public class BtAudioManager {
                 case AudioManager.AUDIOFOCUS_LOSS:
                 	mLog("mAudioFocusListener AUDIOFOCUS_LOSS");
                 	onBtAudioFocusChange(false);
-                	BtcNative.pauseMusic();
+//                	BtcNative.pauseMusic();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
