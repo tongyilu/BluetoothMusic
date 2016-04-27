@@ -349,14 +349,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (!phoneCall) {
 					int width = main.getWidth();
 					Log.d(TAG, "width =="+width);
-					if (width == 625 && mLayoutMode != mRightMode) {
+					if (width == 400 && mLayoutMode != mRightMode) {
 						Log.d(TAG, "mRightMode");
 						isOrso = true;
 						mLayoutMode = mRightMode;
 						mFragmetContext.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.GONE);
-					} else if (width == 800 && mLayoutMode != mLeftMode) {
+					} else if (width == 715 && mLayoutMode != mLeftMode) {
 						Log.d(TAG, "mLeftMode");
 						isOrso = false;
 						mLayoutMode = mLeftMode;
@@ -364,7 +364,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mAddLayout.setVisibility(View.GONE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
-					} else if (width == 1425 && mLayoutMode != mFullMode) {
+					} else if (width == 1115 && mLayoutMode != mFullMode) {
 						Log.d(TAG, "mFullMode");
 						mLayoutMode = mFullMode;
 						mMusicLayoutAdd.setVisibility(View.GONE);
@@ -856,24 +856,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (mCallLogsFragment == null) {
 					mCallLogsFragment = new CallLogsFragment();
 				}
-				transaction
-						.replace(R.id.id_fragment_content, mCallLogsFragment);
+				transaction.replace(R.id.id_fragment_content, mCallLogsFragment);
 				setChangeColor(0);
 				break;
 			case R.id.contacts_layout:
 				if (mContactsFragment == null) {
 					mContactsFragment = new ContactsFragment();
 				}
-				transaction
-						.replace(R.id.id_fragment_content, mContactsFragment);
+				transaction.replace(R.id.id_fragment_content, mContactsFragment);
 				setChangeColor(1);
 				break;
 			case R.id.redial_layout:
 				if (mBluetoothFragment == null) {
 					mBluetoothFragment = new BluetoothFragment();
 				}
-				transaction.replace(R.id.id_fragment_content,
-						mBluetoothFragment);
+				transaction.replace(R.id.id_fragment_content,mBluetoothFragment);
 				setChangeColor(2);
 				break;
 			case R.id.music_layout:

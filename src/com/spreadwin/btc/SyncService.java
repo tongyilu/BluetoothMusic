@@ -1127,8 +1127,8 @@ public class SyncService extends Service {
 
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
-			params.x = 800;
-			params.width = 625;
+			params.x = 715;
+			params.width = 400;
 		} else if (full == 0) {
 			params.x = 0;
 			params.width = WindowManager.LayoutParams.MATCH_PARENT;

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/calllogs_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:background="@drawable/tonghua_bj"
             android:gravity="center_vertical" >
 
@@ -21,10 +22,10 @@
                 android:id="@+id/calllogs_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="65dip"
+                android:layout_marginLeft="55dip"
                 android:text="通话记录"
                 android:textColor="@color/white"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -32,12 +33,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/contacts_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:background="@drawable/dianhua_bj"
             android:gravity="center_vertical" >
 
@@ -45,10 +47,10 @@
                 android:id="@+id/contacts_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="65dip"
+                android:layout_marginLeft="55dip"
                 android:text="电话本"
                 android:textColor="@color/white"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -56,12 +58,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/redial_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:background="@drawable/bohaojianpan_bj"
             android:gravity="center_vertical" >
 
@@ -69,10 +72,10 @@
                 android:id="@+id/redial_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="65dip"
+                android:layout_marginLeft="55dip"
                 android:text="拨号键盘"
                 android:textColor="@color/blue"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -81,12 +84,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/music_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:background="@drawable/lanya_bj"
             android:gravity="center_vertical" >
 
@@ -94,10 +98,10 @@
                 android:id="@+id/music_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="65dip"
+                android:layout_marginLeft="55dip"
                 android:text="蓝牙音乐"
                 android:textColor="@color/white"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -105,12 +109,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         android:layout_weight="1" >
 
         <LinearLayout
             android:id="@+id/bluetooth_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:background="@drawable/duankailanya_bj"
             android:gravity="center_vertical" >
 
@@ -118,10 +123,10 @@
                 android:id="@+id/bluetooth_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="65dip"
+                android:layout_marginLeft="55dip"
                 android:text="断开连接"
                 android:textColor="@drawable/button_font_style"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 

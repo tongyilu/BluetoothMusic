@@ -27,7 +27,7 @@ public class DialogView implements OnClickListener {
 	public boolean isMuteState;
 	public boolean isHfState;
 
-	private TextView mMute, mHf;
+	private TextView mMute;
 	private ImageView mDialButton;
 	private ImageView mdroppedbutton;
 	private TextView mNumberText, mNameText;
@@ -55,18 +55,16 @@ public class DialogView implements OnClickListener {
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
 		mNumberText = (TextView) view.findViewById(R.id.number_text);
 		mNameText = (TextView) view.findViewById(R.id.name_text);
-		mHf = (TextView) view.findViewById(R.id.hf);
 		mMute = (TextView) view.findViewById(R.id.mute);
 		String getCallNumber = BtcNative.getCallNumber();
 		String getPhoneName = getCallName(getCallNumber);
 		if (!TextUtils.isEmpty(getPhoneName)) {
-			mNameText.setText(getPhoneName);
+			mNumberText.setText(getPhoneName);
 		}else{
-            mNameText.setText("未知");
+			mNumberText.setText(getCallNumber);
 		}
-		mNumberText.setText(getCallNumber);
+//		mNumberText.setText(getCallNumber);
 		mMute.setOnClickListener(this);
-		mHf.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);
 		imgGameWord = (ImageView) view.findViewById(R.id.icon);
@@ -121,16 +119,8 @@ public class DialogView implements OnClickListener {
 				isMuteState = true;
 			}
 			break;
-		case R.id.hf:
-			if (isHfState) {
-				isMuteState = false;
-				setHfImage(false);
-			} else {
-				isMuteState = true;
-				setHfImage(true);
-			}
-			break;
 		}
+		
 	}
 
 	public void setMuteImageView(boolean isState) {
@@ -140,15 +130,6 @@ public class DialogView implements OnClickListener {
 				drawable.getMinimumHeight());
 		mMute.setCompoundDrawables(null, drawable, null, null);
 	}
-
-	public void setHfImage(boolean isState1) {
-		Drawable drawable1 = mContext.getResources().getDrawable(
-				isState1 ? R.drawable.handsfree_u : R.drawable.handsfree_d);
-		drawable1.setBounds(0, 0, drawable1.getMinimumWidth(),
-				drawable1.getMinimumHeight());
-		mHf.setCompoundDrawables(null, drawable1, null, null);
-	}
-
 
 	private void denyCall() {
 		if (!isStart) {
