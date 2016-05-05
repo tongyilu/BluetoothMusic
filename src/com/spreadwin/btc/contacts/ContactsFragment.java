@@ -7,6 +7,7 @@ import java.util.List;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
+import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.contacts.SideBar.OnTouchingLetterChangedListener;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.BtcGlobalData;
@@ -63,6 +64,8 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 
 	TextView emptyView;
 	LinearLayout mLoading;
+	// public CustomDialog.Builder builder;
+	// public CustomDialog mCustomDialog;
 
 	/**
 	 * 汉字转换成拼音的类
@@ -137,6 +140,9 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			}
 		});
 		sortListView.setOnItemLongClickListener(this);
+		// builder = new CustomDialog.Builder(getActivity());
+		//
+		// builder.setMessage("已更新" + SyncService.mNum + "联系人");
 		// mContactsInfo =
 		// filledData(getResources().getStringArray(R.array.date));
 		// 根据a-z进行排序源数据
@@ -171,11 +177,11 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		emptyView.setVisibility(View.GONE);
 		((ViewGroup) sortListView.getParent()).addView(emptyView, 1);
 		sortListView.setEmptyView(emptyView);
-		mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus());
+		// mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus(D));
 		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
-		if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NOT_SYNC || mContactsInfo.size() > 0) {
+		if (mContactsInfo.size() > 0) {
 			hideLoading();
-		} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.IN_SYNC && mContactsInfo.size() == 0) {
+		} else if (mContactsInfo.size() == 0) {
 			showLoading();
 		}
 		sortListView.setOnCreateContextMenuListener(this);
@@ -199,14 +205,20 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		});
 		return mRootView;
 	}
-	
+
 	public void showLoading() {
 		if (emptyView == null) {
 			return;
 		}
+		// if (mCustomDialog == null) {
+		// mCustomDialog = builder.crater();
+		// }
+		// mCustomDialog.show();
 		emptyView.setText("");
 		mLoading.setVisibility(View.VISIBLE);
 		mContactsNumber.setVisibility(View.GONE);
+
+		// handler.post(mRunnable);
 	}
 
 	public void hideLoading() {
@@ -220,14 +232,21 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			mContactsNumber.setVisibility(View.GONE);
 		}
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
+		// if (mCustomDialog != null) {
+		// mCustomDialog.dismiss();
+		// mCustomDialog = null;
+		// }
 		mLoading.setVisibility(View.GONE);
+
+		// handler.removeCallbacks(mRunnable);
 	}
-	
-	public void clearList(){
-		if (adapter!=null) {
+
+	public void clearList() {
+		if (adapter != null) {
 			adapter.clearPhoneBookInfoList();
 		}
 	}
+
 	/**
 	 * 为ListView填充数据
 	 * 
@@ -302,7 +321,11 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			return;
 		}
 		mClearEditText.setText(null);
+		// mContactsInfo = (ArrayList<PhoneBookInfo_new>)
+		// MainActivity.binder.getPhoneBookInfo_new();
+
 		mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+
 		mLog("notifyDataSetChanged mContactsInfo size ==" + mContactsInfo.size());
 		// 根据a-z进行排序
 		try {

@@ -19,7 +19,7 @@ public class BtcNative {
 	public static native int getBfpStatus();
 	public static native int getCallStatus();
 	public static native int getA2dpStatus();
-	public static native int getSyncStatus();
+	public static native int getSyncStatus(int type);
 	static native int startSyncPhoneBook(int type);
 	public static native int getPhoneBookRecordNum(int type);
 	public static native String getPhoneBookRecordNameByIndex(int type, int index);

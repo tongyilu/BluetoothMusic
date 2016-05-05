@@ -26,8 +26,10 @@ import android.os.Handler; //import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -71,6 +73,7 @@ public class CallLogsFragment extends Fragment {
 	private ViewGroup mContentContainer;
 	private View mRootView;
 	int tabType = 1;
+	private PagerTabStrip mtab;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,6 @@ public class CallLogsFragment extends Fragment {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -119,6 +121,8 @@ public class CallLogsFragment extends Fragment {
 		mLog("onCreateView 222222222");
 		View rootView = inflater.inflate(R.layout.fragment_call_logs, container, false);
 		mRootView = rootView;
+		mtab = (PagerTabStrip) rootView.findViewById(R.id.tabs);
+		mtab.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 		mAdapter = new MyAdapter();
 		viewPager.setAdapter(mAdapter);
@@ -210,8 +214,7 @@ public class CallLogsFragment extends Fragment {
 				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
 					showLoading();
 					// 不是更新状态或有数据就隐藏loading
-				} else if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC
-						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+				} else if (mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 					hideLoading();
 				}
 				return mCallView;
@@ -243,9 +246,9 @@ public class CallLogsFragment extends Fragment {
 			((ViewGroup) mListView.getParent()).addView(emptyView, 1);
 			mLog("build getSyncStatus ==" + MainActivity.binder.getSyncStatus() + "; getSize =="
 					+ mPhoneBookInfo.get(mTabTpye).getSize());
-			if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC || mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+			if (mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 				hideLoading();
-			} else if (BtcNative.getSyncStatus() == BtcGlobalData.IN_SYNC) {
+			} else if (mPhoneBookInfo.get(mTabTpye).getSize() == 0) {
 				showLoading();
 			}
 			mListView.setEmptyView(emptyView);
@@ -340,8 +343,7 @@ public class CallLogsFragment extends Fragment {
 				mLog("notifyDataSetChanged mTabs.get(i).mTabTpye [" + mTabs.get(i).mTabTpye + "] =="
 						+ mPhoneBookInfo.get(mTabs.get(i).mTabTpye).getSize());
 				// 判断是否是NOT_SYNC
-				if (BtcNative.getSyncStatus() == BtcGlobalData.NOT_SYNC
-						|| BtcNative.getBfpStatus() == BtcGlobalData.BFP_DISCONNECT) {
+				if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_DISCONNECT) {
 					mLog("notifyDataSetChanged hideLoading ");
 					mTabs.get(i).hideLoading();
 				}

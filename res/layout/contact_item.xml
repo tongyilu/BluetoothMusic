@@ -6,7 +6,7 @@
     <LinearLayout
         android:id="@+id/sort_key_layout"
         android:layout_width="fill_parent"
-        android:layout_height="18dip"
+        android:layout_height="wrap_content"
         android:background="#303030" >
 
         <TextView
@@ -16,13 +16,13 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="10dip"
             android:textColor="#ffffff"
-            android:textSize="13sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/name_layout"
         android:layout_width="fill_parent"
-        android:layout_height="50dip" >
+        android:layout_height="60dip" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textColor="#ffffff"
-            android:textSize="22sp" />
+            android:textSize="25sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -27,6 +27,18 @@
                 android:textSize="22sp" />
 
             <TextView
+                android:id="@+id/contect_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:ellipsize="end"
+                android:visibility="gone"
+                android:singleLine="true"
+                android:textColor="@color/blue_00"
+                android:textSize="22sp" />
+
+            <TextView
                 android:id="@+id/bluetoot_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,10 +53,9 @@
                 android:text="@string/device_name"
                 android:textColor="@color/blue_00"
                 android:textSize="22sp" />
-
         </LinearLayout>
 
-   <View
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@drawable/ic_divider" />
