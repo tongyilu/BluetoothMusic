@@ -179,9 +179,9 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		sortListView.setEmptyView(emptyView);
 		// mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus(D));
 		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
-		if (mContactsInfo.size() > 0) {
+		if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC || mContactsInfo.size() > 0) {
 			hideLoading();
-		} else if (mContactsInfo.size() == 0) {
+		} else if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED && mContactsInfo.size() == 0) {
 			showLoading();
 		}
 		sortListView.setOnCreateContextMenuListener(this);

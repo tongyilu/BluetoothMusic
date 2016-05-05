@@ -52,7 +52,6 @@ public class ControlVolume extends RelativeLayout {
 		img_volume = (ImageView) findViewById(R.id.img_volume);	
 		for (int i = 0; i < mImgId.length; i++) {
 			mImgVol[i] = (ImageView) findViewById(mImgId[i]);
-			Log.d("MainActivity", "mAudioMax =="+mAudioMax+"; i =="+i);
 			if (i > mAudioMax-1) {
 				mImgVol[i].setVisibility(View.GONE);
 			}

@@ -286,6 +286,7 @@ public class SyncService extends Service {
 				// isFlage = false;
 				// 更新Sync呼出状态
 				int PB_OUT_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_OUT);
+				mTempStatus = PB_OUT_TYPE;
 				if (PB_OUT_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbOut();
@@ -294,6 +295,7 @@ public class SyncService extends Service {
 
 				// 更新Sync呼入状态
 				int PB_IN_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
+				mTempStatus = PB_OUT_TYPE;
 				if (PB_IN_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbIn();
@@ -301,6 +303,7 @@ public class SyncService extends Service {
 
 				// 更新Sync未接状态
 				int PB_MISS_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_MISS);
+				mTempStatus = PB_OUT_TYPE;
 				if (PB_MISS_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbMiss();
@@ -308,6 +311,7 @@ public class SyncService extends Service {
 
 				// 更新Sync电话本状态
 				int PB_PHONE_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_PHONE);
+				mTempStatus = PB_OUT_TYPE;
 				if (PB_PHONE_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbPhone();
@@ -338,9 +342,11 @@ public class SyncService extends Service {
 				mCalloutInfo.add(mName, mNumber, "");
 			}
 		}
+		
 		mLog("mCalloutInfo ==" + mCalloutInfo.getSize());
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
+		mSyncStatus = mTempStatus;
 		// if (!isFlage) {
 		// updatePbPhone();
 		// }
@@ -364,6 +370,7 @@ public class SyncService extends Service {
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
+		mSyncStatus = mTempStatus;
 	}
 
 	private void updatePbMiss() {
@@ -383,6 +390,7 @@ public class SyncService extends Service {
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
+		mSyncStatus = mTempStatus;
 		// if (!isFlage) {
 		// updatePbPhone();
 		// }
@@ -413,6 +421,7 @@ public class SyncService extends Service {
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
+		mSyncStatus = mTempStatus;
 		// isFlage = true;
 	}
 

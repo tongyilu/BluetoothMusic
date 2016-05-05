@@ -135,17 +135,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
 
+	private int num = 0;
+
 	Handler mHandler = new Handler();
 	Runnable mRunnable = new Runnable() {
 
 		@Override
 		public void run() {
 			if (null != mContectText) {
-				int num = SyncService.mNum;
-				if (num != 0) {
+				num = SyncService.mNum + 1;
+				if (num != 1) {
+					mContectText.setVisibility(View.VISIBLE);
 					mContectText.setText("已更新" + num + "位联系人");
+				}else{
+					mContectText.setVisibility(View.GONE);
 				}
-				handler.postDelayed(this, 100);
+				mHandler.postDelayed(this, 100);
 			}
 		}
 	};
@@ -369,6 +374,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mFragmetContext.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.GONE);
+						mMusicRightFragment.openAudioMode();
 					} else if (width == 800 && mLayoutMode != mLeftMode) {
 						Log.d(TAG, "mLeftMode");
 						isOrso = false;
@@ -397,11 +403,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setDefaultFragment();
 		registerReceiver();
 		handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
-
+		mHandler.post(mRunnable);
 		// audioManager = (AudioManager)
 		// getSystemService(Context.AUDIO_SERVICE);
 		// VoiceReceiver();
-		handler.post(mRunnable);
 
 	}
 
@@ -436,7 +441,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					} else if (mStatus == BtcGlobalData.IN_SYNC) {
 						mCallLogsFragment.showLoading();
 						if (binder.getmUpdateStatus() == BtcGlobalData.NO_CALL) {
-							mContactsFragment.showLoading();
+							// mContactsFragment.showLoading();
 						}
 					} else {
 						mContactsFragment.hideLoading();
@@ -496,6 +501,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 					mLog("Receiver mActionBfp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.BFP_CONNECTED) {
+						
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
@@ -509,6 +515,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 						handler.sendEmptyMessage(mMessageNotifyData);
 						mDismissDialog(DIALOG1);
+						mHandler.removeCallbacks(mRunnable);
 					}
 				}
 
@@ -704,12 +711,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (binded) {
 			unbindService(conn);
 		}
-		handler.removeCallbacks(mRunnable);
+		mHandler.removeCallbacks(mRunnable);
 		// Intent intent = new Intent(this, SyncService.class);
 		// stopService(intent);
 		if (mLocalBroadcastManager != null && mBroadcastReceiver != null) {
 			mBroadcast = false;
-			mLog("onDestroy() 1111111111111 ");
+			mLog("onDestroy()");
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
 		// if (mVoiceReceiver != null) {
@@ -821,10 +828,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (v == mBluetoothLayout) {
 			mDisconnectPhone();
 		} else if (v == mDialButton) {
-			mLog("onClick mDialButton11111111111");
+			mLog("onClick mDialButton");
 			answerCall();
 		} else if (v == mdroppedbutton) {
-			mLog("onClick mdroppedbutton22222222222");
+			mLog("onClick mdroppedbutton");
 			denyCall();
 		} else {
 			FragmentManager fm = getFragmentManager();
@@ -969,7 +976,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (mStatus == BtcGlobalData.NEW_SYNC) {
 					handler.sendEmptyMessage(mMessageNotifyData);
 				} else if (mStatus == BtcGlobalData.IN_SYNC) {
-//					mCallLogsFragment.showLoading();
+					mCallLogsFragment.showLoading();
 					if (binder.getmUpdateStatus() == BtcGlobalData.NO_CALL) {
 						mContactsFragment.showLoading();
 					}
