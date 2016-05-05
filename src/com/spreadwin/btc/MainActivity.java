@@ -356,6 +356,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mFragmetContext.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.GONE);
+						mMusicRightFragment.openAudioMode();
 					} else if (width == 800 && mLayoutMode != mLeftMode) {
 						Log.d(TAG, "mLeftMode");
 						isOrso = false;
@@ -730,7 +731,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// stopService(intent);
 		if (mLocalBroadcastManager != null && mBroadcastReceiver != null) {
 			mBroadcast = false;
-			mLog("onDestroy() 1111111111111 ");
+			mLog("onDestroy()");
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
 		// if (mVoiceReceiver != null) {
@@ -843,10 +844,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (v == mBluetoothLayout) {
 			mDisconnectPhone();
 		} else if (v == mDialButton) {
-			mLog("onClick mDialButton11111111111");
+			mLog("onClick mDialButton");
 			answerCall();
 		} else if (v == mdroppedbutton) {
-			mLog("onClick mdroppedbutton22222222222");
+			mLog("onClick mdroppedbutton");
 			denyCall();
 		} else {
 			FragmentManager fm = getFragmentManager();
