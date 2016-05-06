@@ -248,7 +248,7 @@ public class CallLogsFragment extends Fragment {
 					+ mPhoneBookInfo.get(mTabTpye).getSize());
 			if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 				hideLoading();
-			} else if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED && mPhoneBookInfo.get(mTabTpye).getSize() == 0) {
+			} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED) {
 				showLoading();
 			}
 			mListView.setEmptyView(emptyView);

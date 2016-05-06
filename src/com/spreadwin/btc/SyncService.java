@@ -587,7 +587,7 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
 			// 不自动打开蓝牙音频
-			// setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
+			 setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
 			saySomething("蓝牙已连接");// 语音提示
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			m_DBAdapter.close();

@@ -273,6 +273,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setIntent(intent);
 		if (getIntent().getAction() != null && binder != null) {
 			mMusicFragment.setCallStatus(binder.getCallStatus());
+			mMusicRightFragment.setCallStatus(binder.getCallStatus());
 		}
 	}
 
@@ -456,6 +457,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 					}
+					mMusicRightFragment.checkA2dpStatus();
 					mMusicFragment.checkA2dpStatus();
 				} else if (intent.getAction().equals(mActionCall)) {
 					int mStatus = intent.getIntExtra("call_status", BtcGlobalData.NO_CALL);
@@ -507,6 +509,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
 						if (mMusicFragment.isVisible()) {
 							mMusicFragment.openAudioMode();
+						}
+						if (mMusicRightFragment.isVisible()) {
+							mMusicRightFragment.openAudioMode();
 						}
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
@@ -730,7 +735,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	}
 
-	private void setDefaultFragment() {
+	public void setDefaultFragment() {
 		// String action = getIntent().getAction();
 		// if (action != null && action.equals(mActionCall)) {
 		// FragmentManager fm = getFragmentManager();
@@ -994,6 +999,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 				}
 				mMusicFragment.checkA2dpStatus();
+				mMusicRightFragment.checkA2dpStatus();
 			} else if (intent.getAction().equals(mActionCall)) {
 				int mStatus = intent.getIntExtra("call_status", BtcGlobalData.NO_CALL);
 				mLog("Receiver mActionCall mStatus ==" + mStatus);
