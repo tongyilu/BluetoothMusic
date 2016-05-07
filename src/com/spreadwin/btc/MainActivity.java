@@ -503,10 +503,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 					mLog("Receiver mActionBfp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.BFP_CONNECTED) {
-						
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
+						mContectText.setVisibility(View.VISIBLE);
 						if (mMusicFragment.isVisible()) {
 							mMusicFragment.openAudioMode();
 						}
@@ -516,6 +516,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
+						mContectText.setVisibility(View.GONE);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 						handler.sendEmptyMessage(mMessageNotifyData);
@@ -1044,14 +1045,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 				mLog("Receiver mActionBfp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.BFP_CONNECTED) {
-					mContectText.setVisibility(View.VISIBLE);
+//					mContectText.setVisibility(View.VISIBLE);
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
-					mContectText.setVisibility(View.GONE);
+//					mContectText.setVisibility(View.GONE);
 					SyncService.mNum = 0;
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);

@@ -229,6 +229,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			mContactsNumber.setVisibility(View.VISIBLE);
 			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
 		} else {
+			mContactsInfo.clear();
 			mContactsNumber.setVisibility(View.GONE);
 		}
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
