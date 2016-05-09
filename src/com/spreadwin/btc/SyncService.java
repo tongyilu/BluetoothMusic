@@ -165,6 +165,8 @@ public class SyncService extends Service {
 	public static int mNum = 0;
 
 	private boolean isFlage;
+	
+	public static boolean isStarFromVoice;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -284,6 +286,15 @@ public class SyncService extends Service {
 					onA2dpStatusChange();
 				}
 				// isFlage = false;
+				
+				// 更新Sync呼入状态
+				int PB_IN_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
+				mTempStatus = PB_IN_TYPE;
+				if (PB_IN_TYPE == BtcGlobalData.NEW_SYNC) {
+					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
+					updatePbIn();
+				}	
+				
 				// 更新Sync呼出状态
 				int PB_OUT_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_OUT);
 				mTempStatus = PB_OUT_TYPE;
@@ -293,17 +304,9 @@ public class SyncService extends Service {
 					Log.e("------", "onSyncStatusChange end 111111111111");
 				}
 
-				// 更新Sync呼入状态
-				int PB_IN_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
-				mTempStatus = PB_OUT_TYPE;
-				if (PB_IN_TYPE == BtcGlobalData.NEW_SYNC) {
-					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
-					updatePbIn();
-				}
-
 				// 更新Sync未接状态
 				int PB_MISS_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_MISS);
-				mTempStatus = PB_OUT_TYPE;
+				mTempStatus = PB_MISS_TYPE;
 				if (PB_MISS_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbMiss();
@@ -311,7 +314,7 @@ public class SyncService extends Service {
 
 				// 更新Sync电话本状态
 				int PB_PHONE_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_PHONE);
-				mTempStatus = PB_OUT_TYPE;
+				mTempStatus = PB_PHONE_TYPE;
 				if (PB_PHONE_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbPhone();
@@ -416,6 +419,7 @@ public class SyncService extends Service {
 				if (!mDataThread.isAlive()) {
 					mDataThread.start();
 				}
+				message.arg2 = BtcGlobalData.NEW_SYNC;
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -1000,8 +1004,6 @@ public class SyncService extends Service {
 		// 判断是否已经有该联系人
 		mLog("addContactsInfo ==" + mName + "; mName lenght ==" + mName.length() + "; mNumber ==" + mNumber);
 		mPhoneBook.add(mName + ":" + mNumber);
-		Log.d("========", "已同步了" + mContactsInfo.size() + "位联系人!");
-		mNum = mContactsInfo.size();
 		for (int i = 0; i < mContactsInfo.size(); i++) {
 			if (mContactsInfo.get(i).getName().equals(mName)) {
 				mLog("addContactsInfo setName==" + mName + "; mNumber==" + mNumber);
@@ -1045,7 +1047,7 @@ public class SyncService extends Service {
 			sortModel.setSecondLetters("#");
 		}
 		mContactsInfo.add(sortModel);
-
+		mNum = mContactsInfo.size();
 	}
 
 	/**
@@ -1196,11 +1198,21 @@ public class SyncService extends Service {
 	private void removeCallView() {
 		try {
 			if (wm != null && view != null) {
+				finishMainActivity();
 				wm.removeView(view);
 				// wm.removeViewImmediate(view);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void finishMainActivity(){
+		if (isStarFromVoice) {
+			SyncService.isStarFromVoice = false;
+			Intent mfinish = new Intent();
+			mfinish.setAction(MainActivity.mAcitonFinish);
+			sendObjMessage(1, mfinish);
 		}
 	}
 

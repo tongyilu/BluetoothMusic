@@ -246,10 +246,12 @@ public class CallLogsFragment extends Fragment {
 			((ViewGroup) mListView.getParent()).addView(emptyView, 1);
 			mLog("build getSyncStatus ==" + MainActivity.binder.getSyncStatus() + "; getSize =="
 					+ mPhoneBookInfo.get(mTabTpye).getSize());
-			if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
-				hideLoading();
-			} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED) {
-				showLoading();
+			if (MainActivity.binder!=null) {
+				if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+					hideLoading();
+				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED) {
+					showLoading();
+				}
 			}
 			mListView.setEmptyView(emptyView);
 			return mCallView;

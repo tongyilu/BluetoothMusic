@@ -152,6 +152,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 
 	// 拨打电话
 	public void dialCall(String callNumber) {
+		
 		mLog("dialCall ==" + callNumber);
 		if (callNumber.length() > 0) {
 			BtcNative.dialCall(callNumber);

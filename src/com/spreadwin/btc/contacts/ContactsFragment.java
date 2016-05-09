@@ -179,10 +179,12 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		sortListView.setEmptyView(emptyView);
 		// mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus(D));
 		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
-		if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC || mContactsInfo.size() > 0) {
-			hideLoading();
-		} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED ) {
-			showLoading();
+		if (MainActivity.binder!=null) {
+			if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC || mContactsInfo.size() > 0) {
+				hideLoading();
+			} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED ) {
+				showLoading();
+			}
 		}
 		sortListView.setOnCreateContextMenuListener(this);
 		mClearEditText = (ClearEditText) mRootView.findViewById(R.id.filter_edit);
