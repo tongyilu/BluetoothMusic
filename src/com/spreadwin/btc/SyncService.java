@@ -403,8 +403,8 @@ public class SyncService extends Service {
 		message.what = mPhoneBookSyncBroadcast;
 		// 添加联系人，SIM卡联系人+手机联系人 和总联系人比较
 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
-		mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size());
-		if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
+		mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size()+"mUpdateCalllog===="+mUpdateCalllog);
+//		if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
 			if (mPhoneBook.size() != RecordNum || isNewContacts()) {
 				addContacts();
 				// handler.sendEmptyMessage(mAddDatabase);
@@ -421,7 +421,7 @@ public class SyncService extends Service {
 				}
 				message.arg2 = BtcGlobalData.NEW_SYNC;
 			}
-		}
+//		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
