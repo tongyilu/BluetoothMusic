@@ -39,6 +39,8 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private View mRootView;
 
 	private boolean mRight = false;// true:为右边
+	
+	private boolean isPlay;
 
 	public MusicFragment() {
 	}
@@ -165,14 +167,18 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
-		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
+		//BtcNative.getA2dpStatus() == A2DP_PLAYING||
+		if (isPlay) {
 			mLog("onClick pauseMusic");
 			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 			BtcNative.pauseMusic();
-		} else if (BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
+			isPlay = false;
+			//BtcNative.getA2dpStatus() == A2DP_CONNECTED ||
+		} else if (!isPlay) {
 			mLog("onClick playMusic");
 			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
 			BtcNative.playMusic();
+			isPlay = true;
 		}
 	}
 

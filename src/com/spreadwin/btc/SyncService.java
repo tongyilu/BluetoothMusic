@@ -119,6 +119,7 @@ public class SyncService extends Service {
 	public final int mPhoneBookSyncBroadcast = 3;
 	public final int mNewSyncStatus = 4;
 	public final int mAddDatabase = 5;
+	public final int mUpdateDataBase = 6;
 	private int RecordNum = 0;
 	// int mSyncStatus = 0;
 	private final ArrayList<PhoneBookInfo> mPhoneBookInfo = new ArrayList<PhoneBookInfo>();
@@ -162,10 +163,10 @@ public class SyncService extends Service {
 
 	private boolean isSater;
 
-	public static int mNum = 0;
+	public static int mNum;
 
 	private boolean isFlage;
-	
+
 	public static boolean isStarFromVoice;
 
 	@Override
@@ -286,15 +287,15 @@ public class SyncService extends Service {
 					onA2dpStatusChange();
 				}
 				// isFlage = false;
-				
+
 				// 更新Sync呼入状态
 				int PB_IN_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
 				mTempStatus = PB_IN_TYPE;
 				if (PB_IN_TYPE == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbIn();
-				}	
-				
+				}
+
 				// 更新Sync呼出状态
 				int PB_OUT_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_OUT);
 				mTempStatus = PB_OUT_TYPE;
@@ -344,7 +345,7 @@ public class SyncService extends Service {
 				mCalloutInfo.add(mName, mNumber, "");
 			}
 		}
-		
+
 		mLog("mCalloutInfo ==" + mCalloutInfo.getSize());
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
@@ -403,25 +404,26 @@ public class SyncService extends Service {
 		message.what = mPhoneBookSyncBroadcast;
 		// 添加联系人，SIM卡联系人+手机联系人 和总联系人比较
 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
-		mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size()+"mUpdateCalllog===="+mUpdateCalllog);
-//		if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
-			if (mPhoneBook.size() != RecordNum || isNewContacts()) {
-				addContacts();
-				// handler.sendEmptyMessage(mAddDatabase);
-				Thread mDataThread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						mLog("mDataThread  is start");
-						addDatabase();
-						mLog("mDataThread  is end");
-					}
-				});
-				if (!mDataThread.isAlive()) {
-					mDataThread.start();
+		mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size()
+				+ "mUpdateCalllog====" + mUpdateCalllog);
+		// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
+		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
+			addContacts();
+			// handler.sendEmptyMessage(mAddDatabase);
+			Thread mDataThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					mLog("mDataThread  is start");
+					addDatabase();
+					mLog("mDataThread  is end");
 				}
-				message.arg2 = BtcGlobalData.NEW_SYNC;
+			});
+			if (!mDataThread.isAlive()) {
+				mDataThread.start();
 			}
-//		}
+			message.arg2 = BtcGlobalData.NEW_SYNC;
+		}
+		// }
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
@@ -585,7 +587,6 @@ public class SyncService extends Service {
 	protected void onBfpStatusChange() {
 		Intent mBfpIntent = new Intent();
 		mBfpIntent.setAction(MainActivity.mActionBfp);
-		mNum = 0;
 		if (mTempStatus == BtcGlobalData.BFP_CONNECTED) {
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
@@ -613,6 +614,8 @@ public class SyncService extends Service {
 	}
 
 	Handler handler = new Handler() {
+		boolean mdatabase;
+
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case mShowNotification:
@@ -621,7 +624,17 @@ public class SyncService extends Service {
 
 				showNotification();
 				mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-				boolean mdatabase = getDatabase();
+				Thread mDataThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						mLog("mDataThread  is start");
+						mdatabase = getDatabase();
+						mLog("mDataThread  is end");
+					}
+				});
+				if (!mDataThread.isAlive()) {
+					mDataThread.start();
+				}
 				if (mdatabase && isNetworkConnected()) {
 					PullContacts();
 				}
@@ -739,94 +752,108 @@ public class SyncService extends Service {
 		sendBroadcast(intent);
 	}
 
-//	public void onSyncStatusChange() {
-//		mLog("syncT onSyncStatusChange start ==" + mTempStatus);
-//		// Intent mSyncIntent = new Intent();
-//		// mSyncIntent.setAction(MainActivity.mActionSync);
-//		Log.e("------", "onSyncStatusChange start 111111111111");
-//		Message message = new Message();
-//		message.what = mPhoneBookSyncBroadcast;
-//		if (mTempStatus == BtcGlobalData.NEW_SYNC) {
-//			upload_toggle = false;
-//			// 呼出记录
-//			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_OUT);
-//			mLog("mCalloutInfo ==" + mCalloutInfo.getSize() + "; RecordNum ==" + RecordNum);
-//			// 通话记录数据有不同更新
-//			if (mCalloutInfo.getSize() != RecordNum || mUpdateCalllog == BtcGlobalData.PB_OUT) {
-//				mCalloutInfo.clear();
-//				mUpdateCalllog = BtcGlobalData.NO_CALL;
-//				for (int i = 0; i < RecordNum; i++) {
-//					String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_OUT, i);
-//					String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);
-//					mCalloutInfo.add(mName, mNumber, "");
-//				}
-//			}
-//			mLog("mCalloutInfo ==" + mCalloutInfo.getSize());
-//			// 未接记录
-//			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_MISS);
-//			mLog("mCallmissInfo ==" + mCallmissInfo.getSize() + "; RecordNum ==" + RecordNum);
-//			if (mCallmissInfo.getSize() != RecordNum || mUpdateCalllog == BtcGlobalData.PB_MISS) {
-//				mCallmissInfo.clear();
-//				mUpdateCalllog = BtcGlobalData.NO_CALL;
-//				for (int i = 0; i < RecordNum; i++) {
-//					String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_MISS, i);
-//					String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
-//					mCallmissInfo.add(mName, mNumber, "");
-//				}
-//			}
-//			mLog("mCallinInfo ==" + mCallinInfo.getSize());
-//			// 呼入记录
-//			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_IN);
-//			mLog("mCallinInfo ==" + mCallinInfo.getSize() + "; RecordNum ==" + RecordNum);
-//			if (mCallinInfo.getSize() != RecordNum || mUpdateCalllog == BtcGlobalData.PB_IN) {
-//				mCallinInfo.clear();
-//				mUpdateCalllog = BtcGlobalData.NO_CALL;
-//				for (int i = 0; i < RecordNum; i++) {
-//					String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_IN, i);
-//					String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);
-//					mCallinInfo.add(mName, mNumber, "");
-//				}
-//			}
-//
-//			// 添加联系人，SIM卡联系人+手机联系人 和总联系人比较
-//			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
-//			mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size());
-//			if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
-//				if (mPhoneBook.size() != RecordNum || isNewContacts()) {
-//					addContacts();
-//					// handler.sendEmptyMessage(mAddDatabase);
-//					Thread mDataThread = new Thread(new Runnable() {
-//						@Override
-//						public void run() {
-//							mLog("mDataThread  is start");
-//							addDatabase();
-//							mLog("mDataThread  is end");
-//						}
-//					});
-//					if (!mDataThread.isAlive()) {
-//						mDataThread.start();
-//					}
-//					message.arg2 = BtcGlobalData.NEW_SYNC;
-//				}
-//			}
-//			Log.e("------", "onSyncStatusChange end 111111111111");
-//			message.arg1 = BtcGlobalData.NEW_SYNC;
-//			// mSyncIntent.putExtra("sync_status", BtcGlobalData.NEW_SYNC);
-//		} else if (mTempStatus == BtcGlobalData.IN_SYNC) {
-//			message.arg1 = BtcGlobalData.IN_SYNC;
-//			// mSyncIntent.putExtra("sync_status", BtcGlobalData.IN_SYNC);
-//		} else if (mTempStatus == BtcGlobalData.NOT_SYNC) {
-//			message.arg1 = BtcGlobalData.NOT_SYNC;
-//			// mSyncIntent.putExtra("sync_status", BtcGlobalData.NOT_SYNC);
-//		}
-//
-//		mLog("syncT getPhoneBookRecordNum ==" + BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE));
-//		// lbm.sendBroadcast(mSyncIntent);
-//		handler.sendMessageDelayed(message, 100);
-//		// handler.sendEmptyMessageDelayed(mPhoneBookSyncBroadcast,
-//		// MainActivity.mShowDeviceNameDelayed);
-//		mSyncStatus = mTempStatus;
-//	}
+	// public void onSyncStatusChange() {
+	// mLog("syncT onSyncStatusChange start ==" + mTempStatus);
+	// // Intent mSyncIntent = new Intent();
+	// // mSyncIntent.setAction(MainActivity.mActionSync);
+	// Log.e("------", "onSyncStatusChange start 111111111111");
+	// Message message = new Message();
+	// message.what = mPhoneBookSyncBroadcast;
+	// if (mTempStatus == BtcGlobalData.NEW_SYNC) {
+	// upload_toggle = false;
+	// // 呼出记录
+	// RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_OUT);
+	// mLog("mCalloutInfo ==" + mCalloutInfo.getSize() + "; RecordNum ==" +
+	// RecordNum);
+	// // 通话记录数据有不同更新
+	// if (mCalloutInfo.getSize() != RecordNum || mUpdateCalllog ==
+	// BtcGlobalData.PB_OUT) {
+	// mCalloutInfo.clear();
+	// mUpdateCalllog = BtcGlobalData.NO_CALL;
+	// for (int i = 0; i < RecordNum; i++) {
+	// String mName =
+	// BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_OUT, i);
+	// String mNumber =
+	// BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);
+	// mCalloutInfo.add(mName, mNumber, "");
+	// }
+	// }
+	// mLog("mCalloutInfo ==" + mCalloutInfo.getSize());
+	// // 未接记录
+	// RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_MISS);
+	// mLog("mCallmissInfo ==" + mCallmissInfo.getSize() + "; RecordNum ==" +
+	// RecordNum);
+	// if (mCallmissInfo.getSize() != RecordNum || mUpdateCalllog ==
+	// BtcGlobalData.PB_MISS) {
+	// mCallmissInfo.clear();
+	// mUpdateCalllog = BtcGlobalData.NO_CALL;
+	// for (int i = 0; i < RecordNum; i++) {
+	// String mName =
+	// BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_MISS, i);
+	// String mNumber =
+	// BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
+	// mCallmissInfo.add(mName, mNumber, "");
+	// }
+	// }
+	// mLog("mCallinInfo ==" + mCallinInfo.getSize());
+	// // 呼入记录
+	// RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_IN);
+	// mLog("mCallinInfo ==" + mCallinInfo.getSize() + "; RecordNum ==" +
+	// RecordNum);
+	// if (mCallinInfo.getSize() != RecordNum || mUpdateCalllog ==
+	// BtcGlobalData.PB_IN) {
+	// mCallinInfo.clear();
+	// mUpdateCalllog = BtcGlobalData.NO_CALL;
+	// for (int i = 0; i < RecordNum; i++) {
+	// String mName =
+	// BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_IN, i);
+	// String mNumber =
+	// BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);
+	// mCallinInfo.add(mName, mNumber, "");
+	// }
+	// }
+	//
+	// // 添加联系人，SIM卡联系人+手机联系人 和总联系人比较
+	// RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
+	// mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + ";
+	// mPhoneBook.size() ==" + mPhoneBook.size());
+	// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
+	// if (mPhoneBook.size() != RecordNum || isNewContacts()) {
+	// addContacts();
+	// // handler.sendEmptyMessage(mAddDatabase);
+	// Thread mDataThread = new Thread(new Runnable() {
+	// @Override
+	// public void run() {
+	// mLog("mDataThread is start");
+	// addDatabase();
+	// mLog("mDataThread is end");
+	// }
+	// });
+	// if (!mDataThread.isAlive()) {
+	// mDataThread.start();
+	// }
+	// message.arg2 = BtcGlobalData.NEW_SYNC;
+	// }
+	// }
+	// Log.e("------", "onSyncStatusChange end 111111111111");
+	// message.arg1 = BtcGlobalData.NEW_SYNC;
+	// // mSyncIntent.putExtra("sync_status", BtcGlobalData.NEW_SYNC);
+	// } else if (mTempStatus == BtcGlobalData.IN_SYNC) {
+	// message.arg1 = BtcGlobalData.IN_SYNC;
+	// // mSyncIntent.putExtra("sync_status", BtcGlobalData.IN_SYNC);
+	// } else if (mTempStatus == BtcGlobalData.NOT_SYNC) {
+	// message.arg1 = BtcGlobalData.NOT_SYNC;
+	// // mSyncIntent.putExtra("sync_status", BtcGlobalData.NOT_SYNC);
+	// }
+	//
+	// mLog("syncT getPhoneBookRecordNum ==" +
+	// BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE));
+	// // lbm.sendBroadcast(mSyncIntent);
+	// handler.sendMessageDelayed(message, 100);
+	// // handler.sendEmptyMessageDelayed(mPhoneBookSyncBroadcast,
+	// // MainActivity.mShowDeviceNameDelayed);
+	// mSyncStatus = mTempStatus;
+	// }
 
 	private boolean isNewContacts() {
 		boolean isNew = false;
@@ -872,7 +899,6 @@ public class SyncService extends Service {
 	}
 
 	private void addContacts() {
-		mNum = 0;
 		mContactsInfo.clear();
 		mPhoneBook.clear();
 		upload_toggle = true;
@@ -964,7 +990,6 @@ public class SyncService extends Service {
 			do {
 				String mName = c.getString(nameColumnIndex);
 				String mNumber = c.getString(numberColumnIndex);
-				mNum = 0;
 				addContactsInfo(mName, mNumber);
 			} while (c.moveToNext());
 			c.close();
@@ -1182,7 +1207,6 @@ public class SyncService extends Service {
 			wakeUpAndUnlock();
 		}
 		mCallStatusOld = lastCallStatus;
-
 	}
 
 	private void addCallView() {
@@ -1206,8 +1230,8 @@ public class SyncService extends Service {
 			e.printStackTrace();
 		}
 	}
-	
-	public void finishMainActivity(){
+
+	public void finishMainActivity() {
 		if (isStarFromVoice) {
 			SyncService.isStarFromVoice = false;
 			Intent mfinish = new Intent();
@@ -1228,7 +1252,7 @@ public class SyncService extends Service {
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
-		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
@@ -1338,7 +1362,6 @@ public class SyncService extends Service {
 						// String name = temp1[i].trim().split(":")[0];
 						// String number = temp1[i].trim().split(":")[1];
 						// mPhoneContactsInfo.add(contacts[0], contacts[1], "");
-						mNum = 0;
 						addContactsInfo(contacts[0], contacts[1]);
 					}
 					// addDatabase();

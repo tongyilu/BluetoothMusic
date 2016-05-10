@@ -135,19 +135,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
 
-	private int num = 0;
-
 	Handler mHandler = new Handler();
 	Runnable mRunnable = new Runnable() {
 
 		@Override
 		public void run() {
 			if (null != mContectText) {
-				num = SyncService.mNum;
-				if (num != 0) {
+				if (SyncService.mNum != 0) {
+					mContectText.setText("已更新" + SyncService.mNum + "位联系人");
 					mContectText.setVisibility(View.VISIBLE);
-					mContectText.setText("已更新" + num + "位联系人");
-				} else {
+				}else{
 					mContectText.setVisibility(View.GONE);
 				}
 				mHandler.postDelayed(this, 100);
@@ -167,6 +164,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			binder.setClientMessager(mMessenger);
 			binded = true;
 			if (binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
+				mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 			}
@@ -504,6 +502,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 					mLog("Receiver mActionBfp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.BFP_CONNECTED) {
+						mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
@@ -517,6 +516,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
+						mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 						mContectText.setVisibility(View.GONE);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
@@ -1062,14 +1062,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 				mLog("Receiver mActionBfp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.BFP_CONNECTED) {
-					// mContectText.setVisibility(View.VISIBLE);
+					 mContectText.setVisibility(View.VISIBLE);
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
-					// mContectText.setVisibility(View.GONE);
+					 mContectText.setVisibility(View.GONE);
 					SyncService.mNum = 0;
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);

@@ -150,7 +150,9 @@ public class CallLogsFragment extends Fragment {
 			mLog("instantiateItem ==" + position);
 			TabInfo tab = mTabs.get(position);
 			View root = tab.build(mInflater, mContentContainer, mRootView);
-			container.addView(root);
+			if (root.getParent() == null) {
+				container.addView(root);
+			}
 			// root.setTag(R.id.name, tab);
 			return root;
 		}
