@@ -3,6 +3,7 @@ package com.spreadwin.btc.view;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
+import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.OpenUtils;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +45,7 @@ public class DialogView implements OnClickListener {
 	public DialogView(Context context, boolean isFlags) {
 		this.mContext = context;
 		this.isStart = isFlags;
-		mView = LayoutInflater.from(context).inflate(R.layout.display_call,null);
+		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
 		initView(mView);
 	}
 
@@ -59,9 +60,10 @@ public class DialogView implements OnClickListener {
 		String getCallNumber = BtcNative.getCallNumber();
 		String getPhoneName = getCallName(getCallNumber);
 		if (!TextUtils.isEmpty(getPhoneName)) {
-			mNumberText.setText(getPhoneName);
-		}else{
-			mNumberText.setText(getCallNumber);
+			mNameText.setVisibility(View.VISIBLE);
+			mNameText.setText(getPhoneName);
+		} else {
+			mNameText.setVisibility(View.GONE);
 		}
 //		mNumberText.setText(getCallNumber);
 		mMute.setOnClickListener(this);
@@ -124,10 +126,8 @@ public class DialogView implements OnClickListener {
 	}
 
 	public void setMuteImageView(boolean isState) {
-		Drawable drawable = mContext.getResources().getDrawable(
-				isState ? R.drawable.mute_u : R.drawable.mute_d);
-		drawable.setBounds(0, 0, drawable.getMinimumWidth(),
-				drawable.getMinimumHeight());
+		Drawable drawable = mContext.getResources().getDrawable(isState ? R.drawable.mute_u : R.drawable.mute_d);
+		drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 		mMute.setCompoundDrawables(null, drawable, null, null);
 	}
 
@@ -143,9 +143,8 @@ public class DialogView implements OnClickListener {
 	private void mDismissDialog() {
 		// TODO Auto-generated method stub
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+		((SyncService)mContext).finishMainActivity();
 		wm.removeView(mView);
-		// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-		// mContext.sendBroadcast(mCallIntent);
 	}
 
 }

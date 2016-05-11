@@ -31,7 +31,7 @@ public class BtAudioManager {
     private boolean mAudioFocus = false;//audio焦点状态
     private boolean mAudioMute = false;//静音状态
     
-    private boolean mAudioFocusGain = false;
+    public boolean mAudioFocusGain = false;
     
     private int VolumeNormal = 13;
     private int VolumeMute = 0;
@@ -98,7 +98,6 @@ public class BtAudioManager {
 	 */
 	public void setAudioMode(int mode) {
 		mLog("setAudioMode mode =="+mode);
-//		audioManager.setMode(mode);
 		audioManager.setParameters("cdr_mode=" + mode);
 		if (mode == AudioStream.MODE_NORMAL) {
 			audioManager.abandonAudioFocus(mAudioFocusListener);	

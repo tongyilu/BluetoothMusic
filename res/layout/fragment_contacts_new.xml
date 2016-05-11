@@ -7,21 +7,22 @@
     <com.spreadwin.btc.contacts.ClearEditText
         android:id="@+id/filter_edit"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"       
-        android:layout_marginTop="5dip"
+        android:layout_height="60dp"       
+        android:layout_margin="5dip"
         android:background="@drawable/search_bar_edit_selector"
         android:drawableLeft="@drawable/search_bar_icon_normal"
         android:hint="请输入关键字"
         android:singleLine="true"
         android:textColor="@android:color/background_dark"
         android:imeOptions="flagNoExtractUi"
-        android:textSize="20.0dip" />
+        android:textSize="22.0dip" />
     
     <TextView 
         android:id="@+id/mContactsNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:textSize="22sp"
         android:text="联系人数量：0"/>
 
     <FrameLayout
@@ -57,8 +58,8 @@
              android:layout_width="fill_parent"
              android:layout_height="fill_parent"
 		     android:gravity="center"	
-             >	  
 		     android:visibility="gone"
+             >	  
 	        <ProgressBar android:id="@+id/widget43"
      			 android:layout_width="wrap_content" 
       			android:layout_height="wrap_content"    
