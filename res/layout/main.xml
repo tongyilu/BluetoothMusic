@@ -23,7 +23,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/disconnect_title"
-                android:textColor="@color/blue_00"
+                android:textColor="@color/orange"
                 android:textSize="18sp" />
 
             <TextView
@@ -35,8 +35,8 @@
                 android:ellipsize="end"
                 android:visibility="gone"
                 android:singleLine="true"
-                android:textColor="@color/blue_00"
-                android:textSize="22sp" />
+               android:textColor="@color/orange"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/bluetoot_name"
@@ -51,7 +51,7 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="@string/device_name"
-                android:textColor="@color/blue_00"
+                android:textColor="@color/orange"
                 android:textSize="18sp" />
 
         </LinearLayout>

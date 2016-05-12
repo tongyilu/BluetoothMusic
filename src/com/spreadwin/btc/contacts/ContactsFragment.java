@@ -172,7 +172,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		emptyView = new TextView(getActivity());
 		emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
-		emptyView.setTextSize(30);
+		emptyView.setTextSize(26);
 		emptyView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 		emptyView.setVisibility(View.GONE);
 		((ViewGroup) sortListView.getParent()).addView(emptyView, 1);

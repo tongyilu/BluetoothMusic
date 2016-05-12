@@ -48,11 +48,6 @@ public class CallLogsAdapter extends BaseAdapter {
 		return position;
 	}
 
-	public void clearCallLogsList() {
-		mCallLogsInfo.clear();
-		notifyDataSetChanged();
-	}
-
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
@@ -62,7 +57,7 @@ public class CallLogsAdapter extends BaseAdapter {
 	private class ViewHolder {
 		private TextView mTelName;
 		private TextView mTelNumber;
-		private TextView mTelTime;
+//		private TextView mTelTime;
 	}
 
 	@Override
@@ -75,7 +70,7 @@ public class CallLogsAdapter extends BaseAdapter {
 					+ ";mCallLogsInfo type ==" + mCallLogsInfo.getType());
 			holder.mTelName = (TextView) convertView.findViewById(R.id.tel_name);
 			holder.mTelNumber = (TextView) convertView.findViewById(R.id.tel_number);
-			holder.mTelTime = (TextView) convertView.findViewById(R.id.tel_time);
+//			holder.mTelTime = (TextView) convertView.findViewById(R.id.tel_time);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();

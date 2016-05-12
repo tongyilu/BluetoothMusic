@@ -57,14 +57,14 @@ public class SideBar extends View {
 		int singleHeight = height / b.length;// 获取每一个字母的高度
 
 		for (int i = 0; i < b.length; i++) {
-			paint.setColor(Color.rgb(33, 65, 98));
+			paint.setColor(getResources().getColor(R.color.orange));
 			// paint.setColor(Color.WHITE);
 			paint.setTypeface(Typeface.DEFAULT_BOLD);
 			paint.setAntiAlias(true);
 			paint.setTextSize(20);
 			// 选中的状态
 			if (i == choose) {
-				paint.setColor(Color.parseColor("#3399ff"));
+				paint.setColor(getResources().getColor(R.color.gray_d3));
 				paint.setFakeBoldText(true);
 			}
 			// x坐标等于中间-字符串宽度的一半.
@@ -72,7 +72,6 @@ public class SideBar extends View {
 			float yPos = singleHeight * i + singleHeight;
 			Log.d("yilu", "singleHeight/2 =="+(singleHeight/2));
 			if (c[i].equals(".")) {			
-				int effect = 5;
 				if (!c[i+1].equals(".")) {
 					canvas.drawText(c[i], width / 2-paint.measureText(c[i]) / 2, yPos-7, paint);	
 				}else {

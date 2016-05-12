@@ -289,34 +289,30 @@ public class SyncService extends Service {
 				// isFlage = false;
 
 				// 更新Sync呼入状态
-				int PB_IN_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
-				mTempStatus = PB_IN_TYPE;
-				if (PB_IN_TYPE == BtcGlobalData.NEW_SYNC) {
+				mTempStatus = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
+				if (mTempStatus == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbIn();
 				}
 
 				// 更新Sync呼出状态
-				int PB_OUT_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_OUT);
-				mTempStatus = PB_OUT_TYPE;
-				if (PB_OUT_TYPE == BtcGlobalData.NEW_SYNC) {
+				mTempStatus = BtcNative.getSyncStatus(BtcGlobalData.PB_OUT);
+				if (mTempStatus == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbOut();
 					Log.e("------", "onSyncStatusChange end 111111111111");
 				}
 
 				// 更新Sync未接状态
-				int PB_MISS_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_MISS);
-				mTempStatus = PB_MISS_TYPE;
-				if (PB_MISS_TYPE == BtcGlobalData.NEW_SYNC) {
+				mTempStatus = BtcNative.getSyncStatus(BtcGlobalData.PB_MISS);
+				if (mTempStatus == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbMiss();
 				}
 
 				// 更新Sync电话本状态
-				int PB_PHONE_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_PHONE);
-				mTempStatus = PB_PHONE_TYPE;
-				if (PB_PHONE_TYPE == BtcGlobalData.NEW_SYNC) {
+				mTempStatus = BtcNative.getSyncStatus(BtcGlobalData.PB_PHONE);
+				if (mTempStatus == BtcGlobalData.NEW_SYNC) {
 					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
 					updatePbPhone();
 				}

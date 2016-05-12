@@ -96,6 +96,7 @@ public class CallLogsFragment extends Fragment {
 	}
 
 	private void initNumber() {
+		
 		try {
 			InputStreamReader inputReader = new InputStreamReader(getResources().getAssets().open("numbers.txt"));
 			BufferedReader bufReader = new BufferedReader(inputReader);
@@ -122,7 +123,7 @@ public class CallLogsFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_call_logs, container, false);
 		mRootView = rootView;
 		mtab = (PagerTabStrip) rootView.findViewById(R.id.tabs);
-		mtab.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+		mtab.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 		viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 		mAdapter = new MyAdapter();
 		viewPager.setAdapter(mAdapter);
@@ -242,7 +243,7 @@ public class CallLogsFragment extends Fragment {
 			emptyView = new TextView(getActivity());
 			emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 			emptyView.setText(getResources().getString(R.string.no_call_log));
-			emptyView.setTextSize(30);
+			emptyView.setTextSize(26);
 			emptyView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 			emptyView.setVisibility(View.GONE);
 			((ViewGroup) mListView.getParent()).addView(emptyView, 1);
@@ -364,6 +365,12 @@ public class CallLogsFragment extends Fragment {
 		}
 	}
 
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+	
 	@Override
 	public void onStop() {
 		super.onStop();

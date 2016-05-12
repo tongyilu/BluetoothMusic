@@ -148,7 +148,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			mLog("onClick mMusicNext");
 			mMusicNext();
 		}
-
 	}
 
 	private void mMusicPrevious() {
