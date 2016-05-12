@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"             
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-        >
-    <TextView
-        	android:id="@+id/tel_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"  
-            android:layout_marginLeft="10dip"    
-            style="@style/myTextStyle"                     
-            android:layout_alignParentLeft="true"
-            />     
-    <TextView
-        	android:id="@+id/tel_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dip"   
-            style="@style/myTextStyle"                 
-            android:layout_toRightOf="@id/tel_name"
-            />
-    <TextView
-        	android:id="@+id/tel_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dip" 
-            style="@style/myTextStyle"                
-            android:layout_alignParentRight="true"
-            />
-</RelativeLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content" >
 
+    <TextView
+        android:id="@+id/tel_name"
+        style="@style/myTextStyle"
+        android:layout_width="0dp"
+        android:layout_weight="1.8"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dip" />
+
+    <TextView
+        android:id="@+id/tel_number"
+        style="@style/myTextStyle"
+        android:layout_width="0dp"
+        android:layout_marginLeft="10dip"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tel_name" />
+
+    <TextView
+        android:id="@+id/tel_time"
+        style="@style/myTextStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dip" />
+
+</LinearLayout>

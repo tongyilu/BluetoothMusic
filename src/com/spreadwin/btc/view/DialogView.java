@@ -65,7 +65,7 @@ public class DialogView implements OnClickListener {
 		} else {
 			mNameText.setVisibility(View.GONE);
 		}
-//		mNumberText.setText(getCallNumber);
+		mNumberText.setText(getCallNumber);
 		mMute.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);

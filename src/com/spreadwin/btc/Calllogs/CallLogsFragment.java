@@ -151,9 +151,7 @@ public class CallLogsFragment extends Fragment {
 			mLog("instantiateItem ==" + position);
 			TabInfo tab = mTabs.get(position);
 			View root = tab.build(mInflater, mContentContainer, mRootView);
-			if (root.getParent() == null) {
-				container.addView(root);
-			}
+			container.addView(root);
 			// root.setTag(R.id.name, tab);
 			return root;
 		}
@@ -217,7 +215,7 @@ public class CallLogsFragment extends Fragment {
 				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
 					showLoading();
 					// 不是更新状态或有数据就隐藏loading
-				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+				} else if (mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 					hideLoading();
 				}
 				return mCallView;

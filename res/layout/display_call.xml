@@ -56,7 +56,7 @@
             android:layout_height="79dp"
             android:layout_weight="1"
             android:layout_gravity="top"
-            android:src="@drawable/bluetooth_dropped" />
+            android:src="@drawable/bluetooth_hangup" />
 
         <TextView
             android:id="@+id/mute"
@@ -76,7 +76,7 @@
             android:layout_height="79dp"
             android:layout_weight="1"
             android:layout_gravity="top"
-            android:src="@drawable/bluetooth_dial" />
+            android:src="@drawable/bluetooth_answer" />
 
     </LinearLayout>
 
