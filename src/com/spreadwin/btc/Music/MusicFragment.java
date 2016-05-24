@@ -6,6 +6,7 @@ import com.spreadwin.btc.R;
 import com.spreadwin.btc.R.layout;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
+import android.R.bool;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private View mRootView;
 
 	private boolean mRight = false;// true:为右边
+	private int mPlayer = 0;
 	
 	public MusicFragment() {
 	}
@@ -56,6 +58,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onStart() {
 		super.onStart();
+		mPlayer = BtcNative.getA2dpStatus();
 		mLog("MusicFragment onStart mCallStatus ==" + mCallStatus + "; mRight ==" + mRight);
 		if (!mRight) {
 			if (mCallStatus == BtcGlobalData.NO_CALL) {
@@ -165,14 +168,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
-		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
+		if (mPlayer == 2) {
 			mLog("onClick pauseMusic");
-//			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 			BtcNative.pauseMusic();
-		} else if (BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
+			mPlayer = 1;
+		} else if (mPlayer == 1) {
 			mLog("onClick playMusic");
-//			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
 			BtcNative.playMusic();
+			mPlayer = 2;
 		}
 	}
 
