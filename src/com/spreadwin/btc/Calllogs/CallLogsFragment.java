@@ -86,8 +86,10 @@ public class CallLogsFragment extends Fragment {
 			TabInfo tab3 = new TabInfo(CALL_MISS_TYPE);
 			mTabs.add(tab3);
 		}
-		if (MainActivity.binder.getPhoneBookInfo() != null) {
-			mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
+		if (MainActivity.binder != null) {
+			if (MainActivity.binder.getPhoneBookInfo() != null) {
+				mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();
+			}
 		}
 		// mLog("CallLogsFragment onCreate 11111111111==="
 		// + mPhoneBookInfo.get(CALL_IN_TYPE).getSize());
@@ -150,9 +152,7 @@ public class CallLogsFragment extends Fragment {
 			mLog("instantiateItem ==" + position);
 			TabInfo tab = mTabs.get(position);
 			View root = tab.build(mInflater, mContentContainer, mRootView);
-			if (root.getParent() == null) {
-				container.addView(root);
-			}
+			container.addView(root);
 			// root.setTag(R.id.name, tab);
 			return root;
 		}
@@ -216,7 +216,8 @@ public class CallLogsFragment extends Fragment {
 				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
 					showLoading();
 					// 不是更新状态或有数据就隐藏loading
-				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
+						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 					hideLoading();
 				}
 				return mCallView;
@@ -248,8 +249,9 @@ public class CallLogsFragment extends Fragment {
 			((ViewGroup) mListView.getParent()).addView(emptyView, 1);
 			mLog("build getSyncStatus ==" + MainActivity.binder.getSyncStatus() + "; getSize =="
 					+ mPhoneBookInfo.get(mTabTpye).getSize());
-			if (MainActivity.binder!=null) {
-				if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+			if (MainActivity.binder != null) {
+				if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
+						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
 					hideLoading();
 				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED) {
 					showLoading();
@@ -347,7 +349,8 @@ public class CallLogsFragment extends Fragment {
 				mLog("notifyDataSetChanged mTabs.get(i).mTabTpye [" + mTabs.get(i).mTabTpye + "] =="
 						+ mPhoneBookInfo.get(mTabs.get(i).mTabTpye).getSize());
 				// 判断是否是NOT_SYNC
-				if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC ||BtcNative.getBfpStatus() == BtcGlobalData.BFP_DISCONNECT) {
+				if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
+						|| BtcNative.getBfpStatus() == BtcGlobalData.BFP_DISCONNECT) {
 					mLog("notifyDataSetChanged hideLoading ");
 					mTabs.get(i).hideLoading();
 				}

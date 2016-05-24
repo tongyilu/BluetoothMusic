@@ -40,8 +40,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private boolean mRight = false;// true:为右边
 	
-	private boolean isPlay;
-
 	public MusicFragment() {
 	}
 
@@ -127,7 +125,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		}
 		mA2dpText.setText("");
 		if (status == A2DP_PLAYING) {
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
+			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 		} else if (status == A2DP_CONNECTED) {
 			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 		} else if (status == A2DP_DISCONNECT) {
@@ -167,18 +165,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
-		//BtcNative.getA2dpStatus() == A2DP_PLAYING||
-		if (isPlay) {
+		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
 			mLog("onClick pauseMusic");
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
+//			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 			BtcNative.pauseMusic();
-			isPlay = false;
-			//BtcNative.getA2dpStatus() == A2DP_CONNECTED ||
-		} else if (!isPlay) {
+		} else if (BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			mLog("onClick playMusic");
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
+//			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
 			BtcNative.playMusic();
-			isPlay = true;
 		}
 	}
 
