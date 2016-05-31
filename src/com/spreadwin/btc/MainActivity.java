@@ -1066,6 +1066,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
+					if (mMusicFragment.isVisible()) {
+						mMusicFragment.openAudioMode();
+					}
+					if (mMusicRightFragment.isVisible()) {
+						mMusicRightFragment.openAudioMode();
+					}
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
