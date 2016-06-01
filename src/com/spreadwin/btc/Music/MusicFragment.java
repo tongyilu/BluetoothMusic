@@ -74,11 +74,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
 		}
 	}
