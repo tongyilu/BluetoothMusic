@@ -65,6 +65,9 @@ public class SyncService extends Service {
 	public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
 	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
 	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
+	
+	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";
+	public static final String ACTION_ACC_ON = "ACTION_ACC_ON";
 
 	public static final String ACTION_BTC_CALL = "MYACTION.BTC.CALL";// 通过蓝牙拨打电话
 
@@ -227,8 +230,8 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_CALL_CUSTOMER_SERVICE);
 		// filter.addAction(ACTION_NOTIFY_SERVICE_CONNECTED);
 		filter.addAction(ACTION_CUSTOMER_SERVICE_NUMBER);
-		filter.addAction("ACTION_ACC_OFF");
-		filter.addAction("ACTION_ACC_ON");
+		filter.addAction(ACTION_ACC_OFF);
+		filter.addAction(ACTION_ACC_ON);
 		// filter.addAction(ACTION_ECAR_CALL_SEND);
 		registerReceiver(mBatInfoReceiver, filter);
 	}
@@ -1224,6 +1227,8 @@ public class SyncService extends Service {
 		try {
 			if (wm != null && view != null) {
 				finishMainActivity();
+				Intent mCallIntent = new Intent("ACTION_BT_CALL_IN");
+				sendBroadcast(mCallIntent);
 				wm.removeView(view);
 				// wm.removeViewImmediate(view);
 			}
@@ -1500,10 +1505,12 @@ public class SyncService extends Service {
 				if (mCLDCallNum != null) {
 					onPutSetting(mCLDNum_key, mCLDCallNum);
 				}
-			} else if (action.equals("ACTION_ACC_OFF")) {
+			} else if (action.equals(ACTION_ACC_OFF)) {
 				mAccOff = true;
-			} else if (intent.getAction().equals("ACTION_ACC_ON")) {
+				BtcNative.enterSleep();
+			} else if (intent.getAction().equals(ACTION_ACC_ON)) {
 				mAccOff = false;
+				BtcNative.leaveSleep();
 			} else if (action.equals(ACTION_BFP_STATUS_UPDATE)) {
 				String mQuery = intent.getStringExtra("status");
 				mLog("mQuery ==" + mQuery);

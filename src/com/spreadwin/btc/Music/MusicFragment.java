@@ -38,10 +38,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;
 	private View mRootView;
+	private TextView mPlayTitle, mPlayArtist, mPlayAlbum;
 
 	private boolean mRight = false;// true:为右边
 	private int mPlayer = 0;
-	
+
 	public MusicFragment() {
 	}
 
@@ -57,7 +58,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onStart() {
-		super.onStart();
+		super.onStart(); 
 		mPlayer = BtcNative.getA2dpStatus();
 		mLog("MusicFragment onStart mCallStatus ==" + mCallStatus + "; mRight ==" + mRight);
 		if (!mRight) {
@@ -85,13 +86,24 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mMusicPrevious = (ImageButton) mRootView.findViewById(R.id.music_previous);
 		mMusicPlay = (ImageButton) mRootView.findViewById(R.id.music_play);
 		mMusicNext = (ImageButton) mRootView.findViewById(R.id.music_next);
-		mA2dpText = (TextView) mRootView.findViewById(R.id.a2dp_text);
+		mPlayTitle = (TextView) mRootView.findViewById(R.id.play_title);
+		mPlayArtist = (TextView) mRootView.findViewById(R.id.play_artist);
+		mPlayAlbum = (TextView) mRootView.findViewById(R.id.play_album);
 		mMusicPrevious.setOnClickListener(this);
 		mMusicPlay.setOnClickListener(this);
 		mMusicNext.setOnClickListener(this);
 		// handler.sendEmptyMessageDelayed(CHECK_A2DP_STATUS, 1000);
 		checkA2dpStatus();
+		setPlayInfo();
 		return mRootView;
+	}
+
+	private void setPlayInfo() {
+		// TODO Auto-generated method stub
+		mPlayTitle.setText(BtcNative.getPlayTitle() != null ? BtcNative.getPlayTitle() : "");
+		mPlayArtist.setText(BtcNative.getPlayArtist() != null ? BtcNative.getPlayArtist() : "");
+		mPlayAlbum.setText(BtcNative.getPlayAlbum() != null ? BtcNative.getPlayAlbum() : "");
+
 	}
 
 	@Override

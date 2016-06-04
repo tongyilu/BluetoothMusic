@@ -1069,9 +1069,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					if (mMusicFragment.isVisible()) {
 						mMusicFragment.openAudioMode();
 					}
-//					if (mMusicRightFragment.isVisible()) {
-//						mMusicRightFragment.openAudioMode();
-//					}
+					if (mMusicRightFragment.isVisible()) {
+						mMusicRightFragment.openAudioMode();
+					}
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
