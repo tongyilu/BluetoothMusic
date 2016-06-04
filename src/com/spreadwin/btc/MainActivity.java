@@ -18,6 +18,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
+import android.provider.MediaStore.Video;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -37,7 +38,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.spreadwin.btc.Bluetooth.BluetoothFragment;
 import com.spreadwin.btc.Calllogs.CallLogsFragment;
 import com.spreadwin.btc.Music.BtAudioManager;
@@ -135,6 +135,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
 
+	private com.spreadwin.btc.view.CustomDialog.Builder builder;
+	
 	Handler mHandler = new Handler();
 	Runnable mRunnable = new Runnable() {
 
@@ -343,12 +345,28 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 		mContectText = (TextView) findViewById(R.id.contect_text);
 		mVto = main.getViewTreeObserver();
+		
+		builder = new com.spreadwin.btc.view.CustomDialog.Builder(this);
+		builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
+				dialog.dismiss();
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, new android.content.DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		
 
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
 		mRedialLayout.setOnClickListener(this);
 		mBluetoothLayout.setOnClickListener(this);
+		mBluetoothName.setOnClickListener(this);
+		
 
 		mCallLogsFragment = new CallLogsFragment();
 		mContactsFragment = new ContactsFragment();
@@ -610,9 +628,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				view_MyControlVolume.setVisibility(View.GONE);
 				break;
 			case mMessageShowBluetoothName:
+				Log.d("getDeviceName", BtcNative.getDeviceName());
 				if (BtcNative.getDeviceName().length() > 0) {
-					mBluetoothName.setText(getResources().getString(R.string.device_name) + BtcNative.getDeviceName()
-							+ " " + getResources().getString(R.string.help_text));
+					mBluetoothName.setText(getResources().getString(R.string.device_name) + BtcNative.getDeviceName()+ " " + getResources().getString(R.string.help_text));
 				} else {
 					handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
 				}
@@ -626,7 +644,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			}
 		};
 	};
-
+	
 	protected void mDismissDialog(int dIALOG12) {
 		if (mCallDialog != null && mCallDialog.isShowing()) {
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
@@ -844,7 +862,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		} else if (v == mdroppedbutton) {
 			mLog("onClick mdroppedbutton");
 			denyCall();
-		} else {
+		} else if(v == mBluetoothName){
+			builder.crater().show();
+	   }else {
 			FragmentManager fm = getFragmentManager();
 			FragmentTransaction transaction = fm.beginTransaction();
 			switch (v.getId()) {
@@ -1067,10 +1087,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 					if (mMusicFragment.isVisible()) {
-						mMusicFragment.openAudioMode();
+						BtAudioManager.getInstance(MainActivity.this).mAudioFocusGain = false;
+						BtAudioManager.getInstance(MainActivity.this).onBtAudioFocusChange(true);
 					}
 					if (mMusicRightFragment.isVisible()) {
-						mMusicRightFragment.openAudioMode();
+						BtAudioManager.getInstance(MainActivity.this).mAudioFocusGain = false;
+						BtAudioManager.getInstance(MainActivity.this).onBtAudioFocusChange(true);
 					}
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {

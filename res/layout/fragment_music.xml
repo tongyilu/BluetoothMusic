@@ -8,6 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <ImageView
@@ -16,29 +17,44 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_bluetooth_music" />
 
-        <TextView
+        <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:textSize="22sp" />
+            android:layout_marginBottom="5dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textSize="18sp" />
 
-        <TextView
+        <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:textSize="20sp" />
+            android:layout_marginBottom="5dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textSize="16sp" />
 
-        <TextView
+        <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:textSize="20sp" />
+            android:layout_marginBottom="5dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
