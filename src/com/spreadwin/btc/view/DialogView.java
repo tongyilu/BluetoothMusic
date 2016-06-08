@@ -161,11 +161,12 @@ public class DialogView implements OnClickListener {
 		// TODO Auto-generated method stub
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService)mContext).finishMainActivity();
-		Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-		mContext.sendBroadcast(mCallIntent);
+		if (isStart) {
+			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+			mContext.sendBroadcast(mCallIntent);
+			Log.d("ACTION_BT_CALL_IN", "发送了"+ACTION_BT_CALL_IN);
+		}
 		wm.removeView(mView);
-		// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-		// mContext.sendBroadcast(mCallIntent);
 	}
 
 }

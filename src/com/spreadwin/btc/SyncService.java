@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spreadwin.btc.Music.BtAudioManager;
+import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.CharacterParser;
 import com.spreadwin.btc.contacts.PinyinComparator;
 import com.spreadwin.btc.utils.BtcGlobalData;
@@ -44,6 +45,7 @@ import android.os.Messenger;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -65,7 +67,7 @@ public class SyncService extends Service {
 	public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
 	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
 	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
-	
+
 	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";
 	public static final String ACTION_ACC_ON = "ACTION_ACC_ON";
 
@@ -171,6 +173,10 @@ public class SyncService extends Service {
 	private boolean isFlage;
 
 	public static boolean isStarFromVoice;
+
+	public static String mTitle = null;
+	public static String mArtist = null;
+	public static String mAlbum = null;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -279,6 +285,19 @@ public class SyncService extends Service {
 					index = 0;
 				} else {
 					index++;
+				}
+
+				// 更新歌曲
+				if (mTitle != BtcNative.getPlayTitle() && !TextUtils.isEmpty(BtcNative.getPlayTitle())) {
+					mTitle = BtcNative.getPlayTitle();
+					mArtist = BtcNative.getPlayArtist();
+					mAlbum = BtcNative.getPlayAlbum();
+					Intent mA2dpIntent = new Intent();
+					mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
+					mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
+					mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
+					mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
+					sendBroadcast(mA2dpIntent);
 				}
 
 				// 更新A2dp状态
@@ -595,9 +614,10 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
 			// 不自动打开蓝牙音频
-			setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
+//			setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
+
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
-//			saySomething("蓝牙已断开");// 语音提示
+			// saySomething("蓝牙已断开");// 语音提示
 			m_DBAdapter.close();
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
@@ -609,7 +629,7 @@ public class SyncService extends Service {
 				mPhoneBookInfo.get(i).clear();
 			}
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
-			
+
 		}
 		sendObjMessage(1, mBfpIntent);
 		// lbm.sendBroadcast(mBfpIntent);
@@ -1070,7 +1090,6 @@ public class SyncService extends Service {
 				sortModel.setSecondLetters("#");
 			}
 		} else
-
 		{
 			sortModel.setSortLetters("#");
 			sortModel.setSecondLetters("#");
@@ -1160,6 +1179,9 @@ public class SyncService extends Service {
 			BtAudioManager.getInstance(this).onCallChange(true);
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
+			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
+			sendBroadcast(mIN_CallIntent);
+			Log.d("ACTION_BT_CALL_IN", "发送了"+DialogView.ACTION_BT_CALL_IN);
 			removeCallView();
 			break;
 		case BtcGlobalData.CALL_OUT:
@@ -1227,8 +1249,6 @@ public class SyncService extends Service {
 		try {
 			if (wm != null && view != null) {
 				finishMainActivity();
-				Intent mCallIntent = new Intent("ACTION_BT_CALL_IN");
-				sendBroadcast(mCallIntent);
 				wm.removeView(view);
 				// wm.removeViewImmediate(view);
 			}

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CustomDialog extends Dialog {
 
@@ -97,6 +98,8 @@ public class CustomDialog extends Dialog {
 							String message = String.valueOf(msg.getText());
 							if (!TextUtils.isEmpty(message) && message.getBytes().length < 16) {
 								BtcNative.setDeviceName("V66-" + message);
+							}else{
+								Toast.makeText(context, "总长度不超过16个英文字符!", Toast.LENGTH_SHORT).show();
 							}
 							positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
 						}

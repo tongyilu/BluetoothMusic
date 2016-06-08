@@ -28,7 +28,7 @@
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_artist"
@@ -41,7 +41,7 @@
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_album"
@@ -51,6 +51,7 @@
             android:layout_marginBottom="5dp"
             android:ellipsize="marquee"
             android:focusable="true"
+            android:visibility="gone"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"

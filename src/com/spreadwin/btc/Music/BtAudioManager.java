@@ -82,14 +82,19 @@ public class BtAudioManager {
 	private void setBtAudioToggle(boolean toggle) {
 		mLog("setBtAudioToggle mBtAudioToggle=="+mBtAudioToggle+"; toggle =="+toggle);
 		mBtAudioToggle = toggle;
-		if (toggle) {
-			BtcNative.setVolume(VolumeNormal);
-			setAudioMode(AUDIO_MODE_BT);
-		}else{
-			BtcNative.setVolume(VolumeMute);				
-			setAudioMode(AudioStream.MODE_NORMAL);
-		}			
 		setBtAudioEnable(toggle);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		if (toggle) {
+			setAudioMode(AUDIO_MODE_BT);
+			BtcNative.setVolume(VolumeNormal);
+		}else{
+			setAudioMode(AudioStream.MODE_NORMAL);
+			BtcNative.setVolume(VolumeMute);				
+		}			
 	}
 	
 	/**
@@ -105,7 +110,8 @@ public class BtAudioManager {
 	}
 	
 	/**
-	 * 通话状态改变
+	 * 通话状态改变 
+	 *  
 	 * @param status
 	 */
 	public void onCallChange(boolean status){
