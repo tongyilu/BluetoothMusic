@@ -1186,8 +1186,9 @@ public class SyncService extends Service {
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
 			sendBroadcast(mIN_CallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了"+DialogView.ACTION_BT_CALL_IN);
+            //接听和挂断
 			//发送蓝牙通路
-			removeCallView();
+//			removeCallView();
 			break;
 		case BtcGlobalData.CALL_OUT:
 			// setMute(false,mTempStatus);
@@ -1270,7 +1271,7 @@ public class SyncService extends Service {
 			sendObjMessage(1, mfinish);
 		}
 	}
-
+   boolean isScreen;
 	private void showCallDisplay(int full) {
 
 		mLog("showCallDisplay" + full);
@@ -1285,17 +1286,20 @@ public class SyncService extends Service {
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
+		
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
 			params.x = 800;
 			params.width = 625;
+			isScreen = true;
 		} else if (full == 0) {
 			params.x = 0;
 			params.width = WindowManager.LayoutParams.MATCH_PARENT;
+			isScreen = false;
 		}
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
-		DialogView gpsView = new DialogView(this, isSater);
+		DialogView gpsView = new DialogView(this, isSater,isScreen);
 		view = gpsView.getVideoPlayView();
 		wm.addView(view, params);
 	}

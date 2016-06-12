@@ -15,17 +15,22 @@ import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.MobileLocation;
 import com.spreadwin.btc.utils.OpenUtils;
 
+import android.R.bool;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class DialogView implements OnClickListener {
@@ -38,7 +43,7 @@ public class DialogView implements OnClickListener {
 	public boolean isMuteState;
 	public boolean isHfState;
 
-	private ImageView mDialButton,mMute,mSwitch;
+	private ImageView mDialButton,mMute,mSwitch,mCheckout;
 	private ImageView mdroppedbutton;
 	private TextView mAddressText, mNameText,mCallText;
 	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
@@ -52,10 +57,14 @@ public class DialogView implements OnClickListener {
 	private boolean isStart;
 	private String getCallNumber;
 	private String getPhoneName;
+	private boolean isScreen;
+	private boolean isCheckout;
+	private LinearLayout mDial;
 
-	public DialogView(Context context, boolean isFlags) {
+	public DialogView(Context context, boolean isFlags,boolean isScreen) {
 		this.mContext = context;
 		this.isStart = isFlags;
+		this.isScreen = isScreen;
 		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
 		initView(mView);
 	}
@@ -63,8 +72,10 @@ public class DialogView implements OnClickListener {
 	private void initView(View view) {
 		openUtils = new OpenUtils(mContext);
 		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view.findViewById(R.id.progress);
+		mDial = (LinearLayout)view.findViewById(R.id.layout_dial);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
+		mCheckout = (ImageView)view.findViewById(R.id.checkout);
 		mAddressText = (TextView) view.findViewById(R.id.address_text);
 		mNameText = (TextView) view.findViewById(R.id.name_text);
 		mCallText = (TextView) view.findViewById(R.id.call_text);
@@ -82,6 +93,7 @@ public class DialogView implements OnClickListener {
 		mSwitch.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);
+		mCheckout.setOnClickListener(this);
 		imgGameWord = (ImageView) view.findViewById(R.id.icon);
 		imgGameWord.setBackgroundResource(R.anim.call_anim);
 		animDown = (AnimationDrawable) imgGameWord.getBackground();
@@ -90,25 +102,31 @@ public class DialogView implements OnClickListener {
 		mDilatingDotsProgressBar.show();
 		if (!isStart) {
 			mCallText.setText("正在呼叫...");
-			mMute.setVisibility(View.GONE);
+			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.GONE);
-			mSwitch.setVisibility(View.GONE);
+			mSwitch.setVisibility(View.VISIBLE);
 		} else {
 			mCallText.setText("来电");
 			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.VISIBLE);
-			mSwitch.setVisibility(View.VISIBLE);
+			mSwitch.setVisibility(View.GONE);
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
 			mContext.sendBroadcast(mCallIntent);
+		}
+		if (isScreen) {
+			mCheckout.setVisibility(View.GONE);
+		}else{
+           mCheckout.setVisibility(View.VISIBLE);			
 		}
 	}
 
 	public View getVideoPlayView() {
 		return mView;
 	}
-
+	
+	
 	// 获取来电时名字
 	private String getCallName(String getCallNumber) {
 		String mCallName = "";
@@ -145,6 +163,15 @@ public class DialogView implements OnClickListener {
 			} else {
 				isMuteState = true;
 				setHfImage(true);
+			}
+			break;
+		case R.id.checkout:
+			if (isCheckout) {
+				isCheckout = false;
+                mDial.setVisibility(View.VISIBLE);
+			}else{
+				isCheckout = true;
+				mDial.setVisibility(View.GONE);
 			}
 			break;
 		}
@@ -219,4 +246,7 @@ public class DialogView implements OnClickListener {
 			});
 		}
 	}
+
+	
+	
 }

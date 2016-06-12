@@ -1118,6 +1118,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 	}
 
+	
 	public static void mLog(String string) {
 		if (DEBUG) {
 			Log.d(TAG, string);
