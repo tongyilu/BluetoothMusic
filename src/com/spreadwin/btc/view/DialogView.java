@@ -1,10 +1,20 @@
 package com.spreadwin.btc.view;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
+import com.spreadwin.btc.utils.MobileLocation;
 import com.spreadwin.btc.utils.OpenUtils;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -28,10 +38,9 @@ public class DialogView implements OnClickListener {
 	public boolean isMuteState;
 	public boolean isHfState;
 
-	private TextView mMute, mHf;
-	private ImageView mDialButton;
+	private ImageView mDialButton,mMute,mSwitch;
 	private ImageView mdroppedbutton;
-	private TextView mNumberText, mNameText;
+	private TextView mAddressText, mNameText,mCallText;
 	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
@@ -41,6 +50,8 @@ public class DialogView implements OnClickListener {
 	private ImageView imgGameWord;
 	private OpenUtils openUtils;
 	private boolean isStart;
+	private String getCallNumber;
+	private String getPhoneName;
 
 	public DialogView(Context context, boolean isFlags) {
 		this.mContext = context;
@@ -54,21 +65,21 @@ public class DialogView implements OnClickListener {
 		mDilatingDotsProgressBar = (DilatingDotsProgressBar) view.findViewById(R.id.progress);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
-		mNumberText = (TextView) view.findViewById(R.id.number_text);
+		mAddressText = (TextView) view.findViewById(R.id.address_text);
 		mNameText = (TextView) view.findViewById(R.id.name_text);
-		mHf = (TextView) view.findViewById(R.id.hf);
-		mMute = (TextView) view.findViewById(R.id.mute);
-		String getCallNumber = BtcNative.getCallNumber();
-		String getPhoneName = getCallName(getCallNumber);
-		if (!TextUtils.isEmpty(getPhoneName)) {
-			mNameText.setVisibility(View.VISIBLE);
+		mCallText = (TextView) view.findViewById(R.id.call_text);
+		mSwitch = (ImageView) view.findViewById(R.id.image_switch);
+		mMute = (ImageView) view.findViewById(R.id.mute);
+		getCallNumber = BtcNative.getCallNumber();
+		getPhoneName = getCallName(getCallNumber);
+		if (getPhoneName!=null) {
 			mNameText.setText(getPhoneName);
-		} else {
-			mNameText.setVisibility(View.GONE);
+		}else{
+			mNameText.setText(getCallNumber);
 		}
-		mNumberText.setText(getCallNumber);
+		callUrlByGet(getCallNumber);
 		mMute.setOnClickListener(this);
-		mHf.setOnClickListener(this);
+		mSwitch.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);
 		imgGameWord = (ImageView) view.findViewById(R.id.icon);
@@ -78,11 +89,15 @@ public class DialogView implements OnClickListener {
 		animDown.setOneShot(false);
 		mDilatingDotsProgressBar.show();
 		if (!isStart) {
+			mCallText.setText("正在呼叫...");
 			mMute.setVisibility(View.GONE);
 			mDialButton.setVisibility(View.GONE);
+			mSwitch.setVisibility(View.GONE);
 		} else {
+			mCallText.setText("来电");
 			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.VISIBLE);
+			mSwitch.setVisibility(View.VISIBLE);
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
@@ -123,7 +138,7 @@ public class DialogView implements OnClickListener {
 				isMuteState = true;
 			}
 			break;
-		case R.id.hf:
+		case R.id.image_switch:
 			if (isHfState) {
 				isMuteState = false;
 				setHfImage(false);
@@ -136,16 +151,11 @@ public class DialogView implements OnClickListener {
 	}
 
 	public void setMuteImageView(boolean isState) {
-		Drawable drawable = mContext.getResources().getDrawable(isState ? R.drawable.mute_u : R.drawable.mute_d);
-		drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-		mMute.setCompoundDrawables(null, drawable, null, null);
+		mMute.setImageResource(isState ? R.drawable.mute_u : R.drawable.mute_d);
 	}
 
 	public void setHfImage(boolean isState1) {
-		Drawable drawable1 = mContext.getResources()
-				.getDrawable(isState1 ? R.drawable.handsfree_u : R.drawable.handsfree_d);
-		drawable1.setBounds(0, 0, drawable1.getMinimumWidth(), drawable1.getMinimumHeight());
-		mHf.setCompoundDrawables(null, drawable1, null, null);
+		mSwitch.setImageResource(isState1 ? R.drawable.switching_01 : R.drawable.switching_02);
 	}
 
 	private void denyCall() {
@@ -160,13 +170,53 @@ public class DialogView implements OnClickListener {
 	private void mDismissDialog() {
 		// TODO Auto-generated method stub
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-		((SyncService)mContext).finishMainActivity();
+		((SyncService) mContext).finishMainActivity();
 		if (isStart) {
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			mContext.sendBroadcast(mCallIntent);
-			Log.d("ACTION_BT_CALL_IN", "发送了"+ACTION_BT_CALL_IN);
+			Log.d("ACTION_BT_CALL_IN", "发送了" + ACTION_BT_CALL_IN);
 		}
 		wm.removeView(mView);
 	}
 
+	/**
+	 * 获取URL返回的字符串
+	 * 
+	 * @param callurl
+	 * @param charset
+	 * @return
+	 */
+	public void callUrlByGet(final String tel) {
+		tel.replace("+86", "");
+		String cache = SyncService.mCache.getJsonFromMemCache("电话号码："+tel);
+		if (!TextUtils.isEmpty(cache)) {
+			mAddressText.setText(cache);
+		} else {
+			String url = "http://apis.juhe.cn/mobile/get?phone=" + tel + "&key=0b3d7d7149323e5b0291ad931a19aa6c";
+			AsyncHttpClient client = new AsyncHttpClient();
+			client.get(url, new AsyncHttpResponseHandler() {
+				@Override
+				public void onSuccess(int statusCode, String content) {
+					try {
+						JSONObject object = new JSONObject(content);
+						int error_code = object.getInt("error_code");
+						if (error_code == 0) {
+							MobileLocation location = new Gson().fromJson(content,new TypeToken<MobileLocation>() {}.getType());
+							String mobile = location.getResult().getProvince() + " " + location.getResult().getCity()+ " "+location.getResult().getCompany();
+							SyncService.mCache.addJsonToMemoryCache("电话号码："+ tel, mobile);
+							mAddressText.setText(mobile);
+							Log.d(TAG, location.getResult().getProvince() + " " + location.getResult().getCity()+" "+location.getResult().getCompany());
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+
+				@Override
+				public void onFailure(Throwable error, String content) {
+                    Log.d(TAG, error+"");
+				}
+			});
+		}
+	}
 }

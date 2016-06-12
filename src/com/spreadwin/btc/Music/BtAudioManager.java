@@ -183,7 +183,7 @@ public class BtAudioManager {
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 	mLog("mAudioFocusListener AUDIOFOCUS_LOSS_TRANSIENT focusChange =="+focusChange);
-                	BtcNative.setVolume(VolumeMute);	
+        			BtcNative.setVolume(VolumeMute);		
                     break;
                 case AudioManager.AUDIOFOCUS_GAIN:
                 	mLog("mAudioFocusListener AUDIOFOCUS_GAIN mAudioCall =="+mAudioCall);

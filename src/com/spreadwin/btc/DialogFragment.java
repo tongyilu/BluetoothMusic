@@ -31,7 +31,7 @@ public class DialogFragment extends Fragment implements OnClickListener {
 		mRootView = inflater.inflate(R.layout.display_call, container, false);
 		mDialButton = (ImageButton)mRootView.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageButton) mRootView.findViewById(R.id.mdropped_button);
-		mNumberText = (TextView) mRootView.findViewById(R.id.number_text);
+//		mNumberText = (TextView) mRootView.findViewById(R.id.number_text);
 		String getPhoneName = BtcNative.getPhoneName();
 		String getCallNumber = BtcNative.getCallNumber();
 		mNumberText.setText(getPhoneName + getCallNumber);

@@ -14,6 +14,7 @@ import com.spreadwin.btc.utils.DBAdapter;
 import com.spreadwin.btc.utils.ECarOnline;
 import com.spreadwin.btc.utils.HttpAssist;
 import com.spreadwin.btc.utils.HttpUtil;
+import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.DialogView;
@@ -177,6 +178,8 @@ public class SyncService extends Service {
 	public static String mTitle = null;
 	public static String mArtist = null;
 	public static String mAlbum = null;
+	
+	public static LruJsonCache mCache;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -217,6 +220,7 @@ public class SyncService extends Service {
 		syncT.start();
 		// mOldBt = BtcNative.getVolume();
 		mOldBt = mDefaultVoice;
+		mCache = new LruJsonCache();
 		onIntentFilter();
 	}
 
@@ -1182,6 +1186,7 @@ public class SyncService extends Service {
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
 			sendBroadcast(mIN_CallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了"+DialogView.ACTION_BT_CALL_IN);
+			//发送蓝牙通路
 			removeCallView();
 			break;
 		case BtcGlobalData.CALL_OUT:

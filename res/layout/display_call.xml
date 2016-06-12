@@ -1,53 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_05"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:background="@anim/call_anim" />
+        android:gravity="center"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/blue"
-        android:textSize="30sp" />
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@anim/call_anim" />
 
-    <TextView
-        android:id="@+id/number_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/blue"
-        android:textSize="40sp" />
+        <TextView
+            android:id="@+id/name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue"
+            android:textSize="35sp" />
 
-    <com.spreadwin.btc.view.DilatingDotsProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="15dp"
-        android:radius="6dp"
-        app:dd_animationDuration="500"
-        app:dd_horizontalSpacing="8dp"
-        app:dd_numDots="6"
-        app:dd_scaleMultiplier="1.5"
-        android:color="@color/blue" />
+        <TextView
+            android:id="@+id/address_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:textColor="@color/blue"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/call_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:textColor="@color/blue"
+            android:textSize="24sp" />
+
+        <com.spreadwin.btc.view.DilatingDotsProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:radius="6dp"
+            android:visibility="gone"
+            app:dd_animationDuration="500"
+            app:dd_horizontalSpacing="8dp"
+            app:dd_numDots="6"
+            app:dd_scaleMultiplier="1.5"
+            android:color="@color/blue" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal" >
 
         <ImageView
@@ -58,17 +72,13 @@
             android:layout_weight="1"
             android:src="@drawable/bluetooth_dropped" />
 
-        <TextView
+        <ImageView
             android:id="@+id/mute"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:drawableTop="@drawable/mute_u"
-            android:gravity="center"
-            android:text="@string/mute"
-            android:textColor="@color/white"
-            android:textSize="@dimen/dp_25" />
+            android:src="@drawable/mute_u" />
 
         <ImageView
             android:id="@+id/mdial_button"
@@ -78,18 +88,16 @@
             android:layout_weight="1"
             android:src="@drawable/bluetooth_dial" />
 
-        <TextView
-            android:id="@+id/hf"
+        
+        <ImageView
+            android:id="@+id/image_switch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:drawableTop="@drawable/handsfree_u"
-            android:gravity="center"
-            android:text="@string/hf"
-            android:textColor="@color/white"
-            android:textSize="@dimen/dp_25"
-            android:visibility="gone" />
+            android:src="@drawable/switching_01" />
+        
+   
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
