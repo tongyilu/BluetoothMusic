@@ -46,6 +46,7 @@ import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
 import com.spreadwin.btc.view.CustomDialog;
+import com.spreadwin.btc.view.DialogView;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static final String TAG = "MainActivity";
@@ -135,6 +136,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mRightMode = 2;
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
+	
+	private DialogView dialogView;
 
 	private CustomDialog.Builder builder;
 	
@@ -483,15 +486,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					if (mStatus == BtcGlobalData.CALL_IN) {
 						mShowDialog(DIALOG1);
 					} else if (mStatus == BtcGlobalData.CALL_OUT) {
-						// FragmentManager fm = getFragmentManager();
-						// FragmentTransaction transaction =
-						// fm.beginTransaction();
-						// if (mBluetoothFragment == null) {
-						// mBluetoothFragment = new BluetoothFragment();
-						// }
-						// transaction.replace(R.id.id_fragment_content,
-						// mBluetoothFragment);
-						// transaction.commit();
 						setDefaultFragment();
 						mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 					} else if (mStatus == BtcGlobalData.IN_CALL) {

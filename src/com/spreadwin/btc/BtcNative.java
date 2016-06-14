@@ -19,6 +19,8 @@ public class BtcNative {
 	public static native int getPairStatus();
 	public static native int getBfpStatus();
 	public static native int getCallStatus();
+	public static native int changeAudioPath();
+	public static native int getAudioPath();
 	public static native int getA2dpStatus();
 	public static native int getSyncStatus(int type);
 	static native int startSyncPhoneBook(int type);

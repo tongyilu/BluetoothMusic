@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.spreadwin.btc.view.CallLineraLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/call_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_05"
@@ -12,11 +13,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="2.2"
-        android:visibility="gone"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="20dp"
-         >
+        android:visibility="gone" >
 
         <RelativeLayout
             android:id="@+id/input_layout"
@@ -32,7 +32,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:visibility="gone"
                 android:layout_marginRight="30dip"
                 android:background="@drawable/bluetooth_delete" />
 
@@ -78,7 +77,6 @@
                 android:visibility="gone" />
 
             <ImageButton
-                android:id="@+id/delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -256,7 +254,6 @@
                 android:id="@+id/name_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="傻妞"
                 android:textColor="@color/blue"
                 android:textSize="35sp" />
 
@@ -265,18 +262,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:text="湖北 荆州 移动"
                 android:textColor="@color/blue"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/call_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:text="来电"
                 android:textColor="@color/blue"
                 android:textSize="24sp" />
+
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:format="%s"
+                android:textColor="@color/blue"
+                android:textSize="24sp"
+                android:visibility="gone" />
 
             <com.spreadwin.btc.view.DilatingDotsProgressBar
                 android:id="@+id/progress"
@@ -305,14 +310,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/keyboard_u" />
+                android:src="@drawable/keyboard_u"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/image_switch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/switching_01" />
+                android:src="@drawable/switching_02" />
 
             <ImageView
                 android:id="@+id/mdropped_button"
@@ -326,16 +332,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/mute_u" />
+                android:src="@drawable/mute_d" />
 
             <ImageView
                 android:id="@+id/mdial_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/bluetooth_dial"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:src="@drawable/bluetooth_dial" />
         </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</com.spreadwin.btc.view.CallLineraLayout>

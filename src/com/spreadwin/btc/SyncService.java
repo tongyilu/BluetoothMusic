@@ -178,7 +178,7 @@ public class SyncService extends Service {
 	public static String mTitle = null;
 	public static String mArtist = null;
 	public static String mAlbum = null;
-	
+
 	public static LruJsonCache mCache;
 
 	@Override
@@ -618,7 +618,7 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
 			// 不自动打开蓝牙音频
-//			setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
+			// setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
 
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			// saySomething("蓝牙已断开");// 语音提示
@@ -1093,8 +1093,7 @@ public class SyncService extends Service {
 			} else {
 				sortModel.setSecondLetters("#");
 			}
-		} else
-		{
+		} else {
 			sortModel.setSortLetters("#");
 			sortModel.setSecondLetters("#");
 		}
@@ -1185,10 +1184,10 @@ public class SyncService extends Service {
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
 			sendBroadcast(mIN_CallIntent);
-			Log.d("ACTION_BT_CALL_IN", "发送了"+DialogView.ACTION_BT_CALL_IN);
-            //接听和挂断
-			//发送蓝牙通路
-//			removeCallView();
+			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
+			// 接听和挂断
+			// 发送蓝牙通路
+			 removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
 			// setMute(false,mTempStatus);
@@ -1221,7 +1220,7 @@ public class SyncService extends Service {
 					mUpdateCalllog = BtcGlobalData.PB_MISS;
 				}
 			}
-			removeCallView();
+			removeCallView(false);
 			mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
 			// 凯立德一键通的返回结果
 			if (mCLDCall) {
@@ -1251,16 +1250,15 @@ public class SyncService extends Service {
 		HandlerCallin.sendMessage(msg1);
 	}
 
-	private void removeCallView() {
-		try {
-			if (wm != null && view != null) {
-				finishMainActivity();
-				wm.removeView(view);
-				// wm.removeViewImmediate(view);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void removeCallView(boolean isCall) {
+		finishMainActivity();
+		// wm.removeView(view);
+		if (isCall) {
+			sendBroadcast(new Intent(DialogView.ANSWER_UP));
+		}else{
+			sendBroadcast(new Intent(DialogView.FINISH_ACTIVITY));
 		}
+		// wm.removeViewImmediate(view);
 	}
 
 	public void finishMainActivity() {
@@ -1271,7 +1269,9 @@ public class SyncService extends Service {
 			sendObjMessage(1, mfinish);
 		}
 	}
-   boolean isScreen;
+
+	boolean isScreen;
+
 	private void showCallDisplay(int full) {
 
 		mLog("showCallDisplay" + full);
@@ -1284,9 +1284,8 @@ public class SyncService extends Service {
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
-		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN ;
 
-		
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
 			params.x = 800;
@@ -1299,7 +1298,7 @@ public class SyncService extends Service {
 		}
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
-		DialogView gpsView = new DialogView(this, isSater,isScreen);
+		DialogView gpsView = new DialogView(this, isSater, isScreen);
 		view = gpsView.getVideoPlayView();
 		wm.addView(view, params);
 	}
@@ -1312,7 +1311,6 @@ public class SyncService extends Service {
 		// } else {
 		// audioManager.abandonAudioFocus(null);
 		// }
-
 	}
 
 	/**
