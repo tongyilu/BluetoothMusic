@@ -243,12 +243,23 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@anim/call_anim" />
+            <com.spreadwin.btc.view.RippleBackground
+                android:id="@+id/content"
+                android:layout_width="184dp"
+                android:layout_height="184dp"
+                android:gravity="center"
+                app:rb_color="#0099CC"
+                app:rb_duration="4000"
+                app:rb_radius="15dp"
+                app:rb_rippleAmount="6"
+                app:rb_scale="6" >
+
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bt_1" />
+            </com.spreadwin.btc.view.RippleBackground>
 
             <TextView
                 android:id="@+id/name_text"
@@ -317,8 +328,7 @@
                 android:id="@+id/image_switch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/switching_02" />
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/mdropped_button"
@@ -339,8 +349,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:src="@drawable/bluetooth_dial" />
+                android:src="@drawable/bluetooth_dial"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 

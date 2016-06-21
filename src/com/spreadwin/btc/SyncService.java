@@ -1182,8 +1182,8 @@ public class SyncService extends Service {
 			BtAudioManager.getInstance(this).onCallChange(true);
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
-			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
-			sendBroadcast(mIN_CallIntent);
+//			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
+//			sendBroadcast(mIN_CallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
 			// 接听和挂断
 			// 发送蓝牙通路

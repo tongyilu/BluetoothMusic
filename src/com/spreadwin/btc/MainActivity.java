@@ -184,7 +184,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			binder = null;
 			binded = false;
 		}
-
 	};
 
 	@Override
