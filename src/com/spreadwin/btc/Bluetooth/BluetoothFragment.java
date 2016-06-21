@@ -146,7 +146,6 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 	// 挂断电话
 	private void hangupCall() {
 		BtcNative.hangupCall();
-		BtcNative.answerCall();
 		// clearInput();
 		setCallStatus(BtcGlobalData.NO_CALL);
 	}

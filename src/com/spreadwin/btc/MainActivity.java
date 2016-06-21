@@ -18,6 +18,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
+import android.provider.MediaStore.Video;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -37,7 +38,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.spreadwin.btc.Bluetooth.BluetoothFragment;
 import com.spreadwin.btc.Calllogs.CallLogsFragment;
 import com.spreadwin.btc.Music.BtAudioManager;
@@ -45,6 +45,8 @@ import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
+import com.spreadwin.btc.view.CustomDialog;
+import com.spreadwin.btc.view.DialogView;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static final String TAG = "MainActivity";
@@ -134,7 +136,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mRightMode = 2;
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
+	
+	private DialogView dialogView;
 
+	private CustomDialog.Builder builder;
+	
 	Handler mHandler = new Handler();
 	Runnable mRunnable = new Runnable() {
 
@@ -177,7 +183,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			binder = null;
 			binded = false;
 		}
-
 	};
 
 	@Override
@@ -343,12 +348,28 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mContectText = (TextView) findViewById(R.id.contect_text);
 		
 		mVto = main.getViewTreeObserver();
+		
+		builder = new com.spreadwin.btc.view.CustomDialog.Builder(this);
+		builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
+				dialog.dismiss();
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, new android.content.DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		
 
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
 		mRedialLayout.setOnClickListener(this);
 		mBluetoothLayout.setOnClickListener(this);
+		mBluetoothName.setOnClickListener(this);
+		
 
 		mCallLogsFragment = new CallLogsFragment();
 		mContactsFragment = new ContactsFragment();
@@ -463,15 +484,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					if (mStatus == BtcGlobalData.CALL_IN) {
 						mShowDialog(DIALOG1);
 					} else if (mStatus == BtcGlobalData.CALL_OUT) {
-						// FragmentManager fm = getFragmentManager();
-						// FragmentTransaction transaction =
-						// fm.beginTransaction();
-						// if (mBluetoothFragment == null) {
-						// mBluetoothFragment = new BluetoothFragment();
-						// }
-						// transaction.replace(R.id.id_fragment_content,
-						// mBluetoothFragment);
-						// transaction.commit();
 						setDefaultFragment();
 						mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 					} else if (mStatus == BtcGlobalData.IN_CALL) {
@@ -507,21 +519,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
 						mContectText.setVisibility(View.VISIBLE);
 						if (mMusicFragment.isVisible()) {
-							mMusicFragment.openAudioMode();
+							mMusicFragment.openMusicFragment();
 						}
 						if (mMusicRightFragment.isVisible()) {
-							mMusicRightFragment.openAudioMode();
+							mMusicRightFragment.openMusicFragment();
 						}
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
-						mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_duankai);
+						mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
+						mHandler.removeCallbacks(mRunnable);
 						mContectText.setVisibility(View.GONE);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 						handler.sendEmptyMessage(mMessageNotifyData);
 						mDismissDialog(DIALOG1);
-						mHandler.removeCallbacks(mRunnable);
 					} 
 				}
 				else if (intent.getAction().equals(mAcitonFinish)) {
@@ -609,15 +621,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				view_MyControlVolume.setVisibility(View.GONE);
 				break;
 			case mMessageShowBluetoothName:
+				Log.d("getDeviceName", BtcNative.getDeviceName());
 				if (BtcNative.getDeviceName().length() > 0) {
-					mBluetoothName.setText(getResources().getString(R.string.device_name) + BtcNative.getDeviceName()
-							+ " " + getResources().getString(R.string.help_text));
+					mBluetoothName.setText(getResources().getString(R.string.device_name) + BtcNative.getDeviceName()+ " " + getResources().getString(R.string.help_text));
 				} else {
 					handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
 				}
 				break;
 			case mMessageNotifyData:
 				mCallLogsFragment.notifyDataSetChanged();
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				mContactsFragment.notifyDataSetChanged();
 				break;
 			default:
@@ -625,7 +642,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			}
 		};
 	};
-
+	
 	protected void mDismissDialog(int dIALOG12) {
 		if (mCallDialog != null && mCallDialog.isShowing()) {
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
@@ -843,7 +860,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		} else if (v == mdroppedbutton) {
 			mLog("onClick mdroppedbutton");
 			denyCall();
-		} else {
+		} else if(v == mBluetoothName){
+			builder.crater().show();
+	   }else {
 			FragmentManager fm = getFragmentManager();
 			FragmentTransaction transaction = fm.beginTransaction();
 			switch (v.getId()) {
@@ -1064,16 +1083,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 				mLog("Receiver mActionBfp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.BFP_CONNECTED) {
-					 mContectText.setVisibility(View.VISIBLE);
-					mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_lianjie);
+					mContectText.setVisibility(View.VISIBLE);
+					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
+					if (mMusicFragment.isVisible()) {
+						mMusicFragment.openMusicFragment();
+					}
+					if (mMusicRightFragment.isVisible()) {
+						mMusicRightFragment.openMusicFragment();
+					}
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
-					 mContectText.setVisibility(View.GONE);
-					SyncService.mNum = 0;
-					mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_duankai);
+					Intent mA2dpIntent = new Intent();
+					mA2dpIntent.setAction(MusicFragment.DISCONNECT);
+				    sendBroadcast(mA2dpIntent);
+				    mHandler.removeCallbacks(mRunnable);
+					mContectText.setVisibility(View.GONE);
+					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 					handler.sendEmptyMessage(mMessageNotifyData);
@@ -1085,6 +1113,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 	}
 
+	
 	public static void mLog(String string) {
 		if (DEBUG) {
 			Log.d(TAG, string);

@@ -14,5 +14,12 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
-
+   <style name="text_22_ffffff">
+        <item name="android:textSize">22.0dip</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+     <style name="text_20_ffffff">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#fff</item>
+    </style>
 </resources>

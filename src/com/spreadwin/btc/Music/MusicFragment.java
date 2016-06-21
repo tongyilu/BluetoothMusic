@@ -3,23 +3,24 @@ package com.spreadwin.btc.Music;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
-import com.spreadwin.btc.R.layout;
+import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.BtcGlobalData;
+import com.spreadwin.btc.view.AlwaysMarqueeTextView;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 public class MusicFragment extends Fragment implements OnClickListener {
 	public static final String TAG = MainActivity.TAG;
@@ -27,20 +28,38 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public int A2DP_DISCONNECT = BtcGlobalData.A2DP_DISCONNECT;
 	public int A2DP_CONNECTED = BtcGlobalData.A2DP_CONNECTED;
 	public int A2DP_PLAYING = BtcGlobalData.A2DP_PLAYING;
+	public static final String mActionInfoBfp = "com.spreadwin.btc.bfp.info";
+	public static final String DISCONNECT = "BFP_DISCONNECT";
 
 	// public int mCurStatus = BtcGlobalData.A2DP_DISCONNECT;
 	private int mCallStatus = 0;
 	public static final int CHECK_A2DP_STATUS = 1;
 
 	ImageButton mMusicPrevious, mMusicPlay, mMusicNext;
-	TextView mA2dpText;
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;
 	private View mRootView;
+	private AlwaysMarqueeTextView mPlayTitle, mPlayArtist;
 
 	private boolean mRight = false;// true:为右边
-	
-	private boolean isPlay;
+	private int mPlayer = 0;
+	private String PlayTitle = null;
+	private String PlayArtist = null;
+	private String PlayAlbum = null;
+	// private Handler mHandler = new Handler();
+	// private Runnable mRunnable = new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// PlayTitle = SyncService.mTitle;
+	// PlayArtist = SyncService.mArtist;
+	// PlayAlbum = SyncService.mAlbum;
+	// mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
+	// mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" +
+	// PlayAlbum);
+	// mPlayAlbum.setText(PlayAlbum == null ? "" : "专辑：" + PlayAlbum);
+	// }
+	// };
 
 	public MusicFragment() {
 	}
@@ -58,6 +77,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onStart() {
 		super.onStart();
+		mPlayer = BtcNative.getA2dpStatus();
 		mLog("MusicFragment onStart mCallStatus ==" + mCallStatus + "; mRight ==" + mRight);
 		if (!mRight) {
 			if (mCallStatus == BtcGlobalData.NO_CALL) {
@@ -71,10 +91,21 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public void openAudioMode() {
 		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus());
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-			BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
 			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
+//			BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
+			if (isPlaySong) {
+				mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
+				mPlayArtist.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
+			}else{
+				mPlayTitle.setText("");
+				mPlayArtist.setText("");
+			}
 		}
+	}
+
+	public void openMusicFragment() {
+		BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
 	}
 
 	@Override
@@ -84,14 +115,38 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mMusicPrevious = (ImageButton) mRootView.findViewById(R.id.music_previous);
 		mMusicPlay = (ImageButton) mRootView.findViewById(R.id.music_play);
 		mMusicNext = (ImageButton) mRootView.findViewById(R.id.music_next);
-		mA2dpText = (TextView) mRootView.findViewById(R.id.a2dp_text);
+		mPlayTitle = (AlwaysMarqueeTextView) mRootView.findViewById(R.id.play_title);
+		mPlayArtist = (AlwaysMarqueeTextView) mRootView.findViewById(R.id.play_artist);
 		mMusicPrevious.setOnClickListener(this);
 		mMusicPlay.setOnClickListener(this);
 		mMusicNext.setOnClickListener(this);
 		// handler.sendEmptyMessageDelayed(CHECK_A2DP_STATUS, 1000);
 		checkA2dpStatus();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(mActionInfoBfp);
+		intentFilter.addAction(DISCONNECT);
+		getActivity().registerReceiver(mReceiver, intentFilter);
 		return mRootView;
 	}
+    
+	boolean isPlaySong;
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction() == mActionInfoBfp) {
+				isPlaySong = true;
+				PlayTitle = intent.getStringExtra("mTitle");
+				PlayArtist = intent.getStringExtra("mArtist");
+				PlayAlbum = intent.getStringExtra("mAlbum");
+				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
+				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" + PlayAlbum);
+			}else if(intent.getAction() == DISCONNECT){
+				isPlaySong = false;
+				mPlayTitle.setText("");
+				mPlayArtist.setText("");
+			}
+		}
+	};
 
 	@Override
 	public void onResume() {
@@ -122,12 +177,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	}
 
 	public void setA2dpStatus(int status) {
-		if (mMusicPlay == null && mA2dpText == null && getActivity() == null) {
+		if (mMusicPlay == null && getActivity() == null) {
 			return;
 		}
-		mA2dpText.setText("");
 		if (status == A2DP_PLAYING) {
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
+			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 		} else if (status == A2DP_CONNECTED) {
 			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 		} else if (status == A2DP_DISCONNECT) {
@@ -148,6 +202,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			mLog("onClick mMusicNext");
 			mMusicNext();
 		}
+		// mHandler.postDelayed(mRunnable, 2000);
 	}
 
 	private void mMusicPrevious() {
@@ -166,18 +221,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
-		//BtcNative.getA2dpStatus() == A2DP_PLAYING||
-		if (isPlay) {
+		if (mPlayer == 2) {
 			mLog("onClick pauseMusic");
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
 			BtcNative.pauseMusic();
-			isPlay = false;
-			//BtcNative.getA2dpStatus() == A2DP_CONNECTED ||
-		} else if (!isPlay) {
+			mPlayer = 1;
+		} else if (mPlayer == 1 || mPlayer == 0) {
 			mLog("onClick playMusic");
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_pause);
 			BtcNative.playMusic();
-			isPlay = true;
+			mPlayer = 2;
 		}
 	}
 
@@ -191,4 +242,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mCallStatus = callStatus;
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		getActivity().unregisterReceiver(mReceiver);
+	}
 }

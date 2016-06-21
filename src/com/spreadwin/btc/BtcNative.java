@@ -1,3 +1,4 @@
+
 package com.spreadwin.btc;
 
 import android.util.Log;
@@ -18,6 +19,8 @@ public class BtcNative {
 	public static native int getPairStatus();
 	public static native int getBfpStatus();
 	public static native int getCallStatus();
+	public static native int changeAudioPath();
+	public static native int getAudioPath();
 	public static native int getA2dpStatus();
 	public static native int getSyncStatus(int type);
 	static native int startSyncPhoneBook(int type);
@@ -58,5 +61,10 @@ public class BtcNative {
 	public static native int getVolume();
 	public static native int getPowerStatus();
 	public static native String getDeviceName();
-	
+	public static native int setDeviceName(String name);
+	public static native String getPlayTitle();
+	public static native String getPlayArtist();
+	public static native String getPlayAlbum();
+	public static native int enterSleep();
+	public static native int leaveSleep();
 }

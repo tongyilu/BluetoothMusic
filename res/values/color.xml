@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="white">#fff</color>
     <color name="blue">#00acfe</color>
     <color name="gray_61">#616161</color>
@@ -8,4 +9,6 @@
     <color name="blue_00">#00a5f3</color>
     <color name="orange">#f62900</color>
     <color name="gray_d3">#d3d3d3</color>
+    <color name="rippelColor">#0099CC</color>
+
 </resources>
