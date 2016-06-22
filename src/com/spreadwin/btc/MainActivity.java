@@ -527,7 +527,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
-						mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
+						mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_duankai);
 						mHandler.removeCallbacks(mRunnable);
 						mContectText.setVisibility(View.GONE);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
@@ -1084,7 +1084,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				mLog("Receiver mActionBfp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.BFP_CONNECTED) {
 					mContectText.setVisibility(View.VISIBLE);
-					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
+					mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_lianjie);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 					if (mMusicFragment.isVisible()) {
@@ -1101,7 +1101,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				    sendBroadcast(mA2dpIntent);
 				    mHandler.removeCallbacks(mRunnable);
 					mContectText.setVisibility(View.GONE);
-					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
+					mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_duankai);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 					handler.sendEmptyMessage(mMessageNotifyData);
