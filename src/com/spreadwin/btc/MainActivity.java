@@ -1035,6 +1035,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 				}
+				mMusicFragment.openAudioMode();
 				mMusicFragment.checkA2dpStatus();
 				mMusicRightFragment.checkA2dpStatus();
 			} else if (intent.getAction().equals(mActionCall)) {

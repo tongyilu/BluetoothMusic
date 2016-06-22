@@ -93,13 +93,15 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
-//			BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
-			if (isPlaySong) {
-				mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
-				mPlayArtist.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
-			}else{
-				mPlayTitle.setText("");
-				mPlayArtist.setText("");
+			// BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
+			if (mPlayArtist != null && mPlayTitle != null) {
+				if (isPlaySong) {
+					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
+					mPlayArtist.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
+				} else {
+					mPlayTitle.setText("");
+					mPlayArtist.setText("");
+				}
 			}
 		}
 	}
@@ -128,7 +130,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		getActivity().registerReceiver(mReceiver, intentFilter);
 		return mRootView;
 	}
-    
+
 	boolean isPlaySong;
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -140,7 +142,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				PlayAlbum = intent.getStringExtra("mAlbum");
 				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
 				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" + PlayAlbum);
-			}else if(intent.getAction() == DISCONNECT){
+			} else if (intent.getAction() == DISCONNECT) {
 				isPlaySong = false;
 				mPlayTitle.setText("");
 				mPlayArtist.setText("");
