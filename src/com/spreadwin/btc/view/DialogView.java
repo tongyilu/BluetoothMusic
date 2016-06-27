@@ -117,9 +117,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mHsview = (HorizontalScrollView) view.findViewById(R.id.scroollview);
 
 		callLayout = (CallLineraLayout) view.findViewById(R.id.call_layout);
-		rippleBackground = (RippleBackground)view.findViewById(R.id.content);
+		rippleBackground = (RippleBackground) view.findViewById(R.id.content);
 
-		
 		rippleBackground.startRippleAnimation();
 		getCallNumber = BtcNative.getCallNumber();
 		getPhoneName = getCallName(getCallNumber);
@@ -182,7 +181,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				mContext.unregisterReceiver(mReceiver);
 			}
 		});
-		
+
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -282,6 +281,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			}
 			break;
 		case R.id.image_switch:
+			BtcNative.changeAudioPath();
 			setChckoutAudio();
 			break;
 		case R.id.checkout:
@@ -297,15 +297,17 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			break;
 		}
 	}
-	
-	public void setChckoutAudio(){
-		BtcNative.changeAudioPath();
-		if (BtcNative.getAudioPath() == 0) {
-			Log.d("Dialog", "镜子接听===" + BtcNative.getAudioPath());
-			mSwitch.setImageResource(R.drawable.switching_02);
-		} else {
-			Log.d("Dialog", "手机接听===" + BtcNative.getAudioPath());
-			mSwitch.setImageResource(R.drawable.switching_01);
+
+	public void setChckoutAudio() {
+		try {
+			Thread.sleep(1000);
+			if (BtcNative.getAudioPath() == 0) {
+				mSwitch.setImageResource(R.drawable.switching_02);
+			} else {
+				mSwitch.setImageResource(R.drawable.switching_01);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -342,8 +344,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
 		if (isStart) {
-//			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-//			mContext.sendBroadcast(mCallIntent);
+			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
+			mContext.sendBroadcast(mCallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了" + ACTION_BT_CALL_IN);
 		}
 		try {
@@ -356,6 +358,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	/**
 	 * 获取URL返回的字符串
+	 * 
 	 * @param tel
 	 */
 	public void callUrlByGet(final String tel) {
@@ -377,7 +380,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 							Log.d(TAG, "有效的电话号码:" + tel);
 							msgGson = new Gson();
 							MobileLocation location = msgGson.fromJson(content, MobileLocation.class);
-							String mobile = location.getResult().getProvince() + " " + location.getResult().getCity()+ " " + location.getResult().getCompany();
+							String mobile = location.getResult().getProvince() + " " + location.getResult().getCity()
+									+ " " + location.getResult().getCompany();
 							SyncService.mCache.addJsonToMemoryCache("电话号码：" + tel, mobile);
 							if (!TextUtils.isEmpty(mobile)) {
 								mAddressText.setVisibility(View.VISIBLE);
@@ -396,7 +400,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 				@Override
 				public void onFailure(Throwable error, String content) {
-					Log.d(TAG, "请求报错："+error + "");
+					Log.d(TAG, "请求报错：" + error + "");
 				}
 			});
 		}

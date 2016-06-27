@@ -79,7 +79,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	private PinyinComparator pinyinComparator;
 
 	public List<Fragment> fragments = new ArrayList<Fragment>();
-	private ArrayList<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
+	public static ArrayList<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
 	PhoneBookInfo mPhoneContactsInfo, mSIMContactsInfo;
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;

@@ -618,7 +618,7 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
 			// 不自动打开蓝牙音频
-			 setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
+//			 setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
 
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			saySomething("蓝牙已断开");// 语音提示
@@ -652,17 +652,17 @@ public class SyncService extends Service {
 
 				showNotification();
 				mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-				Thread mDataThread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						mLog("mDataThread  is start");
-						mdatabase = getDatabase();
-						mLog("mDataThread  is end");
-					}
-				});
-				if (!mDataThread.isAlive()) {
-					mDataThread.start();
-				}
+				// Thread mDataThread = new Thread (new Runnable() {
+				// @Override
+				// public void run() {
+				mLog("mDataThread  is start");
+				mdatabase = getDatabase();
+				mLog("mDataThread  is end");
+//					}
+//				});
+//				if (!mDataThread.isAlive()) {
+//					mDataThread.start();
+//				}
 				if (mdatabase && isNetworkConnected()) {
 					PullContacts();
 				}
@@ -762,7 +762,6 @@ public class SyncService extends Service {
 						}
 					}
 				}
-
 			}
 		});
 		thread.start();
@@ -1182,8 +1181,8 @@ public class SyncService extends Service {
 			BtAudioManager.getInstance(this).onCallChange(true);
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
-//			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
-//			sendBroadcast(mIN_CallIntent);
+			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
+			sendBroadcast(mIN_CallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
 			// 接听和挂断
 			// 发送蓝牙通路
@@ -1200,7 +1199,7 @@ public class SyncService extends Service {
 			break;
 		case BtcGlobalData.NO_CALL:
 			// setMute(false, mTempStatus);
-			// setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
+			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 			isSater = false;
 			BtAudioManager.getInstance(this).onCallChange(false);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
@@ -1284,7 +1283,7 @@ public class SyncService extends Service {
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
-		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN ;
+		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE ;
 
 		// 设置悬浮窗的长得宽
 		if (full == 1) {

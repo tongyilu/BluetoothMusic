@@ -93,7 +93,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
-			// BtAudioManager.getInstance(getActivity()).setAudioMode(BtAudioManager.AUDIO_MODE_BT);
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
 					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
