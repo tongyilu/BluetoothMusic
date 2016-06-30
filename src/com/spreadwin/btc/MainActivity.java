@@ -135,7 +135,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mRightMode = 2;
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
-	private boolean isAppRunning = false;
+	// private boolean isAppRunning = false;
 
 	// private DialogView dialogView;
 
@@ -265,7 +265,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// }
 		// }
 		mLog("MainActivity onResume");
-		isAppRunning = true;
+		// isAppRunning = true;
 		parserIntent();
 
 	}
@@ -316,7 +316,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		isAppRunning = false;
+		// isAppRunning = false;
 		// unregisterReceiver(mScreenSizeChangeReceiver);
 	}
 
@@ -526,7 +526,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
 						mContectText.setVisibility(View.VISIBLE);
-						if (isAppRunning) {
+						if (SyncService.isTopMyself(getBaseContext())) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
 							}
@@ -547,7 +547,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					}
 				} else if (intent.getAction().equals(mAcitonFinish)) {
 					MainActivity.this.finish();
-				}
+				} 
 
 			}
 		};
@@ -558,6 +558,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		intentFilter.addAction(mActionPair);
 		intentFilter.addAction(mActionBfp);
 		intentFilter.addAction(mAcitonFinish);
+		
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		mBroadcast = true;
 		mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, intentFilter);
@@ -1095,7 +1096,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
-					if (isAppRunning) {
+					if (SyncService.isTopMyself(getBaseContext())) {
 						if (mMusicFragment.isVisible()) {
 							mMusicFragment.openAudioMode();
 						}
@@ -1119,7 +1120,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 			} else if (intent.getAction().equals(mAcitonFinish)) {
 				MainActivity.this.finish();
-			}
+			} 
 		}
 	}
 

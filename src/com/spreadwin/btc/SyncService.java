@@ -79,6 +79,8 @@ public class SyncService extends Service {
 	public static final String EXTRA_MUSIC_VOLUME_MUTED = "android.media.EXTRA_MUSIC_VOLUME_MUTED";
 	public static final String MUSIC_MUTE_SET_OTHER_ACTION = "android.media.MUSIC_MUTE_SET_OTHER_ACTION";
 	public static final String MUSIC_MUTE_RESTORE_ACTION = "android.media.MUSIC_MUTE_RESTORE_ACTION";
+
+	public static final String LOCAL_MUSIC_ACTION = "android.intent.action.SPREADWIN.LOCALMUSIC";
 	public boolean mOnlyMusic = false;
 
 	/**
@@ -242,6 +244,7 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_CUSTOMER_SERVICE_NUMBER);
 		filter.addAction(ACTION_ACC_OFF);
 		filter.addAction(ACTION_ACC_ON);
+		filter.addAction(LOCAL_MUSIC_ACTION);
 		// filter.addAction(ACTION_ECAR_CALL_SEND);
 		registerReceiver(mBatInfoReceiver, filter);
 	}
@@ -618,7 +621,7 @@ public class SyncService extends Service {
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
 			// 不自动打开蓝牙音频
-//			 setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
+			// setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
 
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			saySomething("蓝牙已断开");// 语音提示
@@ -658,11 +661,11 @@ public class SyncService extends Service {
 				mLog("mDataThread  is start");
 				mdatabase = getDatabase();
 				mLog("mDataThread  is end");
-//					}
-//				});
-//				if (!mDataThread.isAlive()) {
-//					mDataThread.start();
-//				}
+				// }
+				// });
+				// if (!mDataThread.isAlive()) {
+				// mDataThread.start();
+				// }
 				if (mdatabase && isNetworkConnected()) {
 					PullContacts();
 				}
@@ -1186,7 +1189,7 @@ public class SyncService extends Service {
 			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
 			// 接听和挂断
 			// 发送蓝牙通路
-			 removeCallView(true);
+			removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
 			// setMute(false,mTempStatus);
@@ -1254,7 +1257,7 @@ public class SyncService extends Service {
 		// wm.removeView(view);
 		if (isCall) {
 			sendBroadcast(new Intent(DialogView.ANSWER_UP));
-		}else{
+		} else {
 			sendBroadcast(new Intent(DialogView.FINISH_ACTIVITY));
 		}
 		// wm.removeViewImmediate(view);
@@ -1283,7 +1286,7 @@ public class SyncService extends Service {
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
-		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE ;
+		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
@@ -1321,7 +1324,7 @@ public class SyncService extends Service {
 			if (mTempStatus != BtcGlobalData.NO_CALL) {
 				for (int i = 0; i < 3; i++) {
 					mLog("ainActivity.mBroadcast isTopMyself");
-					if (isTopMyself()) {
+					if (isTopMyself(this)) {
 						mLog("ainActivity.mBroadcast isTopMyself==" + true);
 						break;
 					}
@@ -1349,8 +1352,8 @@ public class SyncService extends Service {
 	 * 
 	 * @return
 	 */
-	private boolean isTopMyself() {
-		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	public static boolean isTopMyself(Context context) {
+		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> runningTasks = am.getRunningTasks(1);
 		RunningTaskInfo rti = runningTasks.get(0);
 		ComponentName component = rti.topActivity;
@@ -1557,6 +1560,14 @@ public class SyncService extends Service {
 					mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
 					sendObjMessage(1, mCallIntent);
 					BtcNative.disconnectPhone();
+				}
+			} else if (intent.getAction().equals(LOCAL_MUSIC_ACTION)) {
+				if (BtcGlobalData.A2DP_PLAYING == BtcNative.getA2dpStatus()) {
+					if (intent.getStringExtra("state").equals("play_last")) {
+						BtcNative.lastSong();
+					} else if (intent.getStringExtra("state").equals("play_next")) {
+						BtcNative.nextSong();
+					}
 				}
 			}
 		}

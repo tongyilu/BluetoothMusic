@@ -29,6 +29,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public int A2DP_CONNECTED = BtcGlobalData.A2DP_CONNECTED;
 	public int A2DP_PLAYING = BtcGlobalData.A2DP_PLAYING;
 	public static final String mActionInfoBfp = "com.spreadwin.btc.bfp.info";
+
 	public static final String DISCONNECT = "BFP_DISCONNECT";
 
 	// public int mCurStatus = BtcGlobalData.A2DP_DISCONNECT;
@@ -96,7 +97,8 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
 					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
-					mPlayArtist.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
+					mPlayArtist
+							.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
 				} else {
 					mPlayTitle.setText("");
 					mPlayArtist.setText("");
