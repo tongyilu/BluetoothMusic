@@ -15,6 +15,7 @@ import com.spreadwin.btc.utils.ECarOnline;
 import com.spreadwin.btc.utils.HttpAssist;
 import com.spreadwin.btc.utils.HttpUtil;
 import com.spreadwin.btc.utils.LruJsonCache;
+import com.spreadwin.btc.utils.OpenUtils;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.DialogView;
@@ -80,7 +81,8 @@ public class SyncService extends Service {
 	public static final String MUSIC_MUTE_SET_OTHER_ACTION = "android.media.MUSIC_MUTE_SET_OTHER_ACTION";
 	public static final String MUSIC_MUTE_RESTORE_ACTION = "android.media.MUSIC_MUTE_RESTORE_ACTION";
 
-	public static final String LOCAL_MUSIC_ACTION = "android.intent.action.SPREADWIN.LOCALMUSIC";
+	public static final String LOCAL_MUSIC_ACTION = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC";
+	public static final String PUSH_MUSIC_PLAY_STATE = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC_STATUS";
 	public boolean mOnlyMusic = false;
 
 	/**
@@ -183,6 +185,8 @@ public class SyncService extends Service {
 
 	public static LruJsonCache mCache;
 
+	private OpenUtils openUtils;
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return binder;
@@ -195,7 +199,7 @@ public class SyncService extends Service {
 		mECarOnline = ECarOnline.getInstance(this);
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
+		openUtils = new OpenUtils(this);
 		initBtc();
 
 		m_DBAdapter = new DBAdapter(this);
@@ -1107,16 +1111,19 @@ public class SyncService extends Service {
 	 * A2dp状态变化
 	 */
 	protected void onA2dpStatusChange() {
+		Intent ibm = new Intent(PUSH_MUSIC_PLAY_STATE);
 		Intent mA2dpIntent = new Intent();
 		mA2dpIntent.setAction(MainActivity.mActionA2dp);
 		if (mTempStatus == BtcGlobalData.A2DP_DISCONNECT) {
 			mA2dpIntent.putExtra("a2dp_status", BtcGlobalData.A2DP_DISCONNECT);
 		} else if (mTempStatus == BtcGlobalData.A2DP_CONNECTED) {
 			mA2dpIntent.putExtra("a2dp_status", BtcGlobalData.A2DP_CONNECTED);
+			ibm.putExtra("state", BtcGlobalData.A2DP_CONNECTED);
 		} else if (mTempStatus == BtcGlobalData.A2DP_PLAYING) {
 			mA2dpIntent.putExtra("a2dp_status", BtcGlobalData.A2DP_PLAYING);
+			ibm.putExtra("state", BtcGlobalData.A2DP_PLAYING);
 		}
-		// lbm.sendBroadcast(mA2dpIntent);
+		sendBroadcast(ibm);
 		sendObjMessage(1, mA2dpIntent);
 		mA2dpStatus = mTempStatus;
 	}
@@ -1507,6 +1514,7 @@ public class SyncService extends Service {
 			} else if (action.equals(ACTION_BT_CALL_REJECT)) {
 				BtcNative.denyCall();
 			} else if (action.equals(ACTION_BT_CALL_HANGUP)) {
+				openUtils.setRingerMode(true);
 				BtcNative.hangupCall();
 			} else if (action.equals(ACTION_FACTORY_TEST)) {
 				Intent mIntent = new Intent(ACTION_FACTORY_RETURN);
@@ -1562,12 +1570,15 @@ public class SyncService extends Service {
 					BtcNative.disconnectPhone();
 				}
 			} else if (intent.getAction().equals(LOCAL_MUSIC_ACTION)) {
-				if (BtcGlobalData.A2DP_PLAYING == BtcNative.getA2dpStatus()) {
-					if (intent.getStringExtra("state").equals("play_last")) {
-						BtcNative.lastSong();
-					} else if (intent.getStringExtra("state").equals("play_next")) {
-						BtcNative.nextSong();
-					}
+				String state = intent.getStringExtra("state");
+				if (state.equals("music_last")) {
+					BtcNative.lastSong();
+				} else if (state.equals("music_next")) {
+					BtcNative.nextSong();
+				} else if (state.equals("music_pause")) {
+					BtcNative.pauseMusic();
+				} else if (state.equals("music_play")) {
+					BtcNative.playMusic();
 				}
 			}
 		}

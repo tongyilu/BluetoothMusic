@@ -150,17 +150,16 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mNumberZero.setOnClickListener(this);
 		mNumberJin.setOnClickListener(this);
 		mNumberXing.setOnClickListener(this);
+		mSwitch.setVisibility(View.GONE);
 
 		if (!isStart) {
 			mCallText.setText("正在呼叫...");
 			mMute.setVisibility(View.GONE);
 			mDialButton.setVisibility(View.GONE);
-			mSwitch.setVisibility(View.GONE);
 		} else {
 			mCallText.setText("来电");
 			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.VISIBLE);
-			mSwitch.setVisibility(View.GONE);
 			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
 			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
@@ -331,15 +330,16 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	private void denyCall() {
-		if (!isStart) {
-			BtcNative.hangupCall();
-		} else {
-			BtcNative.denyCall();
-		}
+		// if (isStart) {
+		BtcNative.hangupCall();
+		// } else {
+		BtcNative.denyCall();
+		// }
 		mDismissDialog();
 	}
 
 	private void mDismissDialog() {
+		openUtils.setRingerMode(false);
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
@@ -353,7 +353,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**

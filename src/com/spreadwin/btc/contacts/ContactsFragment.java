@@ -180,9 +180,9 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		// mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus(D));
 		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
 		if (MainActivity.binder!=null) {
-			if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC || mContactsInfo.size() > 0) {
+			if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_DISCONNECT || mContactsInfo.size() > 0) {
 				hideLoading();
-			} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED ) {
+			} else if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED ) {
 				showLoading();
 			}
 		}

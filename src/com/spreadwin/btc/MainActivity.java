@@ -37,7 +37,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -175,7 +174,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
-
 		}
 
 		@Override
@@ -623,7 +621,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				} else {
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				}
-
 				break;
 			case mMessageHideVolume:
 				view_MyControlVolume
@@ -640,13 +637,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 				break;
 			case mMessageNotifyData:
-				mCallLogsFragment.notifyDataSetChanged();
+				mContactsFragment.notifyDataSetChanged();
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				mContactsFragment.notifyDataSetChanged();
+				mCallLogsFragment.notifyDataSetChanged();
 				break;
 			default:
 				break;
@@ -765,7 +762,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-
 	}
 
 	public void setDefaultFragment() {
