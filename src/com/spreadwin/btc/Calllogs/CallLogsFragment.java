@@ -12,6 +12,7 @@ import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.Calllogs.MyListView.OnRefreshListener;
 import com.spreadwin.btc.utils.PhoneBookInfo;
+import com.spreadwin.btc.view.SlidingTabLayout;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
 import android.app.Activity;
@@ -19,6 +20,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler; //import android.support.v4.app.FragmentManager;
@@ -54,9 +56,9 @@ public class CallLogsFragment extends Fragment {
 	public static final String TAG = "CallLogsFragment";
 	public static final boolean DEBUG = MainActivity.DEBUG;
 
-	private static final int CALL_OUT_TYPE = BtcGlobalData.PB_OUT;
-	private static final int CALL_MISS_TYPE = BtcGlobalData.PB_MISS;
-	private static final int CALL_IN_TYPE = BtcGlobalData.PB_IN;
+	public static final int CALL_OUT_TYPE = BtcGlobalData.PB_OUT;
+	public static final int CALL_MISS_TYPE = BtcGlobalData.PB_MISS;
+	public static final int CALL_IN_TYPE = BtcGlobalData.PB_IN;
 
 	public static Map<String, String> mNumberParams = new HashMap<String, String>();
 
@@ -73,7 +75,7 @@ public class CallLogsFragment extends Fragment {
 	private ViewGroup mContentContainer;
 	private View mRootView;
 	int tabType = 1;
-	private PagerTabStrip mtab;
+	private SlidingTabLayout slidingTabLayout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -123,12 +125,19 @@ public class CallLogsFragment extends Fragment {
 		mLog("onCreateView 222222222");
 		View rootView = inflater.inflate(R.layout.fragment_call_logs, container, false);
 		mRootView = rootView;
-		mtab = (PagerTabStrip) rootView.findViewById(R.id.tabs);
-		mtab.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+		slidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.tabs);
 		viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 		mAdapter = new MyAdapter();
 		viewPager.setAdapter(mAdapter);
 		viewPager.setOnPageChangeListener(mAdapter);
+
+		slidingTabLayout.setViewPager(viewPager);
+		slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+			@Override
+			public int getIndicatorColor(int position) {
+				return getActivity().getResources().getColor(R.color.blue_00);
+			}
+		});
 		return rootView;
 	}
 
@@ -138,7 +147,6 @@ public class CallLogsFragment extends Fragment {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return mTitle.length;
 		}
 
@@ -153,7 +161,6 @@ public class CallLogsFragment extends Fragment {
 			TabInfo tab = mTabs.get(position);
 			View root = tab.build(mInflater, mContentContainer, mRootView);
 			container.addView(root);
-			// root.setTag(R.id.name, tab);
 			return root;
 		}
 

@@ -7,14 +7,14 @@
         android:id="@+id/sort_key_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#303030" >
+        android:background="#0a1b2d" >
 
         <TextView
             android:id="@+id/sort_key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="14dp"
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </LinearLayout>
@@ -22,23 +22,33 @@
     <LinearLayout
         android:id="@+id/name_layout"
         android:layout_width="fill_parent"
-        android:layout_height="60dip" >
+        android:layout_height="63dip" >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dip"
-            android:layout_marginRight="10dip"
-            android:src="@drawable/icon" />
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/icon"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:textColor="#ffffff"
-            android:textSize="25sp" />
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="30dp"
+            android:textColor="#ffffff"
+            android:textSize="28sp" />
     </LinearLayout>
 
 </LinearLayout>

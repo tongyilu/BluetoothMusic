@@ -61,6 +61,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private boolean isCheckout;
 	private LinearLayout mDial;
 	private boolean isAnswer;
+	private WindowManager wm = null;
 
 	public static final String FINISH_ACTIVITY = "FINISH_ACTIVITY";
 
@@ -75,7 +76,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	StringBuilder mDisplayNumber = new StringBuilder();
 	private CallLineraLayout callLayout;
-	private Gson msgGson;
+	private Gson msgGson = new Gson();
 
 	public DialogView(Context context, boolean isFlags, boolean isScreen) {
 		this.mContext = context;
@@ -87,6 +88,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private void initView(View view) {
 		openUtils = new OpenUtils(mContext);
+		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		mDial = (LinearLayout) view.findViewById(R.id.layout_dial);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
@@ -188,15 +190,36 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (action == FINISH_ACTIVITY || action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
+			if (action == FINISH_ACTIVITY) {
 				mDismissDialog();
 			} else if (action == ANSWER_UP) {
 				setCaller();
+			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
+				if (!isScreen && isFlasg) {
+					try {
+						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
+								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+						params.x = 800;
+						params.width = 625;
+						params.y = 0;
+						params.height = WindowManager.LayoutParams.MATCH_PARENT;
+						mCheckout.setVisibility(View.GONE);
+						mDismissDialog();
+						wm.addView(mView, params);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	};
 
+	boolean isFlasg;
+
 	public View getVideoPlayView() {
+		isFlasg = true;
 		return mView;
 	}
 
@@ -340,7 +363,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private void mDismissDialog() {
 		openUtils.setRingerMode(false);
-		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
 		if (isStart) {
@@ -350,6 +373,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		}
 		try {
 			wm.removeView(mView);
+			isFlasg = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -377,7 +401,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						int error_code = object.getInt("error_code");
 						if (error_code == 0) {
 							Log.d(TAG, "有效的电话号码:" + tel);
-							msgGson = new Gson();
 							MobileLocation location = msgGson.fromJson(content, MobileLocation.class);
 							String mobile = location.getResult().getProvince() + " " + location.getResult().getCity()
 									+ " " + location.getResult().getCompany();

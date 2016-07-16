@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -387,12 +388,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (!phoneCall) {
 					int width = main.getWidth();
 					Log.d(TAG, "width ==" + width);
-					// WindowManager wm = (WindowManager)
-					// getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-					// int mWidth = wm.getDefaultDisplay().getWidth();
-					// int mHeight = wm.getDefaultDisplay().getHeight();
-					// Log.d("WindowManager", mWidth + "");
-					// Log.d("WindowManager", mHeight + "");
+					 WindowManager wm = (WindowManager)
+					 getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+					 int mWidth = wm.getDefaultDisplay().getWidth();
+					 int mHeight = wm.getDefaultDisplay().getHeight();
+					 Log.d("WindowManager", mWidth + "");
+					 Log.d("WindowManager", mHeight + "");
 					if (width == 625 && mLayoutMode != mRightMode) {
 						Log.d(TAG, "mRightMode");
 						isOrso = true;
@@ -407,7 +408,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mLayoutMode = mLeftMode;
 						mMusicLayoutAdd.setVisibility(View.VISIBLE);
 						mAddLayout.setVisibility(View.GONE);
-						mFragmetContext.setVisibility(View.VISIBLE);
+						mFragmetContext.setVisibility(View.VISIBLE);	
 						mLeftMenu.setVisibility(View.VISIBLE);
 					} else if (width == 1425 && mLayoutMode != mFullMode) {
 						Log.d(TAG, "mFullMode");
@@ -1118,6 +1119,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				MainActivity.this.finish();
 			} 
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub]
+		super.onBackPressed();
 	}
 
 	public static void mLog(String string) {

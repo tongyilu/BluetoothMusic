@@ -18,6 +18,7 @@ import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.OpenUtils;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
+import com.spreadwin.btc.utils.Utils;
 import com.spreadwin.btc.view.DialogView;
 
 import android.app.ActivityManager;
@@ -48,6 +49,7 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -375,7 +377,7 @@ public class SyncService extends Service {
 			for (int i = 0; i < RecordNum; i++) {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_OUT, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);
-				mCalloutInfo.add(mName, mNumber, "");
+				mCalloutInfo.add(mName, mNumber,Utils.getNowDateShort());
 			}
 		}
 
@@ -401,7 +403,7 @@ public class SyncService extends Service {
 			for (int i = 0; i < RecordNum; i++) {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_IN, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);
-				mCallinInfo.add(mName, mNumber, "");
+				mCallinInfo.add(mName, mNumber, Utils.getNowDateShort());
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -421,7 +423,7 @@ public class SyncService extends Service {
 			for (int i = 0; i < RecordNum; i++) {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_MISS, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
-				mCallmissInfo.add(mName, mNumber, "");
+				mCallmissInfo.add(mName, mNumber, Utils.getNowDateShort());
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;

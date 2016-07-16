@@ -179,10 +179,10 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		sortListView.setEmptyView(emptyView);
 		// mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus(D));
 		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
-		if (MainActivity.binder!=null) {
+		if (MainActivity.binder != null) {
 			if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_DISCONNECT || mContactsInfo.size() > 0) {
 				hideLoading();
-			} else if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED ) {
+			} else if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
 				showLoading();
 			}
 		}
@@ -219,7 +219,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		emptyView.setText("");
 		mLoading.setVisibility(View.VISIBLE);
 		mContactsNumber.setVisibility(View.GONE);
-
+        sideBar.setVisibility(View.GONE);
 		// handler.post(mRunnable);
 	}
 
@@ -229,9 +229,11 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		}
 		if (mContactsInfo.size() > 0) {
 			mContactsNumber.setVisibility(View.VISIBLE);
+			sideBar.setVisibility(View.VISIBLE);
 			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
 		} else {
 			mContactsInfo.clear();
+			sideBar.setVisibility(View.GONE);
 			mContactsNumber.setVisibility(View.GONE);
 		}
 		emptyView.setText(getResources().getString(R.string.no_conntacts));

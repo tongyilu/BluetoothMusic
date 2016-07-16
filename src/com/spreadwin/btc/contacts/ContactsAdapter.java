@@ -71,6 +71,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 			viewHolder = new ViewHolder();
 			view = LayoutInflater.from(mContext).inflate(R.layout.contact_item, null);
 			viewHolder.name = (TextView) view.findViewById(R.id.name);
+			viewHolder.num = (TextView) view.findViewById(R.id.num);
 			viewHolder.sortKey = (TextView) view.findViewById(R.id.sort_key);
 			viewHolder.sortKeyLayout = (LinearLayout) view.findViewById(R.id.sort_key_layout);
 			view.setTag(viewHolder);
@@ -89,11 +90,13 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 		}
 
 		viewHolder.name.setText(this.list.get(position).getName());
+		viewHolder.num.setText(this.list.get(position).getNumber().get(0));
 		return view;
 	}
 
 	final static class ViewHolder {
 		TextView name;
+		TextView num;
 		TextView sortKey;
 		LinearLayout sortKeyLayout;
 	}

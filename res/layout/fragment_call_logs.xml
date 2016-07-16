@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    >  
-      <android.support.v4.view.ViewPager
+    android:orientation="vertical" >
+
+    <com.spreadwin.btc.view.SlidingTabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" />
+
+    <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        android:background="#ff0000ff"
-      		<android.support.v4.view.PagerTabStrip
-                	android:id="@+id/tabs"
-                	android:layout_width="match_parent"
-                	android:layout_height="wrap_content"
-                	android:layout_gravity="top"
-                	>
-                	android:textAppearance="@style/TextAppearance.PagerTabs"
-        	</android.support.v4.view.PagerTabStrip>
-        </android.support.v4.view.ViewPager>     
-      
-</FrameLayout>
+        android:layout_height="match_parent" />
+
+</LinearLayout>
