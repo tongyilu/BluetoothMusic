@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -53,7 +54,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
-	private OpenUtils openUtils;
+//	private OpenUtils openUtils;
 	private boolean isStart;
 	private String getCallNumber;
 	private String getPhoneName;
@@ -62,6 +63,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private LinearLayout mDial;
 	private boolean isAnswer;
 	private WindowManager wm = null;
+	private Handler mHandler = new Handler();
 
 	public static final String FINISH_ACTIVITY = "FINISH_ACTIVITY";
 
@@ -87,7 +89,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	private void initView(View view) {
-		openUtils = new OpenUtils(mContext);
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		mDial = (LinearLayout) view.findViewById(R.id.layout_dial);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
@@ -293,11 +294,13 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			break;
 		case R.id.mute:
 			if (isMuteState) {
-				openUtils.setRingerMode(false);
+				BtcNative.muteCall(1);
+//				openUtils.setRingerMode(false);
 				setMuteImageView(true);
 				isMuteState = false;
 			} else {
-				openUtils.setRingerMode(true);
+				BtcNative.muteCall(0);
+//				openUtils.setRingerMode(true);
 				setMuteImageView(false);
 				isMuteState = true;
 			}
@@ -321,16 +324,16 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	public void setChckoutAudio() {
-		try {
-			Thread.sleep(1000);
-			if (BtcNative.getAudioPath() == 0) {
-				mSwitch.setImageResource(R.drawable.switching_02);
-			} else {
-				mSwitch.setImageResource(R.drawable.switching_01);
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (BtcNative.getAudioPath() == 0) {
+					mSwitch.setImageResource(R.drawable.switching_02);
+				} else {
+					mSwitch.setImageResource(R.drawable.switching_01);
+				}
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		}, 1000);
 	}
 
 	private void removeNumber() {
@@ -344,6 +347,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private void addNumber(String str) {
 		mDisplayNumber.append(str);
+		BtcNative.dtmfCall(str);
 		mInputText.setText(mDisplayNumber.toString());
 		mInputText.setTextColor(mContext.getResources().getColor(R.color.white));
 	}
@@ -362,7 +366,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	private void mDismissDialog() {
-		openUtils.setRingerMode(false);
+		BtcNative.muteCall(0);
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();

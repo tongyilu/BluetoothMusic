@@ -107,10 +107,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	public void openMusicFragment() {
-		BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mInflater = inflater;

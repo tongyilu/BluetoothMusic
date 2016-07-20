@@ -18,14 +18,10 @@ import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.OpenUtils;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
-import com.spreadwin.btc.utils.Utils;
 import com.spreadwin.btc.view.DialogView;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -49,11 +45,9 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 public class SyncService extends Service {
 	public static final String TAG = "SyncService";
@@ -186,8 +180,24 @@ public class SyncService extends Service {
 	public static String mAlbum = null;
 
 	public static LruJsonCache mCache;
+	public static boolean isCoure;
 
-	private OpenUtils openUtils;
+	// private OpenUtils openUtils;
+	boolean mdatabase;
+	private Handler mHandler = new Handler();
+	private Runnable mRunnble = new Runnable() {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			mLog("mDataThread  is start");
+			mdatabase = getDatabase();
+			mLog("mDataThread  is end");
+			if (mdatabase && isNetworkConnected()) {
+				PullContacts();
+			}
+		}
+	};
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -201,7 +211,6 @@ public class SyncService extends Service {
 		mECarOnline = ECarOnline.getInstance(this);
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		openUtils = new OpenUtils(this);
 		initBtc();
 
 		m_DBAdapter = new DBAdapter(this);
@@ -377,7 +386,10 @@ public class SyncService extends Service {
 			for (int i = 0; i < RecordNum; i++) {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_OUT, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);
-				mCalloutInfo.add(mName, mNumber,Utils.getNowDateShort());
+				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_OUT, i);
+				String[] str = mDateTime.split("T");
+//				String time = str[0].substring(0, 4) + "-" + str[0].substring(4 , 6) + "-" + str[0].substring(6, 8);
+				mCalloutInfo.add(mName, mNumber, str[0]);
 			}
 		}
 
@@ -403,7 +415,10 @@ public class SyncService extends Service {
 			for (int i = 0; i < RecordNum; i++) {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_IN, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);
-				mCallinInfo.add(mName, mNumber, Utils.getNowDateShort());
+				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_IN, i);
+				String[] str = mDateTime.split("T");
+//				String time = str[0].substring(0, 3) + "-" + str[0].substring(4 , 5) + "-" + str[0].substring(5, 7);
+				mCalloutInfo.add(mName, mNumber, str[0]);
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -423,7 +438,10 @@ public class SyncService extends Service {
 			for (int i = 0; i < RecordNum; i++) {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_MISS, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
-				mCallmissInfo.add(mName, mNumber, Utils.getNowDateShort());
+				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_MISS, i);
+				String[] str = mDateTime.split("T");
+//				String time = str[0].substring(0, 3) + "-" + str[0].substring(3 , 5) + "-" + str[0].substring(5, 7);
+				mCalloutInfo.add(mName, mNumber, str[0]);
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -456,6 +474,7 @@ public class SyncService extends Service {
 			if (!mDataThread.isAlive()) {
 				mDataThread.start();
 			}
+
 			message.arg2 = BtcGlobalData.NEW_SYNC;
 		}
 		// }
@@ -623,6 +642,8 @@ public class SyncService extends Service {
 		Intent mBfpIntent = new Intent();
 		mBfpIntent.setAction(MainActivity.mActionBfp);
 		if (mTempStatus == BtcGlobalData.BFP_CONNECTED) {
+			mLog("start =========== log");
+			isCoure = true;
 			saySomething("蓝牙已连接");// 语音提示
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
@@ -631,13 +652,16 @@ public class SyncService extends Service {
 
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
 			saySomething("蓝牙已断开");// 语音提示
+			mLog("end =========== log");
 			m_DBAdapter.close();
+			isCoure = false;
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
 			mLog("clear phonebook data");
 			mPhoneBook.clear();
 			mContactsInfo.clear();
+			mHandler.removeCallbacks(mRunnble);
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
@@ -664,17 +688,18 @@ public class SyncService extends Service {
 				// Thread mDataThread = new Thread (new Runnable() {
 				// @Override
 				// public void run() {
-				mLog("mDataThread  is start");
-				mdatabase = getDatabase();
-				mLog("mDataThread  is end");
+				// mLog("mDataThread is start");
+				// mdatabase = getDatabase();
+				// mLog("mDataThread is end");
+				// // }
+				// // });
+				// // if (!mDataThread.isAlive()) {
+				// // mDataThread.start();
+				// // }
+				// if (mdatabase && isNetworkConnected()) {
+				// PullContacts();
 				// }
-				// });
-				// if (!mDataThread.isAlive()) {
-				// mDataThread.start();
-				// }
-				if (mdatabase && isNetworkConnected()) {
-					PullContacts();
-				}
+				mHandler.post(mRunnble);
 				break;
 			case mCancelNotification:
 				// 关闭数据库
@@ -901,18 +926,14 @@ public class SyncService extends Service {
 			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_PHONE, i);
 			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_PHONE, i);
 			if (mNumber == null || mNumber.length() == 0) {
-				// mLog("isNewContacts mPhoneContactsInfo mName==" + mName
-				// + "; mNumber ==" + mNumber);
+				mLog("isNewContacts mPhoneContactsInfo mName==" + mName + "; mNumber ==" + mNumber);
 				continue;
 			}
-			// mLog("isNewContacts mPhoneContactsInfo mName==" + mName +";length
-			// =="+mName.length()+ "; mNumber =="
-			// + mNumber+"; length =="+mNumber.length());
+			mLog("isNewContacts mPhoneContactsInfo mName==" + mName + ";length==" + mName.length() + "; mNumber =="
+					+ mNumber + "; length ==" + mNumber.length());
 			isNew = true;
 			for (int j = 0; j < tempSize; j++) {
-				// mLog("isNewContacts addContactsInfo setName==" + mName + ";
-				// mNumber=="
-				// + mNumber);
+				mLog("isNewContacts addContactsInfo setName==" + mName + ";mNumber==" + mNumber);
 				if (mName.length() == 0) {
 					if (mContactsInfo.get(j).getNumber().indexOf(mNumber) != -1) {
 						isNew = false;
@@ -1020,16 +1041,20 @@ public class SyncService extends Service {
 			// while (c.moveToNext()) {
 			// // 把数据取出
 			// String mName = c.getString(nameColumnIndex);
-			// String mNumber = c.getString(numberColumnIndex);
+			// String mNumber = c.getString(numberColumnIndex);return
 			// addContactsInfo(mName, mNumber);
 			// }
 			do {
 				String mName = c.getString(nameColumnIndex);
 				String mNumber = c.getString(numberColumnIndex);
 				addContactsInfo(mName, mNumber);
-			} while (c.moveToNext());
+			} while (c.moveToNext() && isCoure);
 			c.close();
-
+			if (!isCoure) {
+				mPhoneBook.clear();
+				mContactsInfo.clear();
+				return true;
+			}
 			mLog("getDatabase mPhoneBook.size() ==" + mPhoneBook.size());
 			// Intent mSyncIntent = new Intent();
 			// mSyncIntent.setAction(MainActivity.mActionSync);
@@ -1516,7 +1541,6 @@ public class SyncService extends Service {
 			} else if (action.equals(ACTION_BT_CALL_REJECT)) {
 				BtcNative.denyCall();
 			} else if (action.equals(ACTION_BT_CALL_HANGUP)) {
-				openUtils.setRingerMode(true);
 				BtcNative.hangupCall();
 			} else if (action.equals(ACTION_FACTORY_TEST)) {
 				Intent mIntent = new Intent(ACTION_FACTORY_RETURN);
