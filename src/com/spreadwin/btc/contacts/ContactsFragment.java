@@ -7,44 +7,39 @@ import java.util.List;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
-import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.contacts.SideBar.OnTouchingLetterChangedListener;
-import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.BtcGlobalData;
+import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 
-import android.app.Fragment;
 import android.app.ActionBar.LayoutParams;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 public class ContactsFragment extends Fragment implements OnCreateContextMenuListener, OnItemLongClickListener {
 	public static final String TAG = "ContactsFragment";
@@ -96,7 +91,6 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			characterParser = CharacterParser.getInstance();
 			pinyinComparator = new PinyinComparator();
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		// 实例化汉字转拼音类

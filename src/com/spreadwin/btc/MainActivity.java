@@ -60,6 +60,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static final String mActionCall = "com.spreadwin.btc.call";
 	public static final String mActionPair = "com.spreadwin.btc.pair";
 	public static final String mAcitonFinish = "com.spreadwin.btc.finish";
+	
+	public static final String mActionBookInfoOver = "com.spreadwin.btc.over";
 
 	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
@@ -141,22 +143,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private CustomDialog.Builder builder;
 
-	Handler mHandler = new Handler();
-	Runnable mRunnable = new Runnable() {
-
-		@Override
-		public void run() {
-			if (null != mContectText) {
-				if (SyncService.mNum != 0) {
-					mContectText.setText("已更新" + SyncService.mNum + "位联系人");
-					mContectText.setVisibility(View.VISIBLE);
-				} else {
-					mContectText.setVisibility(View.GONE);
-				}
-				mHandler.postDelayed(this, 100);
-			}
-		}
-	};
+	// Handler mHandler = new Handler();
+	// Runnable mRunnable = new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// if (null != mContectText) {
+	//
+	// mHandler.postDelayed(this, 100);
+	// }
+	// }
+	// };
 
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
@@ -173,6 +170,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
+				updateContacts(binder.getPhoneBookInfo_new().size());
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 		}
@@ -432,7 +430,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setDefaultFragment();
 		registerReceiver();
 		handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
-		mHandler.post(mRunnable);
 		// audioManager = (AudioManager)
 		// getSystemService(Context.AUDIO_SERVICE);
 		// VoiceReceiver();
@@ -526,7 +523,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
-						mContectText.setVisibility(View.VISIBLE);
 						if (SyncService.isTopMyself(getBaseContext())) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
@@ -538,10 +534,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
-						
+
 						mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
-						mHandler.removeCallbacks(mRunnable);
-						mContectText.setVisibility(View.GONE);
 						mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 						handler.sendEmptyMessage(mMessageNotifyData);
@@ -560,6 +554,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		intentFilter.addAction(mActionPair);
 		intentFilter.addAction(mActionBfp);
 		intentFilter.addAction(mAcitonFinish);
+		intentFilter.addAction(mActionBookInfoOver);
 
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		mBroadcast = true;
@@ -753,7 +748,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (binded) {
 			unbindService(conn);
 		}
-		mHandler.removeCallbacks(mRunnable);
 		// Intent intent = new Intent(this, SyncService.class);
 		// stopService(intent);
 		if (mLocalBroadcastManager != null && mBroadcastReceiver != null) {
@@ -1094,8 +1088,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			} else if (intent.getAction().equals(mActionBfp)) {
 				int mStatus = intent.getIntExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 				mLog("Receiver mActionBfp mStatus ==" + mStatus);
-				if (mStatus == BtcGlobalData.BFP_CONNECTED ) {
-					mContectText.setVisibility(View.VISIBLE);
+				if (mStatus == BtcGlobalData.BFP_CONNECTED) {
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
@@ -1108,15 +1101,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							mMusicRightFragment.openAudioMode();
 						}
 					}
+				
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
+					updateContacts(0);
 					mLog("BtcGlobalData.BFP_DISCONNECT");
 					Intent mA2dpIntent = new Intent();
 					mA2dpIntent.setAction(MusicFragment.DISCONNECT);
 					sendBroadcast(mA2dpIntent);
-					mHandler.removeCallbacks(mRunnable);
-					mContectText.setVisibility(View.GONE);
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
@@ -1125,6 +1118,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 			} else if (intent.getAction().equals(mAcitonFinish)) {
 				MainActivity.this.finish();
+			}else if (intent.getAction().equals(mActionBookInfoOver)) {
+				if (binder != null) {
+					updateContacts(binder.getPhoneBookInfo_new().size());
+				}
 			}
 		}
 	}
@@ -1138,6 +1135,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static void mLog(String string) {
 		if (DEBUG) {
 			Log.d(TAG, string);
+		}
+	}
+
+	public void updateContacts(int i) {
+		if (i != 0) {
+			mContectText.setText("已更新" + i + "位联系人");
+			mContectText.setVisibility(View.VISIBLE);
+		} else {
+			mContectText.setVisibility(View.GONE);
 		}
 	}
 }

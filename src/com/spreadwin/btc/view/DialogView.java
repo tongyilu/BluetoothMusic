@@ -125,6 +125,9 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		rippleBackground.startRippleAnimation();
 		getCallNumber = BtcNative.getCallNumber();
 		getPhoneName = getCallName(getCallNumber);
+		
+		Log.d("电话号码：===========", getCallNumber);
+		Log.d("名称：===========", getPhoneName);
 		callUrlByGet(getCallNumber);
 
 		if (TextUtils.isEmpty(getPhoneName)) {
@@ -294,12 +297,12 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			break;
 		case R.id.mute:
 			if (isMuteState) {
-				BtcNative.muteCall(1);
+				BtcNative.muteCall(0);
 //				openUtils.setRingerMode(false);
 				setMuteImageView(true);
 				isMuteState = false;
 			} else {
-				BtcNative.muteCall(0);
+				BtcNative.muteCall(1);
 //				openUtils.setRingerMode(true);
 				setMuteImageView(false);
 				isMuteState = true;

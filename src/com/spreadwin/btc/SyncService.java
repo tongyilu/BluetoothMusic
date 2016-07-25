@@ -8,14 +8,12 @@ import java.util.Map;
 import com.spreadwin.btc.Music.BtAudioManager;
 import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.CharacterParser;
-import com.spreadwin.btc.contacts.PinyinComparator;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.DBAdapter;
 import com.spreadwin.btc.utils.ECarOnline;
 import com.spreadwin.btc.utils.HttpAssist;
 import com.spreadwin.btc.utils.HttpUtil;
 import com.spreadwin.btc.utils.LruJsonCache;
-import com.spreadwin.btc.utils.OpenUtils;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.DialogView;
@@ -119,7 +117,7 @@ public class SyncService extends Service {
 	private AudioManager audioManager;
 	private NotificationManager nm;
 	private SyncBinder binder = new SyncBinder();
-	private int mUpdateTime = 10000;
+//	private int mUpdateTime = 10000;
 	public final int mShowNotification = 1;
 	public final int mCancelNotification = 2;
 	public final int mPhoneBookSyncBroadcast = 3;
@@ -146,7 +144,7 @@ public class SyncService extends Service {
 	/**
 	 * 根据拼音来排列ListView里面的数据类
 	 */
-	private PinyinComparator pinyinComparator;
+//	private PinyinComparator pinyinComparator;
 
 	int mTempStatus = 0;
 
@@ -169,7 +167,7 @@ public class SyncService extends Service {
 
 	private boolean isSater;
 
-	public static int mNum;
+	// public static int mNum;
 
 	private boolean isFlage;
 
@@ -233,7 +231,7 @@ public class SyncService extends Service {
 		// 实例化汉字转拼音类
 		characterParser = CharacterParser.getInstance();
 
-		pinyinComparator = new PinyinComparator();
+//		pinyinComparator = new PinyinComparator();
 		syncT.start();
 		// mOldBt = BtcNative.getVolume();
 		mOldBt = mDefaultVoice;
@@ -388,8 +386,14 @@ public class SyncService extends Service {
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);
 				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_OUT, i);
 				String[] str = mDateTime.split("T");
-//				String time = str[0].substring(0, 4) + "-" + str[0].substring(4 , 6) + "-" + str[0].substring(6, 8);
-				mCalloutInfo.add(mName, mNumber, str[0]);
+				String time = "";
+				//+ " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+				try {
+					 time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8); 
+				} catch (StringIndexOutOfBoundsException e) {
+					e.printStackTrace();
+				}
+				mCalloutInfo.add(mName, mNumber, time);
 			}
 		}
 
@@ -417,8 +421,16 @@ public class SyncService extends Service {
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);
 				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_IN, i);
 				String[] str = mDateTime.split("T");
-//				String time = str[0].substring(0, 3) + "-" + str[0].substring(4 , 5) + "-" + str[0].substring(5, 7);
-				mCalloutInfo.add(mName, mNumber, str[0]);
+				String time = "";
+				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+				try {
+					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
+					
+				} catch (StringIndexOutOfBoundsException e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				mCallinInfo.add(mName, mNumber, time);
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -440,8 +452,14 @@ public class SyncService extends Service {
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
 				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_MISS, i);
 				String[] str = mDateTime.split("T");
-//				String time = str[0].substring(0, 3) + "-" + str[0].substring(3 , 5) + "-" + str[0].substring(5, 7);
-				mCalloutInfo.add(mName, mNumber, str[0]);
+				String time = "";
+				//+ " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+				try {
+					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8); 
+				} catch (StringIndexOutOfBoundsException e) {
+					e.printStackTrace();
+				}
+				mCallmissInfo.add(mName, mNumber, time);
 			}
 		}
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -474,8 +492,10 @@ public class SyncService extends Service {
 			if (!mDataThread.isAlive()) {
 				mDataThread.start();
 			}
-
 			message.arg2 = BtcGlobalData.NEW_SYNC;
+		}
+		if (!isCoure) {
+			return;
 		}
 		// }
 		message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -675,7 +695,6 @@ public class SyncService extends Service {
 	}
 
 	Handler handler = new Handler() {
-		boolean mdatabase;
 
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -764,7 +783,7 @@ public class SyncService extends Service {
 			public void run() {
 				Intent intent = new Intent();
 				intent.setAction("PHONE_BOOK_SYNC");
-				if (mPhoneBook.size() > 0) {
+				if (mPhoneBook.size() > 0 && isCoure) {
 					ArrayList<String> temp = new ArrayList<String>();
 					int index = 0;
 					int total = (int) Math.ceil((float) mPhoneBook.size() / 500);
@@ -961,6 +980,7 @@ public class SyncService extends Service {
 		upload_toggle = true;
 		// 添加SIM卡联系人
 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_SIM);
+		mLog("mContactsInfo ==" + mContactsInfo.size() + "; RecordNum ==" + RecordNum);
 		for (int i = 0; i < RecordNum; i++) {
 			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_SIM, i);
 			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_SIM, i);
@@ -974,6 +994,7 @@ public class SyncService extends Service {
 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
 		mLog("mContactsInfo ==" + mContactsInfo.size() + "; RecordNum ==" + RecordNum);
 		for (int i = 0; i < RecordNum; i++) {
+
 			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_PHONE, i);
 			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_PHONE, i);
 			mLog("syncT mContactsInfo mName==" + mName + "; mNumber ==" + mNumber);
@@ -1130,8 +1151,15 @@ public class SyncService extends Service {
 			sortModel.setSortLetters("#");
 			sortModel.setSecondLetters("#");
 		}
+		if (!isCoure) {
+			mPhoneBook.clear();
+			mContactsInfo.clear();
+			return;
+		}
 		mContactsInfo.add(sortModel);
-		mNum = mContactsInfo.size();
+		Intent mCallIntent = new Intent();
+		mCallIntent.setAction(MainActivity.mActionBookInfoOver);
+		sendObjMessage(1, mCallIntent);
 	}
 
 	/**
@@ -1209,12 +1237,14 @@ public class SyncService extends Service {
 		case BtcGlobalData.CALL_IN:
 			// setMute(true,mTempStatus);
 			isSater = true;
+			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
 			// setMute(false,mTempStatus);
+			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
@@ -1227,6 +1257,7 @@ public class SyncService extends Service {
 			break;
 		case BtcGlobalData.CALL_OUT:
 			// setMute(false,mTempStatus);
+			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
 				mCLDCallResult = 0;
@@ -1238,6 +1269,7 @@ public class SyncService extends Service {
 			// setMute(false, mTempStatus);
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 			isSater = false;
+			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(false);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
@@ -1433,6 +1465,11 @@ public class SyncService extends Service {
 						// mPhoneContactsInfo.add(contacts[0], contacts[1], "");
 						addContactsInfo(contacts[0], contacts[1]);
 					}
+					if (!isCoure) {
+						mPhoneBook.clear();
+						mContactsInfo.clear();
+						return ;
+					}
 					// addDatabase();
 					// Intent mSyncIntent = new Intent();
 					// mSyncIntent.setAction(MainActivity.mActionSync);
@@ -1491,6 +1528,11 @@ public class SyncService extends Service {
 		PushContactsThread.start();
 	}
 
+	/**
+	 * 
+	 * 
+	 */
+
 	/*
 	 * 广播Receiver
 	 */
@@ -1505,26 +1547,6 @@ public class SyncService extends Service {
 			} else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
 				mLog("----------------- screen is off...");
 				mScreenStatus = false;
-			} else if (action.equals("ACTION_ACC_OFF")) {
-				if (mBfpStatus == BtcGlobalData.BFP_CONNECTED) {
-					setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
-					// m_DBAdapter.close();
-					// audioManager.setMode(AudioStream.MODE_NORMAL);
-					// handler.sendEmptyMessageDelayed(mCancelNotification,
-					// 1000);
-					// mPhoneBook.clear();
-					// mContactsInfo.clear();
-					// for (int i = 0; i < mPhoneBookInfo.size(); i++) {
-					// mPhoneBookInfo.get(i).clear();
-					// }
-					// mBfpStatus = BtcGlobalData.BFP_DISCONNECT;
-					// Intent mBfpIntent = new Intent();
-					// mBfpIntent.setAction(MainActivity.mActionBfp);
-					// mBfpIntent.putExtra("bfp_status",
-					// BtcGlobalData.BFP_DISCONNECT);
-					// // lbm.sendBroadcast(mBfpIntent);
-					// sendObjMessage(1, mBfpIntent);
-				}
 			} else if (action.equals(BLUETOOTH_MUTE_CHANGED_ACTION)) {
 				mLog("mBatInfoReceiver MUSIC_MUTE_CHANGED_ACTION =="
 						+ (intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false)) + "; mOldBt ==" + mOldBt);
@@ -1597,13 +1619,18 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(LOCAL_MUSIC_ACTION)) {
 				String state = intent.getStringExtra("state");
+
 				if (state.equals("music_last")) {
+					mLog("BtcNative.lastSong()");
 					BtcNative.lastSong();
 				} else if (state.equals("music_next")) {
+					mLog("BtcNative.nextSong()");
 					BtcNative.nextSong();
 				} else if (state.equals("music_pause")) {
+					mLog("BtcNative.pauseMusic()");
 					BtcNative.pauseMusic();
 				} else if (state.equals("music_play")) {
+					mLog("BtcNative.playMusic()");
 					BtcNative.playMusic();
 				}
 			}

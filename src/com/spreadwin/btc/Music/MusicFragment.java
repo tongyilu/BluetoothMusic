@@ -137,12 +137,16 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				PlayTitle = intent.getStringExtra("mTitle");
 				PlayArtist = intent.getStringExtra("mArtist");
 				PlayAlbum = intent.getStringExtra("mAlbum");
+				mPlayTitle.setVisibility(View.VISIBLE);
+				mPlayArtist.setVisibility(View.VISIBLE);
 				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
 				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" + PlayAlbum);
 			} else if (intent.getAction() == DISCONNECT) {
 				isPlaySong = false;
 				mPlayTitle.setText("");
 				mPlayArtist.setText("");
+				mPlayTitle.setVisibility(View.GONE);
+				mPlayArtist.setVisibility(View.GONE);
 			}
 		}
 	};
@@ -207,6 +211,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private void mMusicPrevious() {
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING || BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			BtcNative.lastSong();
+			openAudioMode();
 			checkA2dpStatus();
 		}
 	}
@@ -214,6 +219,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private void mMusicNext() {
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING || BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			BtcNative.nextSong();
+			openAudioMode();
 			checkA2dpStatus();
 		}
 	}
@@ -226,6 +232,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			mPlayer = 1;
 		} else if (mPlayer == 1 || mPlayer == 0) {
 			mLog("onClick playMusic");
+			openAudioMode();
 			BtcNative.playMusic();
 			mPlayer = 2;
 		}
