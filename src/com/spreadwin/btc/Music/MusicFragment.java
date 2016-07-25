@@ -32,13 +32,10 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	public static final String DISCONNECT = "BFP_DISCONNECT";
 
-	// public int mCurStatus = BtcGlobalData.A2DP_DISCONNECT;
 	private int mCallStatus = 0;
 	public static final int CHECK_A2DP_STATUS = 1;
 
 	ImageButton mMusicPrevious, mMusicPlay, mMusicNext;
-	private LayoutInflater mInflater;
-	private ViewGroup mContentContainer;
 	private View mRootView;
 	private AlwaysMarqueeTextView mPlayTitle, mPlayArtist;
 
@@ -47,20 +44,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private String PlayTitle = null;
 	private String PlayArtist = null;
 	private String PlayAlbum = null;
-	// private Handler mHandler = new Handler();
-	// private Runnable mRunnable = new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	// PlayTitle = SyncService.mTitle;
-	// PlayArtist = SyncService.mArtist;
-	// PlayAlbum = SyncService.mAlbum;
-	// mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-	// mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" +
-	// PlayAlbum);
-	// mPlayAlbum.setText(PlayAlbum == null ? "" : "专辑：" + PlayAlbum);
-	// }
-	// };
 
 	public MusicFragment() {
 	}
@@ -93,6 +76,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus());
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
+			if (mRight) {
+				BtAudioManager.getInstance(getActivity()).mAudioCall = true;
+			}
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
@@ -109,7 +95,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mInflater = inflater;
 		mRootView = inflater.inflate(R.layout.fragment_music, container, false);
 		mMusicPrevious = (ImageButton) mRootView.findViewById(R.id.music_previous);
 		mMusicPlay = (ImageButton) mRootView.findViewById(R.id.music_play);
@@ -119,7 +104,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mMusicPrevious.setOnClickListener(this);
 		mMusicPlay.setOnClickListener(this);
 		mMusicNext.setOnClickListener(this);
-		// handler.sendEmptyMessageDelayed(CHECK_A2DP_STATUS, 1000);
 		checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
@@ -195,6 +179,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		mLog("onClick 111111111111");
+		openAudioMode();
 		if (v == mMusicPrevious) {
 			mLog("onClick mMusicPrevious");
 			mMusicPrevious();
@@ -205,13 +190,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			mLog("onClick mMusicNext");
 			mMusicNext();
 		}
-		// mHandler.postDelayed(mRunnable, 2000);
 	}
 
 	private void mMusicPrevious() {
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING || BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			BtcNative.lastSong();
-			openAudioMode();
 			checkA2dpStatus();
 		}
 	}
@@ -219,7 +202,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private void mMusicNext() {
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING || BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			BtcNative.nextSong();
-			openAudioMode();
 			checkA2dpStatus();
 		}
 	}
@@ -232,7 +214,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			mPlayer = 1;
 		} else if (mPlayer == 1 || mPlayer == 0) {
 			mLog("onClick playMusic");
-			openAudioMode();
 			BtcNative.playMusic();
 			mPlayer = 2;
 		}

@@ -117,7 +117,7 @@ public class SyncService extends Service {
 	private AudioManager audioManager;
 	private NotificationManager nm;
 	private SyncBinder binder = new SyncBinder();
-//	private int mUpdateTime = 10000;
+	// private int mUpdateTime = 10000;
 	public final int mShowNotification = 1;
 	public final int mCancelNotification = 2;
 	public final int mPhoneBookSyncBroadcast = 3;
@@ -144,7 +144,7 @@ public class SyncService extends Service {
 	/**
 	 * 根据拼音来排列ListView里面的数据类
 	 */
-//	private PinyinComparator pinyinComparator;
+	// private PinyinComparator pinyinComparator;
 
 	int mTempStatus = 0;
 
@@ -191,7 +191,7 @@ public class SyncService extends Service {
 			mLog("mDataThread  is start");
 			mdatabase = getDatabase();
 			mLog("mDataThread  is end");
-			if (mdatabase && isNetworkConnected()) {
+			if (mdatabase && isNetworkConnected() && isCoure) {
 				PullContacts();
 			}
 		}
@@ -231,7 +231,7 @@ public class SyncService extends Service {
 		// 实例化汉字转拼音类
 		characterParser = CharacterParser.getInstance();
 
-//		pinyinComparator = new PinyinComparator();
+		// pinyinComparator = new PinyinComparator();
 		syncT.start();
 		// mOldBt = BtcNative.getVolume();
 		mOldBt = mDefaultVoice;
@@ -385,15 +385,20 @@ public class SyncService extends Service {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_OUT, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);
 				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_OUT, i);
+				mLog("呼出记录:============" + "姓名：" + mName + "号码：" + mNumber + "时间" + mDateTime);
 				String[] str = mDateTime.split("T");
 				String time = "";
-				//+ " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
 				try {
-					 time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8); 
+					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
 				} catch (StringIndexOutOfBoundsException e) {
 					e.printStackTrace();
 				}
-				mCalloutInfo.add(mName, mNumber, time);
+				if (isCoure) {
+					mCalloutInfo.add(mName, mNumber, time);
+				} else {
+					mCalloutInfo.clear();
+				}
 			}
 		}
 
@@ -420,12 +425,13 @@ public class SyncService extends Service {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_IN, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);
 				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_IN, i);
+				mLog("呼入记录:============" + "姓名：" + mName + "号码：" + mNumber + "时间" + mDateTime);
 				String[] str = mDateTime.split("T");
 				String time = "";
 				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
 				try {
 					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
-					
+
 				} catch (StringIndexOutOfBoundsException e) {
 					// TODO: handle exception
 					e.printStackTrace();
@@ -451,11 +457,12 @@ public class SyncService extends Service {
 				String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_MISS, i);
 				String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);
 				String mDateTime = BtcNative.getPhoneBookRecordTimeByIndex(BtcGlobalData.PB_MISS, i);
+				mLog("未接记录:============" + "姓名：" + mName + "号码：" + mNumber + "时间：" + mDateTime);
 				String[] str = mDateTime.split("T");
 				String time = "";
-				//+ " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
 				try {
-					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8); 
+					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
 				} catch (StringIndexOutOfBoundsException e) {
 					e.printStackTrace();
 				}
@@ -465,9 +472,6 @@ public class SyncService extends Service {
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
-		// if (!isFlage) {
-		// updatePbPhone();
-		// }
 	}
 
 	private void updatePbPhone() {
@@ -495,6 +499,8 @@ public class SyncService extends Service {
 			message.arg2 = BtcGlobalData.NEW_SYNC;
 		}
 		if (!isCoure) {
+			mContactsInfo.clear();
+			mPhoneBook.clear();
 			return;
 		}
 		// }
@@ -718,6 +724,7 @@ public class SyncService extends Service {
 				// if (mdatabase && isNetworkConnected()) {
 				// PullContacts();
 				// }
+				// 同步shujuk
 				mHandler.post(mRunnble);
 				break;
 			case mCancelNotification:
@@ -1072,8 +1079,8 @@ public class SyncService extends Service {
 			} while (c.moveToNext() && isCoure);
 			c.close();
 			if (!isCoure) {
-				mPhoneBook.clear();
 				mContactsInfo.clear();
+				mPhoneBook.clear();
 				return true;
 			}
 			mLog("getDatabase mPhoneBook.size() ==" + mPhoneBook.size());
@@ -1267,10 +1274,11 @@ public class SyncService extends Service {
 			break;
 		case BtcGlobalData.NO_CALL:
 			// setMute(false, mTempStatus);
-			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
+			// setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 			isSater = false;
 			BtAudioManager.getInstance(this).mAudioFocusGain = false;
-			BtAudioManager.getInstance(this).onCallChange(false);
+			BtAudioManager.getInstance(this).onCallChange(true);
+			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
 				if (lastCallStatus == BtcGlobalData.CALL_IN) {
@@ -1366,7 +1374,7 @@ public class SyncService extends Service {
 		}
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
-		DialogView gpsView = new DialogView(this, isSater, isScreen);
+		DialogView gpsView = new DialogView(this, isSater, isScreen,mContactsInfo);
 		view = gpsView.getVideoPlayView();
 		wm.addView(view, params);
 	}
@@ -1466,9 +1474,9 @@ public class SyncService extends Service {
 						addContactsInfo(contacts[0], contacts[1]);
 					}
 					if (!isCoure) {
-						mPhoneBook.clear();
 						mContactsInfo.clear();
-						return ;
+						mPhoneBook.clear();
+						return;
 					}
 					// addDatabase();
 					// Intent mSyncIntent = new Intent();

@@ -28,7 +28,7 @@ public class BtAudioManager {
 	public static BtAudioManager mBtAudioManager;
 	private AudioManager audioManager;
 
-	private boolean mAudioCall = false;// 通话状态
+	public boolean mAudioCall = false;// 通话状态
 	private boolean mAudioFocus = false;// audio焦点状态
 	private boolean mAudioMute = false;// 静音状态
 
@@ -184,6 +184,7 @@ public class BtAudioManager {
 			switch (focusChange) {
 			case AudioManager.AUDIOFOCUS_LOSS:
 				mLog("mAudioFocusListener AUDIOFOCUS_LOSS");
+				mAudioCall = false;
 				onBtAudioFocusChange(false);
 				break;
 			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:

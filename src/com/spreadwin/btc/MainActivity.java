@@ -706,6 +706,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					BtcNative.disconnectPhone();
+					mLog("BtcNative.disconnectPhone()"+"已断开");
 				}
 			});
 			builder.setNegativeButton("取消", null);
