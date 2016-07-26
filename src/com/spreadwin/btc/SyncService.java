@@ -57,7 +57,7 @@ public class SyncService extends Service {
 	public static final String EXTRA_BLUETOOTH_VOLUME_MUTED = "android.media.EXTRA_BLUETOOTH_VOLUME_MUTED";
 	public static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
 	public static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
-
+    /*************************************主界面和语音的交互广播*********************/
 	public static final String ACTION_BT_CALL_ANSWER = "ACTION_BT_CALL_ANSWER";// 接听
 	public static final String ACTION_BT_CALL_REJECT = "ACTION_BT_CALL_REJECT";// 拒听
 	public static final String ACTION_BT_CALL_HANGUP = "ACTION_BT_CALL_HANGUP";// 挂断
@@ -66,10 +66,13 @@ public class SyncService extends Service {
 	public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
 	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
 	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
-
-	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";
+    /***********************************************************************/
+	
+	/*******系统广播********************/
+	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";   
 	public static final String ACTION_ACC_ON = "ACTION_ACC_ON";
-
+	/**********************************/
+	
 	public static final String ACTION_BTC_CALL = "MYACTION.BTC.CALL";// 通过蓝牙拨打电话
 
 	public static final String BLUETOOTH_CONNECT_CHANGE = "BLUETOOTH_CONNECT_CHANGE";
@@ -104,30 +107,32 @@ public class SyncService extends Service {
 	 */
 	public boolean mCLDCall = false;
 
-	private boolean mThreadRun = false;
+	private boolean mThreadRun = false; //状态监听线程run控制位
 
-	private int index = 0;
-	private int bfpUpdateTime = 0;
-	private int mA2dpStatus = BtcGlobalData.A2DP_DISCONNECT;
+	private int index = 0;     //设备配对倒计时
+	private int bfpUpdateTime = 0;      //deprecated
+	private int mA2dpStatus = BtcGlobalData.A2DP_DISCONNECT;  //蓝牙音乐状态
 	public int mBfpStatus = BtcGlobalData.BFP_DISCONNECT;// 蓝牙连接状态
-	public int mCallStatus = BtcGlobalData.NO_CALL;
+	public int mCallStatus = BtcGlobalData.NO_CALL;//来电 ，接听，挂断的等状态
 	private int mCallStatusOld = BtcGlobalData.NO_CALL;
 	private int mPairStatus = BtcGlobalData.NOT_PAIR;
 	private int mPowerStatus = BtcGlobalData.NOT_PAIR;
-	private int mSyncStatus = BtcGlobalData.NOT_SYNC;
-	private int mUpdateCalllog = BtcGlobalData.NO_CALL;
+	private int mSyncStatus = BtcGlobalData.NOT_SYNC;//蓝牙和手机同步状态
+	private int mUpdateCalllog = BtcGlobalData.NO_CALL;//通话记录同步状态
 
-	private AudioManager audioManager;
+	private AudioManager audioManager;           
 	private NotificationManager nm;
-	private SyncBinder binder = new SyncBinder();
+	private SyncBinder binder = new SyncBinder();//service的外部接口
 	// private int mUpdateTime = 10000;
+	/************hander.msg消息*************/
 	public final int mShowNotification = 1;
 	public final int mCancelNotification = 2;
 	public final int mPhoneBookSyncBroadcast = 3;
-	public final int mNewSyncStatus = 4;
 	public final int mAddDatabase = 5;
-	public final int mUpdateDataBase = 6;
-	private int RecordNum = 0;
+	/********************************/
+	public final int mNewSyncStatus = 4;  //deprecated
+	public final int mUpdateDataBase = 6;   //deprecated
+	private int RecordNum = 0;           //临时计数器：改成临时变量
 	// int mSyncStatus = 0;
 	private final List<PhoneBookInfo> mPhoneBookInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo>());
 	ArrayList<String> mPhoneBook = new ArrayList<String>();
@@ -149,14 +154,14 @@ public class SyncService extends Service {
 	 */
 	// private PinyinComparator pinyinComparator;
 
-	int mTempStatus = 0;
+	int mTempStatus = 0;       //临时储存状态
 
 	String result;
 
 	boolean upload_toggle = false;
 
-	private int mOldBt = 0;
-	private int mDefaultVoice = 13;// 默认声音大小
+	private int mOldBt = 0;//deprecated
+	private int mDefaultVoice = 13;// 默认声音大小//deprecated
 
 	public DBAdapter m_DBAdapter = null;
 
@@ -179,18 +184,15 @@ public class SyncService extends Service {
 	public static String mArtist = null;
 	public static String mAlbum = null;
 
-	/**
-	 * 缓存电话号码归属地
-	 */
-	public static LruJsonCache mCache;
-	
-	/**
-	 * 判断是否连接上来
-	 */
+
+	public static LruJsonCache mCache;          // 缓存来电归属：换成数据库考虑没网络的情况
 	public static boolean isConnect;
 
-	boolean mdatabase;
+	// private OpenUtils openUtils;
+	boolean mdatabase;            //是否从数据库读取电话本信息标识位
 	private Handler mHandler = new Handler();
+	
+	/************数据库和网络获取电话本线程**************/
 	private Runnable mRunnble = new Runnable() {
 
 		@Override
@@ -246,7 +248,7 @@ public class SyncService extends Service {
 		mCache = new LruJsonCache();
 		onIntentFilter();
 	}
-
+    /************初始化外界广播******************/
 	private void onIntentFilter() {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -274,7 +276,7 @@ public class SyncService extends Service {
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 	}
-
+   /**********************监听底层蓝牙状态线程*****************/
 	Thread syncT = new Thread(new Runnable() {
 		@Override
 		public void run() {
@@ -518,7 +520,7 @@ public class SyncService extends Service {
 		mSyncStatus = mTempStatus;
 		// isFlage = true;
 	}
-
+   /*********service外部接口***********/
 	public class SyncBinder extends Binder {
 
 		/**
@@ -624,10 +626,11 @@ public class SyncService extends Service {
 		}
 
 		public void setClientMessager(Messenger client) {
-			mClient = client;
+			mClient = client; //蓝牙主界面Messenger
 		}
 	}
-
+	
+    /***************蓝牙信息变化更新至蓝牙主界面***************/
 	public void sendObjMessage(int msg_id, Object obj) {
 		if (mClient != null) {
 			try {
@@ -710,7 +713,7 @@ public class SyncService extends Service {
 		mBfpStatus = mTempStatus;
 		mECarOnline.onReturnBfpStatus();
 	}
-
+	/**************连接状态监听线程syncT和UI主线的hander*********************/
 	Handler handler = new Handler() {
 
 		public void handleMessage(android.os.Message msg) {
@@ -720,7 +723,7 @@ public class SyncService extends Service {
 				m_DBAdapter.open();
 				showNotification();
 //				mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-				mHandler.post(mRunnble);
+				mHandler.post(mRunnble);      //执行从数据库读取电话本
 				break;
 			case mCancelNotification:
 				// 关闭数据库
@@ -1427,7 +1430,7 @@ public class SyncService extends Service {
 	 */
 
 	/*
-	 * 广播Receiver
+	 * 广播Receiver：语音,主界面控制，系统广播
 	 */
 	private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
 		@Override
