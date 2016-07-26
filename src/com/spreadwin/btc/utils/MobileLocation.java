@@ -104,4 +104,6 @@ public class MobileLocation {
 			return this.card;
 		}
 	}
+	
+	
 }

@@ -612,7 +612,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 			case mMessageShowDeviceName:
 				mLog("handleMessage BtcNative.getPairDeviceName(0) ==" + BtcNative.getPairDeviceName(0));
-				if (!SyncService.isCoure) {
+				if (!SyncService.isQuery) {
 					return;
 				}
 				if (BtcNative.getPairDeviceName(0).length() > 0) {

@@ -1,29 +1,24 @@
 package com.spreadwin.btc.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.spreadwin.btc.BtcNative;
-import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.MobileLocation;
-import com.spreadwin.btc.utils.OpenUtils;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.CallLineraLayout.DetachedFromWindow;
-
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -40,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+@SuppressLint("MissingSuperCall")
 public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private View mView;
@@ -58,10 +54,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
-//	private OpenUtils openUtils;
 	private boolean isStart;
-	private String getCallNumber;
-	private String getPhoneName;
 	private boolean isScreen;
 	private boolean isCheckout;
 	private LinearLayout mDial;
@@ -73,43 +66,30 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	public static final String ANSWER_UP = "ANSWER_UP";
 
-	ImageButton mDeleteButton, mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
+	private ImageButton mDeleteButton, mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
 			mNumberEight, mNumberNine, mNumberZero, mNumberJin, mNumberXing;
-	TextView mInputText, mIncallText, mIncallTime;
+	private TextView mInputText;
 
-	HorizontalScrollView mHsview;
-	RippleBackground rippleBackground;
+	private RippleBackground rippleBackground;
 
-	StringBuilder mDisplayNumber = new StringBuilder();
+	private StringBuilder mDisplayNumber = new StringBuilder();
 	private CallLineraLayout callLayout;
 	private Gson msgGson = new Gson();
 	
-	List<PhoneBookInfo_new> mContactsInfo;
-	
+	private String getCallNumber;
+	private String getPhoneName;
+	public void setGetPhoneName(String getPhoneName) {
+		this.getPhoneName = getPhoneName;
+		initView(mView);
+	}
 
-	public DialogView(Context context, boolean isFlags, boolean isScreen,List<PhoneBookInfo_new> mContactsInfo) {
+	public DialogView(Context context, boolean isFlags, boolean isScreen) {
 		this.mContext = context;
 		this.isStart = isFlags;
 		this.isScreen = isScreen;
-		this.mContactsInfo = mContactsInfo;
 		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
-		initView(mView);
 	}
 	
-	public String getCallName(List<PhoneBookInfo_new> mContactsInfo,String getCallNumber) {
-		String mCallName = "";
-		for (int i = 0; i < mContactsInfo.size(); i++) {
-			Log.d("ContactsInfo.size()====", i + "");
-			ArrayList<String> number = mContactsInfo.get(i).getNumber();
-			for (int j = 0; j < number.size(); j++) {
-				if (number.get(j).equals(getCallNumber) || (getCallNumber.length() >= 8
-						&& number.get(j).contains(getCallNumber.substring(getCallNumber.length() - 8)))) {
-					mCallName = mContactsInfo.get(i).getName();
-				}
-			}
-		}
-		return mCallName;
-	}
 
 	private void initView(View view) {
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -138,9 +118,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mNumberJin = (ImageButton) view.findViewById(R.id.number_jin);
 		mNumberXing = (ImageButton) view.findViewById(R.id.number_xing);
 		mInputText = (TextView) view.findViewById(R.id.input_text);
-		mIncallText = (TextView) view.findViewById(R.id.in_call_name);
-		mIncallTime = (TextView) view.findViewById(R.id.in_call_timet);
-		mHsview = (HorizontalScrollView) view.findViewById(R.id.scroollview);
 
 		callLayout = (CallLineraLayout) view.findViewById(R.id.call_layout);
 		rippleBackground = (RippleBackground) view.findViewById(R.id.content);
@@ -150,8 +127,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		callUrlByGet(getCallNumber);
 //		getPhoneName = getCallName(getCallNumber);
 		Log.d("电话号码：===========", getCallNumber);
-//		Log.d("名称：===========", getPhoneName);
-		getPhoneName = getCallName(mContactsInfo,BtcNative.getCallNumber());
+		Log.d("名称：===========", getPhoneName);
+//		getPhoneName = getCallName(mContactsInfo,BtcNative.getCallNumber());
 
 		if (TextUtils.isEmpty(getPhoneName)) {
 			mNameText.setText(getCallNumber);
@@ -271,15 +248,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mCheckout.setVisibility(View.GONE);
 		}
 	}
-
-//	// 获取来电时名字
-//	private String getCallName(String getCallNumber) {
-//		String mCallName = "";
-//		if (MainActivity.binder != null) {
-//			return MainActivity.binder.getCallName(getCallNumber);
-//		}
-//		return mCallName;
-//	}
 
 	@Override
 	public void onClick(View v) {
