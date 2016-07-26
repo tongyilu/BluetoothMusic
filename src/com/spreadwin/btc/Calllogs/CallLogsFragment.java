@@ -3,6 +3,7 @@ package com.spreadwin.btc.Calllogs;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.Calllogs.MyListView.OnRefreshListener;
 import com.spreadwin.btc.utils.PhoneBookInfo;
+import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.SlidingTabLayout;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
@@ -68,7 +70,7 @@ public class CallLogsFragment extends Fragment {
 	private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 	// private final ArrayList<PhoneBookInfo> mCallLogsInfo = new
 	// ArrayList<PhoneBookInfo>();
-	private ArrayList<PhoneBookInfo> mPhoneBookInfo = new ArrayList<PhoneBookInfo>();
+	private List<PhoneBookInfo> mPhoneBookInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo>());
 	PhoneBookInfo mCalloutInfo, mCallinInfo, mCallmissInfo;
 	MyAdapter mAdapter;
 	private LayoutInflater mInflater;

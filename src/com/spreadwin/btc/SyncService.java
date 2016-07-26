@@ -1,6 +1,8 @@
 package com.spreadwin.btc;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pools.SynchronizedPool;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -126,7 +129,7 @@ public class SyncService extends Service {
 	public final int mUpdateDataBase = 6;
 	private int RecordNum = 0;
 	// int mSyncStatus = 0;
-	private final ArrayList<PhoneBookInfo> mPhoneBookInfo = new ArrayList<PhoneBookInfo>();
+	private final List<PhoneBookInfo> mPhoneBookInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo>());
 	ArrayList<String> mPhoneBook = new ArrayList<String>();
 	PhoneBookInfo mSIMContactsInfo;
 	PhoneBookInfo mPhoneContactsInfo;
@@ -139,7 +142,7 @@ public class SyncService extends Service {
 
 	boolean mScreenStatus = true;
 
-	List<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
+	List<PhoneBookInfo_new> mContactsInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo_new>());
 	private CharacterParser characterParser;
 	/**
 	 * 根据拼音来排列ListView里面的数据类
@@ -165,11 +168,10 @@ public class SyncService extends Service {
 
 	private View view;
 
-	private boolean isSater;
-
-	// public static int mNum;
-
-	private boolean isFlage;
+	/**
+	 * 来电状态还是呼出状态
+	 */
+	private boolean isState;
 
 	public static boolean isStarFromVoice;
 
@@ -177,10 +179,16 @@ public class SyncService extends Service {
 	public static String mArtist = null;
 	public static String mAlbum = null;
 
+	/**
+	 * 缓存电话号码归属地
+	 */
 	public static LruJsonCache mCache;
+	
+	/**
+	 * 判断是否连接上来
+	 */
 	public static boolean isConnect;
 
-	// private OpenUtils openUtils;
 	boolean mdatabase;
 	private Handler mHandler = new Handler();
 	private Runnable mRunnble = new Runnable() {
@@ -485,6 +493,7 @@ public class SyncService extends Service {
 		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
 			addContacts();
 			// handler.sendEmptyMessage(mAddDatabase);
+			
 			Thread mDataThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -517,7 +526,7 @@ public class SyncService extends Service {
 		 * 
 		 * @return
 		 */
-		public ArrayList<PhoneBookInfo> getPhoneBookInfo() {
+		public List<PhoneBookInfo> getPhoneBookInfo() {
 			return mPhoneBookInfo;
 		}
 
@@ -1124,11 +1133,11 @@ public class SyncService extends Service {
 
 		Intent mCallIntent = new Intent();
 		mCallIntent.setAction(MainActivity.mActionCall);
-		onChaneAudioFocus(mTempStatus);
+//		onChaneAudioFocus(mTempStatus);
 		switch (mTempStatus) {
 		case BtcGlobalData.CALL_IN:
 			// setMute(true,mTempStatus);
-			isSater = true;
+			isState = true;
 			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
@@ -1160,7 +1169,7 @@ public class SyncService extends Service {
 		case BtcGlobalData.NO_CALL:
 			// setMute(false, mTempStatus);
 			// setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
-			isSater = false;
+			isState = false;
 			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
@@ -1259,20 +1268,10 @@ public class SyncService extends Service {
 		}
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
-		DialogView gpsView = new DialogView(this, isSater, isScreen);
+		DialogView gpsView = new DialogView(this, isState, isScreen);
 		gpsView.setGetPhoneName(binder.getCallName(BtcNative.getCallNumber()));
 		view = gpsView.getVideoPlayView();
 		wm.addView(view, params);
-	}
-
-	// 改变AudioFocus
-	private void onChaneAudioFocus(int mStatus) {
-		// if (mStatus != BtcGlobalData.NO_CALL) {
-		// audioManager.requestAudioFocus(null, 10,
-		// AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-		// } else {
-		// audioManager.abandonAudioFocus(null);
-		// }
 	}
 
 	/**

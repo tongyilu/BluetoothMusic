@@ -74,7 +74,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	private PinyinComparator pinyinComparator;
 
 	public List<Fragment> fragments = new ArrayList<Fragment>();
-	public static ArrayList<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
+	public static List<PhoneBookInfo_new> mContactsInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo_new>());
 	PhoneBookInfo mPhoneContactsInfo, mSIMContactsInfo;
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;
@@ -87,7 +87,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		super.onCreate(savedInstanceState);
 		mLog("onCreate 111111111");
 		try {
-			mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+			mContactsInfo = (List<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
 			characterParser = CharacterParser.getInstance();
 			pinyinComparator = new PinyinComparator();
 		} catch (Exception e) {
@@ -323,7 +323,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		// mContactsInfo = (ArrayList<PhoneBookInfo_new>)
 		// MainActivity.binder.getPhoneBookInfo_new();
 
-		mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+		mContactsInfo = (List<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
 
 		mLog("notifyDataSetChanged mContactsInfo size ==" + mContactsInfo.size());
 		// 根据a-z进行排序

@@ -137,23 +137,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private int mRightMode = 2;
 	private int mFullMode = 3;
 	private int mLayoutMode = 0;
-	// private boolean isAppRunning = false;
-
-	// private DialogView dialogView;
 
 	private CustomDialog.Builder builder;
-
-	// Handler mHandler = new Handler();
-	// Runnable mRunnable = new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	// if (null != mContectText) {
-	//
-	// mHandler.postDelayed(this, 100);
-	// }
-	// }
-	// };
 
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
@@ -612,7 +597,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 			case mMessageShowDeviceName:
 				mLog("handleMessage BtcNative.getPairDeviceName(0) ==" + BtcNative.getPairDeviceName(0));
-				if (!SyncService.isQuery) {
+				if (!SyncService.isConnect) {
 					return;
 				}
 				if (BtcNative.getPairDeviceName(0).length() > 0) {

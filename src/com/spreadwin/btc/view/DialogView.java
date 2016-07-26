@@ -201,6 +201,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
 				if (!isScreen && isFlasg) {
 					try {
+						isScreen = true;
 						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
