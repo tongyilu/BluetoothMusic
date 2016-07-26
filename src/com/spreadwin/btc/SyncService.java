@@ -54,7 +54,7 @@ public class SyncService extends Service {
 	public static final String EXTRA_BLUETOOTH_VOLUME_MUTED = "android.media.EXTRA_BLUETOOTH_VOLUME_MUTED";
 	public static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
 	public static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
-
+    /*************************************主界面和语音的交互广播*********************/
 	public static final String ACTION_BT_CALL_ANSWER = "ACTION_BT_CALL_ANSWER";// 接听
 	public static final String ACTION_BT_CALL_REJECT = "ACTION_BT_CALL_REJECT";// 拒听
 	public static final String ACTION_BT_CALL_HANGUP = "ACTION_BT_CALL_HANGUP";// 挂断
@@ -63,10 +63,13 @@ public class SyncService extends Service {
 	public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
 	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
 	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
-
-	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";
+    /***********************************************************************/
+	
+	/*******系统广播********************/
+	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";   
 	public static final String ACTION_ACC_ON = "ACTION_ACC_ON";
-
+	/**********************************/
+	
 	public static final String ACTION_BTC_CALL = "MYACTION.BTC.CALL";// 通过蓝牙拨打电话
 
 	public static final String BLUETOOTH_CONNECT_CHANGE = "BLUETOOTH_CONNECT_CHANGE";
@@ -101,22 +104,22 @@ public class SyncService extends Service {
 	 */
 	public boolean mCLDCall = false;
 
-	private boolean mThreadRun = false;
+	private boolean mThreadRun = false; //状态监听线程run控制位
 
-	private int index = 0;
-	private int bfpUpdateTime = 0;
-	private int mA2dpStatus = BtcGlobalData.A2DP_DISCONNECT;
+	private int index = 0;     //设备配对倒计时
+	private int bfpUpdateTime = 0;      //deprecated
+	private int mA2dpStatus = BtcGlobalData.A2DP_DISCONNECT;  //蓝牙音乐状态
 	public int mBfpStatus = BtcGlobalData.BFP_DISCONNECT;// 蓝牙连接状态
-	public int mCallStatus = BtcGlobalData.NO_CALL;
+	public int mCallStatus = BtcGlobalData.NO_CALL;//来电 ，接听，挂断的等状态
 	private int mCallStatusOld = BtcGlobalData.NO_CALL;
 	private int mPairStatus = BtcGlobalData.NOT_PAIR;
 	private int mPowerStatus = BtcGlobalData.NOT_PAIR;
-	private int mSyncStatus = BtcGlobalData.NOT_SYNC;
-	private int mUpdateCalllog = BtcGlobalData.NO_CALL;
+	private int mSyncStatus = BtcGlobalData.NOT_SYNC;//蓝牙和手机同步状态
+	private int mUpdateCalllog = BtcGlobalData.NO_CALL;//通话记录同步状态
 
-	private AudioManager audioManager;
+	private AudioManager audioManager;           
 	private NotificationManager nm;
-	private SyncBinder binder = new SyncBinder();
+	private SyncBinder binder = new SyncBinder();//service的外部接口
 	// private int mUpdateTime = 10000;
 	public final int mShowNotification = 1;
 	public final int mCancelNotification = 2;
