@@ -313,7 +313,7 @@ public class SyncService extends Service {
 				}
 
 				// 更新歌曲
-				if (mTitle != BtcNative.getPlayTitle()) {
+				if (mTitle != BtcNative.getPlayTitle() && !TextUtils.isEmpty(BtcNative.getPlayTitle())) {
 					mTitle = BtcNative.getPlayTitle();
 					mArtist = BtcNative.getPlayArtist();
 					mAlbum = BtcNative.getPlayAlbum();
@@ -1143,29 +1143,22 @@ public class SyncService extends Service {
 //		onChaneAudioFocus(mTempStatus);
 		switch (mTempStatus) {
 		case BtcGlobalData.CALL_IN:
-			// setMute(true,mTempStatus);
 			isState = true;
-			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
-			// setMute(false,mTempStatus);
-//			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
-			setBtAudioMode(BtAudioManager.AUDIO_MODE_CALL);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
 			sendBroadcast(mIN_CallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
-			// 接听和挂断
+			// 接听
 			// 发送蓝牙通路
 			removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
-			// setMute(false,mTempStatus);
-			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
 				mCLDCallResult = 0;
@@ -1174,12 +1167,8 @@ public class SyncService extends Service {
 			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
-			// setMute(false, mTempStatus);
-			// setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 			isState = false;
-//			BtAudioManager.getInstance(this).mAudioFocusGain = false;
 			BtAudioManager.getInstance(this).onCallChange(false);
-			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
 				if (lastCallStatus == BtcGlobalData.CALL_IN) {
@@ -1370,7 +1359,6 @@ public class SyncService extends Service {
 						mPhoneBook.clear();
 						return;
 					}
-				
 					Message message = new Message();
 					message.what = mPhoneBookSyncBroadcast;
 					message.arg1 = BtcGlobalData.NEW_SYNC;
@@ -1443,12 +1431,12 @@ public class SyncService extends Service {
 				mLog("mBatInfoReceiver MUSIC_MUTE_CHANGED_ACTION =="
 						+ (intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false)) + "; mOldBt ==" + mOldBt);
 				boolean status = intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false);
-				setMute(status, mCallStatus);
+				//setMute(status, mCallStatus);
 			} else if (action.equals(VOLUME_CHANGED_ACTION)) {
 				int streamType = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, AudioManager.STREAM_MUSIC);
 				mLog("mBatInfoReceiver streamType ==" + streamType);
 				if (streamType == AudioManager.STREAM_MUSIC) {
-					setMute(false, mCallStatus);
+					//setMute(false, mCallStatus);
 				}
 			} else if (action.equals(ACTION_BT_CALL_ANSWER)) {
 				BtcNative.answerCall();

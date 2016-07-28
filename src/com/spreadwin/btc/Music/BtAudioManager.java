@@ -36,6 +36,7 @@ public class BtAudioManager {
 
 	private int VolumeNormal = 13;
 	private int VolumeMute = 0;
+	
 
 	public static int AUDIO_MODE_NORMAL = AudioStream.MODE_NORMAL;// 正常模式
 	public static int AUDIO_MODE_BT = 6; // 蓝牙的通路模式
@@ -91,7 +92,11 @@ public class BtAudioManager {
 			e.printStackTrace();
 		}
 		if (toggle) {
-			setAudioMode(AUDIO_MODE_BT);
+			if (mAudioCall) {
+				setAudioMode(AUDIO_MODE_CALL);
+			}else{
+				setAudioMode(AUDIO_MODE_BT);
+			}
 			BtcNative.setVolume(VolumeNormal);
 		} else {
 			setAudioMode(AUDIO_MODE_NORMAL);
@@ -106,11 +111,13 @@ public class BtAudioManager {
 	 */
 	public void setAudioMode(int mode) {
 		mLog("setAudioMode mode ==" + mode);
-		if (mode == AudioStream.MODE_NORMAL) {
-			audioManager.abandonAudioFocus(mAudioFocusListener);
-		}
+//		if (mode == AudioStream.MODE_NORMAL) {
+//			audioManager.abandonAudioFocus(mAudioFocusListener);
+//		}
 		audioManager.setParameters("cdr_mode=" + mode);
 	}
+	
+	
 
 	/**
 	 * 通话状态改变
@@ -184,15 +191,17 @@ public class BtAudioManager {
 			switch (focusChange) {
 			case AudioManager.AUDIOFOCUS_LOSS:
 				mLog("mAudioFocusListener AUDIOFOCUS_LOSS");
-				mAudioCall = false;
 				onBtAudioFocusChange(false);
 				break;
 			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
 				mLog("mAudioFocusListener AUDIOFOCUS_LOSS_TRANSIENT focusChange ==" + focusChange);
-				BtcNative.setVolume(VolumeMute);
+//				BtcNative.setVolume(VolumeMute);
+				onBtAudioFocusChange(false);
 				break;
 			case AudioManager.AUDIOFOCUS_GAIN:
+			case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
+			case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
 				mLog("mAudioFocusListener AUDIOFOCUS_GAIN mAudioCall ==" + mAudioCall);
 				if (!mAudioCall)
 					onBtAudioFocusChange(true);
