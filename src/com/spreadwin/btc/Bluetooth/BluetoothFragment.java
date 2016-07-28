@@ -1,24 +1,21 @@
 package com.spreadwin.btc.Bluetooth;
 
+import java.lang.reflect.Field;
+
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -323,15 +320,17 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 		return false;
 	}
 
-	// @Override
-	// public void onGlobalLayout() {
-	// mLog("getWidth =="+mRootView.getWidth());
-	// mLog("updateInputIndex getWidth()=="+mInputText.getWidth());
-	// mHsview.scrollTo(mInputText.getWidth(), 0);
-	// if (mRootView.getWidth() > 500) {
-	//
-	// }else{
-	//
-	// }
-	// }
+	@Override
+	public void onDestroyView() {
+	super.onDestroyView();
+	try {
+	       Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+	       childFragmentManager.setAccessible(true);
+	       childFragmentManager.set(this, null);
+	    } catch (NoSuchFieldException e) {
+	       throw new RuntimeException(e);
+	    } catch (IllegalAccessException e) {
+	       throw new RuntimeException(e);
+	    }
+	}
 }

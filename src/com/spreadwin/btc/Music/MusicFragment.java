@@ -76,15 +76,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus());
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
-			if (mRight) {
-				BtAudioManager.getInstance(getActivity()).mAudioCall = true;
-			}
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
 					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
-					mPlayArtist
-							.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
+					if (PlayTitle != null) {
+						mPlayArtist.setText(
+								SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
+					}
 				} else {
 					mPlayTitle.setText("");
 					mPlayArtist.setText("");
@@ -107,7 +106,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
-		intentFilter.addAction(DISCONNECT);
 		getActivity().registerReceiver(mReceiver, intentFilter);
 		return mRootView;
 	}
@@ -124,13 +122,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				mPlayTitle.setVisibility(View.VISIBLE);
 				mPlayArtist.setVisibility(View.VISIBLE);
 				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" + PlayAlbum);
-			} else if (intent.getAction() == DISCONNECT) {
-				isPlaySong = false;
-				mPlayTitle.setText("");
-				mPlayArtist.setText("");
-				mPlayTitle.setVisibility(View.GONE);
-				mPlayArtist.setVisibility(View.GONE);
+				if (PlayTitle != null) {
+					mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" + PlayAlbum);
+				}
 			}
 		}
 	};
@@ -208,6 +202,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
+		openAudioMode();
 		if (mPlayer == 2) {
 			mLog("onClick pauseMusic");
 			BtcNative.pauseMusic();

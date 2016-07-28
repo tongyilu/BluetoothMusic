@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static final String mActionCall = "com.spreadwin.btc.call";
 	public static final String mActionPair = "com.spreadwin.btc.pair";
 	public static final String mAcitonFinish = "com.spreadwin.btc.finish";
-	
+
 	public static final String mActionBookInfoOver = "com.spreadwin.btc.over";
 
 	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
@@ -597,16 +597,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 			case mMessageShowDeviceName:
 				mLog("handleMessage BtcNative.getPairDeviceName(0) ==" + BtcNative.getPairDeviceName(0));
-				if (!SyncService.isConnect) {
-					return;
-				}
-				if (BtcNative.getPairDeviceName(0).length() > 0) {
-					mBluetoothStatus.setText(BtcNative.getPairDeviceName(0));
-					// mBluetoothStatus.setText(getResources().getString(
-					// R.string.connect_title)
-					// + "--" + BtcNative.getPairDeviceName(0));
+				if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+					if (BtcNative.getPairDeviceName(0).length() > 0) {
+						mBluetoothStatus.setText(BtcNative.getPairDeviceName(0));
+					} else {
+						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
+					}
 				} else {
-					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
+					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 				}
 				break;
 			case mMessageHideVolume:
@@ -691,7 +689,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					BtcNative.disconnectPhone();
-					mLog("BtcNative.disconnectPhone()"+"已断开");
+					mLog("BtcNative.disconnectPhone()" + "已断开");
 				}
 			});
 			builder.setNegativeButton("取消", null);
@@ -768,7 +766,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mBluetoothFragment = new BluetoothFragment();
 		}
 		transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-		transaction.commitAllowingStateLoss();
+		try {
+			transaction.commitAllowingStateLoss();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 
 	private void setDefaultColor() {
@@ -1037,14 +1040,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (mStatus == BtcGlobalData.CALL_IN) {
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
-					FragmentManager fm = getFragmentManager();
-					FragmentTransaction transaction = fm.beginTransaction();
-					if (mBluetoothFragment == null) {
-						mBluetoothFragment = new BluetoothFragment();
-					}
-					transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-					transaction.commitAllowingStateLoss();
-					setDefaultColor();
+					setDefaultFragment();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
 					// 来电时
@@ -1087,15 +1083,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							mMusicRightFragment.openAudioMode();
 						}
 					}
-				
+
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
 					updateContacts(0);
 					mLog("BtcGlobalData.BFP_DISCONNECT");
-					Intent mA2dpIntent = new Intent();
-					mA2dpIntent.setAction(MusicFragment.DISCONNECT);
-					sendBroadcast(mA2dpIntent);
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
@@ -1104,7 +1097,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 			} else if (intent.getAction().equals(mAcitonFinish)) {
 				MainActivity.this.finish();
-			}else if (intent.getAction().equals(mActionBookInfoOver)) {
+			} else if (intent.getAction().equals(mActionBookInfoOver)) {
 				if (binder != null) {
 					updateContacts(binder.getPhoneBookInfo_new().size());
 				}

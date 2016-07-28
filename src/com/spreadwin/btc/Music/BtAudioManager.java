@@ -94,7 +94,7 @@ public class BtAudioManager {
 			setAudioMode(AUDIO_MODE_BT);
 			BtcNative.setVolume(VolumeNormal);
 		} else {
-			setAudioMode(AudioStream.MODE_NORMAL);
+			setAudioMode(AUDIO_MODE_NORMAL);
 			BtcNative.setVolume(VolumeMute);
 		}
 	}
