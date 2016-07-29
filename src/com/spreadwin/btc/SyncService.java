@@ -670,14 +670,7 @@ public class SyncService extends Service {
 		}
 	}
 
-	public void setBtAudioMode(int mode) {
-		// 0 normal
-		// 6 bt audio
-		// 7 bt call
-		mLog("setBtAudioMode mode ==" + mode);
-		// audioManager.setParameters("cdr_mode=" + mode);
-		BtAudioManager.getInstance(this).setAudioMode(mode);
-	}
+
 
 	protected void onBfpStatusChange() {
 		Intent mBfpIntent = new Intent();
@@ -708,7 +701,6 @@ public class SyncService extends Service {
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
-			setBtAudioMode(BtAudioManager.AUDIO_MODE_NORMAL);
 
 		}
 		sendObjMessage(1, mBfpIntent);
@@ -1144,26 +1136,29 @@ public class SyncService extends Service {
 		switch (mTempStatus) {
 		case BtcGlobalData.CALL_IN:
 			isState = true;
+			BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
+			mLog("add_window"+ BtcGlobalData.CALL_IN);
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
+			BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
 			sendBroadcast(mIN_CallIntent);
 			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
-			// 接听
-			// 发送蓝牙通路
 			removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
+			BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
 				mCLDCallResult = 0;
 			}
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
+			mLog("add_window"+ BtcGlobalData.CALL_IN);
 			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
@@ -1245,8 +1240,6 @@ public class SyncService extends Service {
 		wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 
-		// wmParams.type = LayoutParams.TYPE_SYSTEM_ERROR |
-		// LayoutParams.TYPE_PHONE;
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
@@ -1283,21 +1276,10 @@ public class SyncService extends Service {
 						mLog("ainActivity.mBroadcast isTopMyself==" + true);
 						break;
 					}
-					// mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					// startActivity(mCallIntent);
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 				}
 			}
 			sendObjMessage(1, mCallIntent);
-			// lbm.sendBroadcast(mCallIntent);
-		} else {
-			// mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			// startActivity(mCallIntent);
-		}
+		} 
 		mLog("ainActivity.mBroadcast ==" + MainActivity.mBroadcast);
 		sendBroadcast(mCallIntent);
 	}
@@ -1407,11 +1389,6 @@ public class SyncService extends Service {
 		});
 		PushContactsThread.start();
 	}
-
-	/**
-	 * 
-	 * 
-	 */
 
 	/*
 	 * 广播Receiver：语音,主界面控制，系统广播
@@ -1526,12 +1503,12 @@ public class SyncService extends Service {
 	private void setMute(boolean status, int CallStatus) {
 		mLog("setMute status ==" + status + "; CallStatus ==" + CallStatus + ";BtcNative.getVolume() =="
 				+ BtcNative.getVolume());
-		BtAudioManager.getInstance(this).onAudioMuteChange(status);
 	}
 
 	// 凯立德一键通话
 	protected void onCLDCall() {
 		if (mBfpStatus == BtcGlobalData.BFP_CONNECTED) {
+			
 			onCLDCallResult(0);
 			mCLDCall = true;
 			Intent mCustomerIntent = new Intent();

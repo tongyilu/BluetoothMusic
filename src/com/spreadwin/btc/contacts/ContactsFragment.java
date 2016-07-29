@@ -53,7 +53,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	private ListView sortListView;
 	private SideBar sideBar;
 	private TextView dialog;
-	private TextView mContactsNumber;
+//	private TextView mContactsNumber;
 	private ContactsAdapter adapter;
 	private ClearEditText mClearEditText;
 
@@ -103,7 +103,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		mRootView = inflater.inflate(R.layout.fragment_contacts_new, container, false);
 		sideBar = (SideBar) mRootView.findViewById(R.id.sidrbar);
 		dialog = (TextView) mRootView.findViewById(R.id.dialog);
-		mContactsNumber = (TextView) mRootView.findViewById(R.id.mContactsNumber);
+//		mContactsNumber = (TextView) mRootView.findViewById(R.id.mContactsNumber);
 		mLoading = (LinearLayout) mRootView.findViewById(R.id.loading);
 		sideBar.setTextView(dialog);
 		// 设置右侧触摸监听
@@ -212,7 +212,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		// mCustomDialog.show();
 		emptyView.setText("");
 		mLoading.setVisibility(View.VISIBLE);
-		mContactsNumber.setVisibility(View.GONE);
+//		mContactsNumber.setVisibility(View.GONE);
         sideBar.setVisibility(View.GONE);
 		// handler.post(mRunnable);
 	}
@@ -222,13 +222,13 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			return;
 		}
 		if (mContactsInfo.size() > 0) {
-			mContactsNumber.setVisibility(View.VISIBLE);
+//			mContactsNumber.setVisibility(View.VISIBLE);
 			sideBar.setVisibility(View.VISIBLE);
-			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
+//			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
 		} else {
 			mContactsInfo.clear();
 			sideBar.setVisibility(View.GONE);
-			mContactsNumber.setVisibility(View.GONE);
+//			mContactsNumber.setVisibility(View.GONE);
 		}
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
 		// if (mCustomDialog != null) {

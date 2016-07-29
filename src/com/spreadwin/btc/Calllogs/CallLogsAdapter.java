@@ -88,14 +88,6 @@ public class CallLogsAdapter extends BaseAdapter {
 			return convertView;
 		}
 		try {
-			// CallLogsFragment.mLog("getView convertView33
-			// =="+convertView.getId()+"; position =="
-			// +position+";mCallLogsInfo type =="+mCallLogsInfo.getType() +
-			// "; getTelName(position) =="+mCallLogsInfo.getTelName(position)+
-			// "; getTelNumber(position)
-			// =="+mCallLogsInfo.getTelNumber(position)+
-			// "; mCallLogsInfo.getSize() =="+mCallLogsInfo.getSize());
-			// 号码没有配备到名字的
 			if (mCallLogsInfo.getTelName(position).length() == 0) {
 				onMatchingName(holder.mTelName, position);
 			} else {
