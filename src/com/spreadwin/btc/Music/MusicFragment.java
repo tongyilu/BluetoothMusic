@@ -73,9 +73,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	}
 
 	public void openAudioMode() {
-		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus());
+		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus()+"; mRight =="+mRight);
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
+//			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {

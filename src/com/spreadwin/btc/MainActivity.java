@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
-				updateContacts(binder.getPhoneBookInfo_new().size());
+				updateContacts(binder.getPhoneBookInfo_new().size());				
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 		}
@@ -362,9 +362,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (mMusicRightFragment != null) {
 			mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 		}
-		if (mMusicRightFragment.isAdded()) {
-			return;
-		}
+//		if (mMusicRightFragment.isAdded()) {
+//			return;
+//		}
 		mAddFragment.commitAllowingStateLoss();
 		mVto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
@@ -507,11 +507,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
-						mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
+						mLog("Receiver mMusicFragment222 isVisible ==" + mMusicFragment.isVisible());
 						if (SyncService.isTopMyself(getBaseContext())) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
-							}
+							}							
 							// if (mMusicRightFragment.isVisible()) {
 							// mMusicRightFragment.openMusicFragment();
 							// }
@@ -1074,12 +1074,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
+					mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
 					if (SyncService.isTopMyself(getBaseContext())) {
 						if (mMusicFragment.isVisible()) {
+							mLog("Receiver mMusicFragment 11111111");
 							mMusicFragment.openAudioMode();
 						}
+						mLog("Receiver mMusicRightFragment isVisible =="+mMusicRightFragment.isVisible()+
+								"; getVisibility =="+mMusicRightFragment.getView().getVisibility() + 
+								"; mAddLayout =="+mAddLayout.getVisibility()+View.GONE);
 						if (getFragmentManager().findFragmentById(R.id.add_bluetooth_music) == mMusicRightFragment
-								&& mMusicRightFragment.isVisible()) {
+								&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {						
 							mMusicRightFragment.openAudioMode();
 						}
 					}

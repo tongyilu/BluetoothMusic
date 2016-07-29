@@ -54,6 +54,9 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
+	/**
+	 * 来电状态还是呼出状态
+	 */
 	private boolean isStart;
 	private boolean isScreen;
 	private boolean isCheckout;
@@ -166,12 +169,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mCallText.setText("来电");
 			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.VISIBLE);
-			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
-			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
-			Log.d(TAG, getPhoneName);
-			Log.d(TAG, getCallNumber);
-			mContext.sendBroadcast(mCallIntent);
+			onSendBTCall(ACTION_BT_CALL_IN,getPhoneName,getCallNumber);
 		}
 		setChckoutAudio();
 		IntentFilter intentFilter = new IntentFilter();
@@ -187,6 +185,26 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			}
 		});
 
+	}
+
+	/**
+	 * 发送广播：ACTION_BT_CALL_IN
+	 * @param actionBtCallIn
+	 * @param phoneName
+	 * @param callNumber
+	 */
+	private void onSendBTCall(String action, String phoneName,
+			String callNumber) {
+		Intent mCallIntent = new Intent(action);
+		if (phoneName != null) {
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, phoneName);			
+		}
+		if (callNumber != null) {
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, callNumber);			
+		}
+		Log.d(TAG, "send broadcast == ACTION_BT_CALL_IN"+"; phoneName =="+phoneName+"; callNumber =="+callNumber);
+		mContext.sendBroadcast(mCallIntent);
+		
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -363,10 +381,10 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
+		Log.d(TAG, "mDismissDialog " + ACTION_BT_CALL_IN);
 		if (isStart) {
-			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-			mContext.sendBroadcast(mCallIntent);
-			Log.d("ACTION_BT_CALL_IN", "发送了" + ACTION_BT_CALL_IN);
+			Log.d(TAG, "send broadcast " + ACTION_BT_CALL_IN);
+			onSendBTCall(ACTION_BT_CALL_IN, null, null);
 		}
 		try {
 			wm.removeView(mView);
@@ -432,6 +450,15 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mInputText.setText("");
 		}
 		return false;
+	}
+
+	/**
+	 * 设置isStart的状态，true为来电，false为拨出
+	 * @param isState
+	 */
+	public void setStatus(boolean isFlags ,boolean screen) {
+		this.isStart = isFlags;	
+		this.isScreen = screen;
 	}
 
 }

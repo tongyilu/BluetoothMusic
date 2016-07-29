@@ -1,531 +1,0 @@
-[1mdiff --git a/src/com/spreadwin/btc/SyncService.java b/src/com/spreadwin/btc/SyncService.java[m
-[1mindex 656bee8..fe445c7 100644[m
-[1m--- a/src/com/spreadwin/btc/SyncService.java[m
-[1m+++ b/src/com/spreadwin/btc/SyncService.java[m
-[36m@@ -162,6 +162,8 @@[m [mpublic class SyncService extends Service {[m
- [m
- 	private View view;[m
- [m
-[32m+[m	[32mprivate boolean isSater;[m[41m[m
-[32m+[m[41m[m
- 	@Override[m
- 	public IBinder onBind(Intent intent) {[m
- 		return binder;[m
-[36m@@ -283,7 +285,8 @@[m [mpublic class SyncService extends Service {[m
- 				// mLog("mTempStatus ==" + mTempStatus[m
- 				// + "; mSyncStatus ==" + mSyncStatus);[m
- 				if (mSyncStatus != mTempStatus) {[m
-[31m-					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);[m
-[32m+[m					[32mmLog("mTempStatus ==" + mTempStatus + "; mSyncStatus =="[m[41m[m
-[32m+[m							[32m+ mSyncStatus);[m[41m[m
- 					onSyncStatusChange();[m
- 				}[m
- 				try {[m
-[36m@@ -348,8 +351,12 @@[m [mpublic class SyncService extends Service {[m
- 			for (int i = 0; i < mContactsInfo.size(); i++) {[m
- 				ArrayList<String> number = mContactsInfo.get(i).getNumber();[m
- 				for (int j = 0; j < number.size(); j++) {[m
-[31m-					if (number.get(j).equals(getCallNumber) || (getCallNumber.length() >= 8[m
-[31m-							&& number.get(j).contains(getCallNumber.substring(getCallNumber.length() - 8)))) {[m
-[32m+[m					[32mif (number.get(j).equals(getCallNumber)[m[41m[m
-[32m+[m							[32m|| (getCallNumber.length() >= 8 && number.get(j)[m[41m[m
-[32m+[m									[32m.contains([m[41m[m
-[32m+[m											[32mgetCallNumber[m[41m[m
-[32m+[m													[32m.substring(getCallNumber[m[41m[m
-[32m+[m															[32m.length() - 8)))) {[m[41m[m
- 						mCallName = mContactsInfo.get(i).getName();[m
- 					}[m
- 				}[m
-[36m@@ -454,7 +461,8 @@[m [mpublic class SyncService extends Service {[m
- 			// Log.e(TAG,"####enter keyValuePairs = 6");[m
- 			// audioManager.setParameters("cdr_mode=6");[m
- 			setBtAudioMode(6);[m
-[31m-			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);[m
-[32m+[m			[32mhandler.sendEmptyMessageDelayed(mShowNotification,[m[41m[m
-[32m+[m					[32mMainActivity.mShowDeviceNameDelayed);[m[41m[m
- 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);[m
- 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {[m
- 			m_DBAdapter.close();[m
-[36m@@ -522,21 +530,25 @@[m [mpublic class SyncService extends Service {[m
- [m
- 	public void showNotification() {[m
- 		long when = System.currentTimeMillis();[m
-[31m-		Notification notification = new Notification(R.drawable.ic_launcher, "蓝牙", when);[m
-[32m+[m		[32mNotification notification = new Notification(R.drawable.ic_launcher,[m[41m[m
-[32m+[m				[32m"蓝牙", when);[m[41m[m
- 		// define the notification's expand message and intent[m
- 		CharSequence contentTitle = "车载蓝牙";[m
- 		CharSequence contentText;[m
- 		if (BtcNative.getPairDeviceName(0).length() > 0) {[m
-[31m-			contentText = getResources().getString(R.string.connect_title) + "--" + BtcNative.getPairDeviceName(0);[m
-[32m+[m			[32mcontentText = getResources().getString(R.string.connect_title)[m[41m[m
-[32m+[m					[32m+ "--" + BtcNative.getPairDeviceName(0);[m[41m[m
- 		} else {[m
- 			contentText = getResources().getString(R.string.connect_title);[m
- 		}[m
- 		Intent notificationIntent = new Intent();[m
-[31m-		notificationIntent.setClassName("com.spreadwin.btc", "com.spreadwin.btc.MainActivity");[m
-[32m+[m		[32mnotificationIntent.setClassName("com.spreadwin.btc",[m[41m[m
-[32m+[m				[32m"com.spreadwin.btc.MainActivity");[m[41m[m
- 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);[m
-[31m-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,[m
-[31m-				PendingIntent.FLAG_UPDATE_CURRENT);[m
-[31m-		notification.setLatestEventInfo(this, contentTitle, contentText, contentIntent);[m
-[32m+[m		[32mPendingIntent contentIntent = PendingIntent.getActivity(this, 0,[m[41m[m
-[32m+[m				[32mnotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);[m[41m[m
-[32m+[m		[32mnotification.setLatestEventInfo(this, contentTitle, contentText,[m[41m[m
-[32m+[m				[32mcontentIntent);[m[41m[m
- 		nm.notify(1, notification);[m
- 	}[m
- [m
-[36m@@ -558,7 +570,8 @@[m [mpublic class SyncService extends Service {[m
- 					ArrayList<String> temp = new ArrayList<String>();[m
- 					int index = 0;[m
- 					int total = (int) Math.ceil((float) mPhoneBook.size() / 500);[m
-[31m-					mLog("mSendSyncBroadcast mPhoneBook.size() ==" + mPhoneBook.size() + "; total =" + total[m
-[32m+[m					[32mmLog("mSendSyncBroadcast mPhoneBook.size() =="[m[41m[m
-[32m+[m							[32m+ mPhoneBook.size() + "; total =" + total[m[41m[m
- 							+ "; index =" + index);[m
- 					for (int i = 0; i < mPhoneBook.size(); i++) {[m
- 						temp.add(mPhoneBook.get(i));[m
-[36m@@ -567,7 +580,8 @@[m [mpublic class SyncService extends Service {[m
- 							// intent.putExtra("completion", true);[m
- 							intent.putExtra("index", index++);[m
- 							intent.putExtra("total", total);[m
-[31m-							mLog("mSendSyncBroadcast sendBroadcast ==" + i + "; total =" + total + "; index =" + index);[m
-[32m+[m							[32mmLog("mSendSyncBroadcast sendBroadcast ==" + i[m[41m[m
-[32m+[m									[32m+ "; total =" + total + "; index =" + index);[m[41m[m
- 							sendBroadcast(intent);[m
- 							temp.clear();[m
- 						} else if (i != 0 && i % 499 == 0) {[m
-[36m@@ -575,7 +589,8 @@[m [mpublic class SyncService extends Service {[m
- 							// intent.putExtra("completion", false);[m
- 							intent.putExtra("index", index++);[m
- 							intent.putExtra("total", total);[m
-[31m-							mLog("mSendSyncBroadcast sendBroadcast ==" + i + "; total =" + total + "; index =" + index);[m
-[32m+[m							[32mmLog("mSendSyncBroadcast sendBroadcast ==" + i[m[41m[m
-[32m+[m									[32m+ "; total =" + total + "; index =" + index);[m[41m[m
- 							sendBroadcast(intent);[m
- 							temp.clear();[m
- 							try {[m
-[36m@@ -614,7 +629,8 @@[m [mpublic class SyncService extends Service {[m
- 			upload_toggle = false;[m
- 			// 添加联系人，SIM卡联系人+手机联系人 和总联系人比较[m
- 			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);[m
-[31m-			mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size());[m
-[32m+[m			[32mmLog("syncT onSyncStatusChange sRecordNum==" + RecordNum[m[41m[m
-[32m+[m					[32m+ "; mPhoneBook.size() ==" + mPhoneBook.size());[m[41m[m
- 			if (mUpdateCalllog == BtcGlobalData.NO_CALL) {[m
- 				if (mPhoneBook.size() != RecordNum || isNewContacts()) {[m
- 					addContacts();[m
-[36m@@ -636,39 +652,51 @@[m [mpublic class SyncService extends Service {[m
- [m
- 			// 呼出记录[m
- 			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_OUT);[m
-[31m-			mLog("mCalloutInfo ==" + mCalloutInfo.getSize() + "; RecordNum ==" + RecordNum);[m
-[32m+[m			[32mmLog("mCalloutInfo ==" + mCalloutInfo.getSize() + "; RecordNum =="[m[41m[m
-[32m+[m					[32m+ RecordNum);[m[41m[m
- 			// 通话记录数据有不同更新[m
-[31m-			if (mCalloutInfo.getSize() != RecordNum || mUpdateCalllog == BtcGlobalData.PB_OUT) {[m
-[32m+[m			[32mif (mCalloutInfo.getSize() != RecordNum[m[41m[m
-[32m+[m					[32m|| mUpdateCalllog == BtcGlobalData.PB_OUT) {[m[41m[m
- 				mCalloutInfo.clear();[m
- 				mUpdateCalllog = BtcGlobalData.NO_CALL;[m
- 				for (int i = 0; i < RecordNum; i++) {[m
-[31m-					String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_OUT, i);[m
-[31m-					String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_OUT, i);[m
-[32m+[m					[32mString mName = BtcNative.getPhoneBookRecordNameByIndex([m[41m[m
-[32m+[m							[32mBtcGlobalData.PB_OUT, i);[m[41m[m
-[32m+[m					[32mString mNumber = BtcNative.getPhoneBookRecordNumberByIndex([m[41m[m
-[32m+[m							[32mBtcGlobalData.PB_OUT, i);[m[41m[m
- 					mCalloutInfo.add(mName, mNumber, "");[m
- 				}[m
- 			}[m
- 			mLog("mCalloutInfo ==" + mCalloutInfo.getSize());[m
- 			// 未接记录[m
- 			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_MISS);[m
-[31m-			mLog("mCallmissInfo ==" + mCallmissInfo.getSize() + "; RecordNum ==" + RecordNum);[m
-[31m-			if (mCallmissInfo.getSize() != RecordNum || mUpdateCalllog == BtcGlobalData.PB_MISS) {[m
-[32m+[m			[32mmLog("mCallmissInfo ==" + mCallmissInfo.getSize()[m[41m[m
-[32m+[m					[32m+ "; RecordNum ==" + RecordNum);[m[41m[m
-[32m+[m			[32mif (mCallmissInfo.getSize() != RecordNum[m[41m[m
-[32m+[m					[32m|| mUpdateCalllog == BtcGlobalData.PB_MISS) {[m[41m[m
- 				mCallmissInfo.clear();[m
- 				mUpdateCalllog = BtcGlobalData.NO_CALL;[m
- 				for (int i = 0; i < RecordNum; i++) {[m
-[31m-					String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_MISS, i);[m
-[31m-					String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_MISS, i);[m
-[32m+[m					[32mString mName = BtcNative.getPhoneBookRecordNameByIndex([m[41m[m
-[32m+[m							[32mBtcGlobalData.PB_MISS, i);[m[41m[m
-[32m+[m					[32mString mNumber = BtcNative.getPhoneBookRecordNumberByIndex([m[41m[m
-[32m+[m							[32mBtcGlobalData.PB_MISS, i);[m[41m[m
- 					mCallmissInfo.add(mName, mNumber, "");[m
- 				}[m
- 			}[m
- 			// 呼入记录[m
- 			RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_IN);[m
-[31m-			mLog("mCallinInfo ==" + mCallinInfo.getSize() + "; RecordNum ==" + RecordNum);[m
-[31m-			if (mCallinInfo.getSize() != RecordNum || mUpdateCalllog == BtcGlobalData.PB_IN) {[m
-[32m+[m			[32mmLog("mCallinInfo ==" + mCallinInfo.getSize() + "; RecordNum =="[m[41m[m
-[32m+[m					[32m+ RecordNum);[m[41m[m
-[32m+[m			[32mif (mCallinInfo.getSize() != RecordNum[m[41m[m
-[32m+[m					[32m|| mUpdateCalllog == BtcGlobalData.PB_IN) {[m[41m[m
- 				mCallinInfo.clear();[m
- 				mUpdateCalllog = BtcGlobalData.NO_CALL;[m
- 				for (int i = 0; i < RecordNum; i++) {[m
-[31m-					String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_IN, i);[m
-[31m-					String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_IN, i);[m
-[32m+[m					[32mString mName = BtcNative.getPhoneBookRecordNameByIndex([m[41m[m
-[32m+[m							[32mBtcGlobalData.PB_IN, i);[m[41m[m
-[32m+[m					[32mString mNumber = BtcNative.getPhoneBookRecordNumberByIndex([m[41m[m
-[32m+[m							[32mBtcGlobalData.PB_IN, i);[m[41m[m
- 					mCallinInfo.add(mName, mNumber, "");[m
- 				}[m
- 			}[m
-[36m@@ -682,7 +710,8 @@[m [mpublic class SyncService extends Service {[m
- 			// mSyncIntent.putExtra("sync_status", BtcGlobalData.NOT_SYNC);[m
- 		}[m
- [m
-[31m-		mLog("syncT getPhoneBookRecordNum ==" + BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE));[m
-[32m+[m		[32mmLog("syncT getPhoneBookRecordNum =="[m[41m[m
-[32m+[m				[32m+ BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE));[m[41m[m
- 		// lbm.sendBroadcast(mSyncIntent);[m
- 		handler.sendMessageDelayed(message, 100);[m
- 		// handler.sendEmptyMessageDelayed(mPhoneBookSyncBroadcast,[m
-[36m@@ -695,10 +724,13 @@[m [mpublic class SyncService extends Service {[m
- 		// 读取手机联系人[m
- 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);[m
- 		int tempSize = mContactsInfo.size();[m
-[31m-		mLog("isNewContacts mContactsInfo ==" + mContactsInfo.size() + "; RecordNum ==" + RecordNum);[m
-[32m+[m		[32mmLog("isNewContacts mContactsInfo ==" + mContactsInfo.size()[m[41m[m
-[32m+[m				[32m+ "; RecordNum ==" + RecordNum);[m[41m[m
- 		for (int i = 0; i < RecordNum; i++) {[m
-[31m-			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_PHONE, i);[m
-[31m-			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_PHONE, i);[m
-[32m+[m			[32mString mName = BtcNative.getPhoneBookRecordNameByIndex([m[41m[m
-[32m+[m					[32mBtcGlobalData.PB_PHONE, i);[m[41m[m
-[32m+[m			[32mString mNumber = BtcNative.getPhoneBookRecordNumberByIndex([m[41m[m
-[32m+[m					[32mBtcGlobalData.PB_PHONE, i);[m[41m[m
- 			if (mNumber == null || mNumber.length() == 0) {[m
- 				// mLog("isNewContacts mPhoneContactsInfo mName==" + mName[m
- 				// + "; mNumber ==" + mNumber);[m
-[36m@@ -740,8 +772,10 @@[m [mpublic class SyncService extends Service {[m
- 		// 添加SIM卡联系人[m
- 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_SIM);[m
- 		for (int i = 0; i < RecordNum; i++) {[m
-[31m-			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_SIM, i);[m
-[31m-			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_SIM, i);[m
-[32m+[m			[32mString mName = BtcNative.getPhoneBookRecordNameByIndex([m[41m[m
-[32m+[m					[32mBtcGlobalData.PB_SIM, i);[m[41m[m
-[32m+[m			[32mString mNumber = BtcNative.getPhoneBookRecordNumberByIndex([m[41m[m
-[32m+[m					[32mBtcGlobalData.PB_SIM, i);[m[41m[m
- 			if (mNumber == null) {[m
- 				continue;[m
- 			}[m
-[36m@@ -750,13 +784,18 @@[m [mpublic class SyncService extends Service {[m
- [m
- 		// 添加手机联系人[m
- 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);[m
-[31m-		mLog("mContactsInfo ==" + mContactsInfo.size() + "; RecordNum ==" + RecordNum);[m
-[32m+[m		[32mmLog("mContactsInfo ==" + mContactsInfo.size() + "; RecordNum =="[m[41m[m
-[32m+[m				[32m+ RecordNum);[m[41m[m
- 		for (int i = 0; i < RecordNum; i++) {[m
-[31m-			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_PHONE, i);[m
-[31m-			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_PHONE, i);[m
-[31m-			mLog("syncT mContactsInfo mName==" + mName + "; mNumber ==" + mNumber);[m
-[32m+[m			[32mString mName = BtcNative.getPhoneBookRecordNameByIndex([m[41m[m
-[32m+[m					[32mBtcGlobalData.PB_PHONE, i);[m[41m[m
-[32m+[m			[32mString mNumber = BtcNative.getPhoneBookRecordNumberByIndex([m[41m[m
-[32m+[m					[32mBtcGlobalData.PB_PHONE, i);[m[41m[m
-[32m+[m			[32mmLog("syncT mContactsInfo mName==" + mName + "; mNumber =="[m[41m[m
-[32m+[m					[32m+ mNumber);[m[41m[m
- 			if (mNumber == null) {[m
-[31m-				mLog("number is null mContactsInfo mName==" + mName + "; mNumber ==" + mNumber);[m
-[32m+[m				[32mmLog("number is null mContactsInfo mName==" + mName[m[41m[m
-[32m+[m						[32m+ "; mNumber ==" + mNumber);[m[41m[m
- 				continue;[m
- 			}[m
- 			addContactsInfo(mName, mNumber);[m
-[36m@@ -783,7 +822,8 @@[m [mpublic class SyncService extends Service {[m
- 	}[m
- [m
- 	private void saveConnectMac() {[m
-[31m-		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);[m
-[32m+[m		[32mSharedPreferences mPreferences = PreferenceManager[m[41m[m
-[32m+[m				[32m.getDefaultSharedPreferences(this);[m[41m[m
- 		SharedPreferences.Editor mEditor = mPreferences.edit();[m
- 		mEditor.putString("old_mac", BtcNative.getPairDeviceMac(0));[m
- 		mLog("saveConnectMac old_mac ==" + BtcNative.getPairDeviceMac(0));[m
-[36m@@ -791,9 +831,11 @@[m [mpublic class SyncService extends Service {[m
- 	}[m
- [m
- 	protected boolean isNewMac() {[m
-[31m-		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);[m
-[32m+[m		[32mSharedPreferences sp = PreferenceManager[m[41m[m
-[32m+[m				[32m.getDefaultSharedPreferences(this);[m[41m[m
- 		String mac = sp.getString("old_mac", null);[m
-[31m-		mLog("isNewMac mac ==" + mac + "; conectMac ==" + BtcNative.getPairDeviceMac(0));[m
-[32m+[m		[32mmLog("isNewMac mac ==" + mac + "; conectMac =="[m[41m[m
-[32m+[m				[32m+ BtcNative.getPairDeviceMac(0));[m[41m[m
- 		if (mac == null) {[m
- 			return true;[m
- 		} else if (mac.equals(BtcNative.getPairDeviceMac(0))) {[m
-[36m@@ -862,11 +904,13 @@[m [mpublic class SyncService extends Service {[m
- 			mName = mNumber;[m
- 		}[m
- 		// 判断是否已经有该联系人[m
-[31m-		mLog("addContactsInfo ==" + mName + "; mName lenght ==" + mName.length() + "; mNumber ==" + mNumber);[m
-[32m+[m		[32mmLog("addContactsInfo ==" + mName + "; mName lenght =="[m[41m[m
-[32m+[m				[32m+ mName.length() + "; mNumber ==" + mNumber);[m[41m[m
- 		mPhoneBook.add(mName + ":" + mNumber);[m
- 		for (int i = 0; i < mContactsInfo.size(); i++) {[m
- 			if (mContactsInfo.get(i).getName().equals(mName)) {[m
-[31m-				mLog("addContactsInfo setName==" + mName + "; mNumber==" + mNumber);[m
-[32m+[m				[32mmLog("addContactsInfo setName==" + mName + "; mNumber=="[m[41m[m
-[32m+[m						[32m+ mNumber);[m[41m[m
- 				if (mContactsInfo.get(i).getNumber().indexOf(mNumber) == -1) {[m
- 					mContactsInfo.get(i).setNumber(mNumber);[m
- 				}[m
-[36m@@ -889,7 +933,9 @@[m [mpublic class SyncService extends Service {[m
- 				sortModel.setSortLetters("#");[m
- 			}[m
- 			if (mName.length() >= 2) {[m
-[31m-				String seSecondString = characterParser.getSelling(mName.substring(1, 2)).substring(0, 1).toUpperCase();[m
-[32m+[m				[32mString seSecondString = characterParser[m[41m[m
-[32m+[m						[32m.getSelling(mName.substring(1, 2)).substring(0, 1)[m[41m[m
-[32m+[m						[32m.toUpperCase();[m[41m[m
- 				if (seSecondString.matches("[A-Z]")) {[m
- 					sortModel.setSecondLetters(seSecondString.toUpperCase());[m
- 				} else {[m
-[36m@@ -945,11 +991,11 @@[m [mpublic class SyncService extends Service {[m
- 	 * 蓝牙通话状态变化[m
- 	 */[m
- 	public Handler HandlerCallin = new Handler() {[m
-[32m+[m[41m[m
- 		@Override[m
- 		public void handleMessage(Message msg) {[m
- 			super.handleMessage(msg);[m
- 			showCallDisplay(msg.what);[m
-[31m-[m
- 		}[m
- 	};[m
- [m
-[36m@@ -975,7 +1021,7 @@[m [mpublic class SyncService extends Service {[m
- 		case BtcGlobalData.CALL_IN:[m
- 			setMute(true, mTempStatus);[m
- 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);[m
-[31m-[m
-[32m+[m			[32misSater = true;[m[41m[m
- 			Message msg = new Message();[m
- 			if (isFull())[m
- 				msg.what = 1; // 消息(一个整型值)[m
-[36m@@ -996,12 +1042,21 @@[m [mpublic class SyncService extends Service {[m
- 				mCLDCallResult = 0;[m
- 			}[m
- 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);[m
-[32m+[m			[32misSater = false;[m[41m[m
-[32m+[m			[32mMessage msg1 = new Message();[m[41m[m
-[32m+[m			[32mif (isFull())[m[41m[m
-[32m+[m				[32mmsg1.what = 1; // 消息(一个整型值)[m[41m[m
-[32m+[m			[32melse[m[41m[m
-[32m+[m				[32mmsg1.what = 0;[m[41m[m
-[32m+[m			[32mHandlerCallin.sendMessage(msg1);[m[41m[m
-[32m+[m[41m[m
- 			break;[m
- 		case BtcGlobalData.NO_CALL:[m
- 			setMute(false, mTempStatus);[m
- 			setBtAudioMode(6);[m
- 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {[m
-[31m-				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; mCallStatus ==" + mCallStatus);[m
-[32m+[m				[32mmLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld[m[41m[m
-[32m+[m						[32m+ "; mCallStatus ==" + mCallStatus);[m[41m[m
- 				if (mCallStatus == BtcGlobalData.CALL_IN) {[m
- 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");[m
- 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);[m
-[36m@@ -1028,7 +1083,7 @@[m [mpublic class SyncService extends Service {[m
- 		// 翼卡一键通返回结果[m
- 		mECarOnline.onReturnCallState(mTempStatus);[m
- [m
-[31m-		 onMainActivity(mCallIntent);[m
-[32m+[m		[32monMainActivity(mCallIntent);[m[41m[m
- 		mLog("mScreenStatus ==" + mScreenStatus + "; mAccOff ==" + mAccOff);[m
- 		if (!mScreenStatus && !mAccOff) {[m
- 			wakeUpAndUnlock();[m
-[36m@@ -1048,7 +1103,7 @@[m [mpublic class SyncService extends Service {[m
- 		// LayoutParams.TYPE_PHONE;[m
- 		// 背景透明[m
- 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;[m
-[31m-//		params.format = PixelFormat.TRANSLUCENT;[m
-[32m+[m		[32m// params.format = PixelFormat.TRANSLUCENT;[m[41m[m
- 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;[m
- [m
- 		/*[m
-[36m@@ -1067,7 +1122,7 @@[m [mpublic class SyncService extends Service {[m
- 		}[m
- 		params.y = 0;[m
- 		params.height = WindowManager.LayoutParams.MATCH_PARENT;[m
-[31m-		DialogView gpsView = new DialogView(this);[m
-[32m+[m		[32mDialogView gpsView = new DialogView(this, isSater);[m[41m[m
- 		view = gpsView.getVideoPlayView();[m
- 		wm.addView(view, params);[m
- 	}[m
-[36m@@ -1075,7 +1130,8 @@[m [mpublic class SyncService extends Service {[m
- 	// 改变AudioFocus[m
- 	private void onChaneAudioFocus(int mStatus) {[m
- 		if (mStatus != BtcGlobalData.NO_CALL) {[m
-[31m-			audioManager.requestAudioFocus(null, 10, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);[m
-[32m+[m			[32maudioManager.requestAudioFocus(null, 10,[m[41m[m
-[32m+[m					[32mAudioManager.AUDIOFOCUS_GAIN_TRANSIENT);[m[41m[m
- 		} else {[m
- 			audioManager.abandonAudioFocus(null);[m
- 		}[m
-[36m@@ -1095,8 +1151,8 @@[m [mpublic class SyncService extends Service {[m
- 						mLog("ainActivity.mBroadcast isTopMyself==" + true);[m
- 						break;[m
- 					}[m
-[31m-//					mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);[m
-[31m-//					startActivity(mCallIntent);[m
-[32m+[m					[32m// mCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);[m[41m[m
-[32m+[m					[32m// startActivity(mCallIntent);[m[41m[m
- 					try {[m
- 						Thread.sleep(1000);[m
- 					} catch (InterruptedException e) {[m
-[36m@@ -1250,17 +1306,21 @@[m [mpublic class SyncService extends Service {[m
- 					mBfpStatus = BtcGlobalData.BFP_DISCONNECT;[m
- 					Intent mBfpIntent = new Intent();[m
- 					mBfpIntent.setAction(MainActivity.mActionBfp);[m
-[31m-					mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);[m
-[32m+[m					[32mmBfpIntent.putExtra("bfp_status",[m[41m[m
-[32m+[m							[32mBtcGlobalData.BFP_DISCONNECT);[m[41m[m
- 					// lbm.sendBroadcast(mBfpIntent);[m
- 					sendObjMessage(1, mBfpIntent);[m
- 				}[m
- 			} else if (action.equals(BLUETOOTH_MUTE_CHANGED_ACTION)) {[m
- 				mLog("mBatInfoReceiver MUSIC_MUTE_CHANGED_ACTION =="[m
-[31m-						+ (intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false)) + "; mOldBt ==" + mOldBt);[m
-[31m-				boolean status = intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false);[m
-[32m+[m						[32m+ (intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED,[m[41m[m
-[32m+[m								[32mfalse)) + "; mOldBt ==" + mOldBt);[m[41m[m
-[32m+[m				[32mboolean status = intent.getBooleanExtra([m[41m[m
-[32m+[m						[32mEXTRA_BLUETOOTH_VOLUME_MUTED, false);[m[41m[m
- 				setMute(status, mCallStatus);[m
- 			} else if (action.equals(VOLUME_CHANGED_ACTION)) {[m
-[31m-				int streamType = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, AudioManager.STREAM_MUSIC);[m
-[32m+[m				[32mint streamType = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE,[m[41m[m
-[32m+[m						[32mAudioManager.STREAM_MUSIC);[m[41m[m
- 				mLog("mBatInfoReceiver streamType ==" + streamType);[m
- 				if (streamType == AudioManager.STREAM_MUSIC) {[m
- 					setMute(false, mCallStatus);[m
-[36m@@ -1281,12 +1341,14 @@[m [mpublic class SyncService extends Service {[m
- 				}[m
- 				sendBroadcast(mIntent);[m
- 			} else if (action.equals(ACTION_CALL_CUSTOMER_SERVICE)) {[m
-[31m-				int flag = intent.getIntExtra("MSG_ID_CALL_CUSTOMER_SERVICE_RESULT", -1);[m
-[32m+[m				[32mint flag = intent.getIntExtra([m[41m[m
-[32m+[m						[32m"MSG_ID_CALL_CUSTOMER_SERVICE_RESULT", -1);[m[41m[m
- 				if (flag == -1) {[m
- 					onCLDCall();[m
- 				}[m
- 			} else if (action.equals(ACTION_CUSTOMER_SERVICE_NUMBER)) {[m
-[31m-				mCLDCallNum = intent.getStringExtra("MSG_ID_CUSTOMER_SERVICE_NUMBER");[m
-[32m+[m				[32mmCLDCallNum = intent[m[41m[m
-[32m+[m						[32m.getStringExtra("MSG_ID_CUSTOMER_SERVICE_NUMBER");[m[41m[m
- 				mLog("SERVICE_NUMBER mCLDCallNum ==" + mCLDCallNum);[m
- 				if (mCLDCallNum != null) {[m
- 					onPutSetting(mCLDNum_key, mCLDCallNum);[m
-[36m@@ -1319,8 +1381,8 @@[m [mpublic class SyncService extends Service {[m
- 	};[m
- [m
- 	private void setMute(boolean status, int CallStatus) {[m
-[31m-		mLog("setMute status ==" + status + "; CallStatus ==" + CallStatus + ";BtcNative.getVolume() =="[m
-[31m-				+ BtcNative.getVolume());[m
-[32m+[m		[32mmLog("setMute status ==" + status + "; CallStatus ==" + CallStatus[m[41m[m
-[32m+[m				[32m+ ";BtcNative.getVolume() ==" + BtcNative.getVolume());[m[41m[m
- 		if (status) {[m
- 			BtcNative.setVolume(0);[m
- 		} else {[m
-[36m@@ -1331,7 +1393,9 @@[m [mpublic class SyncService extends Service {[m
- 				intent.putExtra("only_music", mOnlyMusic);[m
- 				sendBroadcast(intent);[m
- 				try {[m
-[31m-					wm.removeView(view);[m
-[32m+[m					[32mif (wm != null) {[m[41m[m
-[32m+[m						[32mwm.removeView(view);[m[41m[m
-[32m+[m					[32m}[m[41m[m
- 				} catch (Exception e) {[m
- 					// TODO: handle exception[m
- 					e.printStackTrace();[m
-[36m@@ -1341,11 +1405,21 @@[m [mpublic class SyncService extends Service {[m
- 				Intent intent = new Intent(MUSIC_MUTE_RESTORE_ACTION);[m
- 				intent.putExtra("only_music", mOnlyMusic);[m
- 				sendBroadcast(intent);[m
-[31m-			} else if (CallStatus == BtcGlobalData.CALL_IN || BtcNative.getVolume() != 0) {[m
-[32m+[m			[32m} else if (CallStatus == BtcGlobalData.CALL_IN[m[41m[m
-[32m+[m					[32m|| BtcNative.getVolume() != 0) {[m[41m[m
-[32m+[m				[32mtry {[m[41m[m
-[32m+[m					[32mif (wm != null) {[m[41m[m
-[32m+[m						[32mwm.removeView(view);[m[41m[m
-[32m+[m					[32m}[m[41m[m
-[32m+[m				[32m} catch (Exception e) {[m[41m[m
-[32m+[m					[32me.printStackTrace();[m[41m[m
-[32m+[m				[32m}[m[41m[m
- 				return;[m
- 			} else {[m
- 				try {[m
-[31m-					wm.removeView(view);[m
-[32m+[m					[32mif (wm != null) {[m[41m[m
-[32m+[m						[32mwm.removeView(view);[m[41m[m
-[32m+[m					[32m}[m[41m[m
- 				} catch (Exception e) {[m
- 					e.printStackTrace();[m
- 				}[m
-[36m@@ -1354,7 +1428,6 @@[m [mpublic class SyncService extends Service {[m
- 				mOldBt = mDefaultVoice;[m
- 			}[m
- 			BtcNative.setVolume(mOldBt);[m
-[31m-[m
- 		}[m
- 	}[m
- [m
-[36m@@ -1371,7 +1444,8 @@[m [mpublic class SyncService extends Service {[m
- 				mCustomerIntent.putExtra("call_number", mCLDCallNum);[m
- 			} else {[m
- 				mLog("onCLDCall mCLDCallNum == null");[m
-[31m-				mCustomerIntent.putExtra("call_number", onGetSetting(mCLDNum_key, mCLDNum_default));[m
-[32m+[m				[32mmCustomerIntent.putExtra("call_number",[m[41m[m
-[32m+[m						[32monGetSetting(mCLDNum_key, mCLDNum_default));[m[41m[m
- 			}[m
- 			mCustomerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);[m
- 			mCustomerIntent.addFlags(0x00000200);[m
-[36m@@ -1405,8 +1479,9 @@[m [mpublic class SyncService extends Service {[m
- 		// 获取电源管理器对象[m
- 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);[m
- 		// 获取PowerManager.WakeLock对象,后面的参数|表示同时传入两个值,最后的是LogCat里用的Tag[m
-[31m-		PowerManager.WakeLock wl = pm[m
-[31m-				.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");[m
-[32m+[m		[32mPowerManager.WakeLock wl = pm.newWakeLock([m[41m[m
-[32m+[m				[32mPowerManager.ACQUIRE_CAUSES_WAKEUP[m[41m[m
-[32m+[m						[32m| PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");[m[41m[m
- 		// 点亮屏幕[m
- 		wl.acquire();[m
- 		// 释放[m
-[36m@@ -1414,7 +1489,8 @@[m [mpublic class SyncService extends Service {[m
- 	}[m
- [m
- 	protected void onPutSetting(String key_name, String value) {[m
-[31m-		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);[m
-[32m+[m		[32mSharedPreferences mPreferences = PreferenceManager[m[41m[m
-[32m+[m				[32m.getDefaultSharedPreferences(this);[m[41m[m
- 		SharedPreferences.Editor mEditor = mPreferences.edit();[m
- 		mEditor.putString(key_name, value);[m
- 		mEditor.commit();[m
-[36m@@ -1429,7 +1505,8 @@[m [mpublic class SyncService extends Service {[m
- 	}[m
- [m
- 	protected String onGetSetting(String key_name) {[m
-[31m-		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);[m
-[32m+[m		[32mSharedPreferences mPreferences = PreferenceManager[m[41m[m
-[32m+[m				[32m.getDefaultSharedPreferences(this);[m[41m[m
- 		String mValue = mPreferences.getString(key_name, null);[m
- 		return mValue;[m
- 	}[m

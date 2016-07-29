@@ -127,6 +127,7 @@ public class SyncService extends Service {
 	public final int mCancelNotification = 2;
 	public final int mPhoneBookSyncBroadcast = 3;
 	public final int mAddDatabase = 5;
+	public final int mUpdateBookInfoOver = 7;   
 	/********************************/
 	public final int mNewSyncStatus = 4;  //deprecated
 	public final int mUpdateDataBase = 6;   //deprecated
@@ -168,6 +169,8 @@ public class SyncService extends Service {
 	private WindowManager wm;
 
 	private View view;
+	
+	private DialogView mCallView;//来电的界面
 
 	/**
 	 * 来电状态还是呼出状态
@@ -497,7 +500,7 @@ public class SyncService extends Service {
 		// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
 		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
 			addContacts();
-			// handler.sendEmptyMessage(mAddDatabase);
+//			 handler.sendEmptyMessage(mAddDatabase);
 			
 			Thread mDataThread = new Thread(new Runnable() {
 				@Override
@@ -743,6 +746,11 @@ public class SyncService extends Service {
 				break;
 			case mAddDatabase:
 				addDatabase();
+				break;
+			case mUpdateBookInfoOver:
+				Intent mCallIntent = new Intent();
+				mCallIntent.setAction(MainActivity.mActionBookInfoOver);
+				sendObjMessage(1, mCallIntent);
 				break;
 			}
 		}
@@ -1056,9 +1064,9 @@ public class SyncService extends Service {
 			return;
 		}
 		mContactsInfo.add(sortModel);
-		Intent mCallIntent = new Intent();
-		mCallIntent.setAction(MainActivity.mActionBookInfoOver);
-		sendObjMessage(1, mCallIntent);
+		//延迟100ms 发送mActionBookInfoOver
+		handler.removeMessages(mUpdateBookInfoOver);
+		handler.sendEmptyMessageDelayed(mUpdateBookInfoOver, 100);
 	}
 
 	/**
@@ -1136,34 +1144,45 @@ public class SyncService extends Service {
 		switch (mTempStatus) {
 		case BtcGlobalData.CALL_IN:
 			isState = true;
-			BtAudioManager.getInstance(this).mAudioFocusGain = true;
-			BtAudioManager.getInstance(this).onCallChange(true);
+//			BtAudioManager.getInstance(this).mAudioFocusGain = true;
+			//BtAudioFocus 为false时，设置TempAudioFocus为true,提前获取焦点
+			if (!BtAudioManager.getInstance(this).isBtAudioFocus()) {
+				BtAudioManager.getInstance(this).setTempBtAudioFocus(BtAudioManager.mTempFocusGain);				
+			}
+			BtAudioManager.getInstance(this).onCallChange(false);
+			
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
 			mLog("add_window"+ BtcGlobalData.CALL_IN);
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
-			BtAudioManager.getInstance(this).mAudioFocusGain = true;
+//			BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
 			sendBroadcast(mIN_CallIntent);
-			Log.d("ACTION_BT_CALL_IN", "发送了" + DialogView.ACTION_BT_CALL_IN);
+			Log.d("DialogView", "IN_CALL  send broadcast ==" + DialogView.ACTION_BT_CALL_IN);
 			removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
-			BtAudioManager.getInstance(this).mAudioFocusGain = true;
+//			BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
 				mCLDCallResult = 0;
 			}
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
 			mLog("add_window"+ BtcGlobalData.CALL_IN);
+			isState = false;
 			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
 			isState = false;
+			//临时焦点：mTempAudioFocus 为true时，设置失去临时焦点
+			if (BtAudioManager.getInstance(this).isTempBtAudioFocusGain()) {
+				BtAudioManager.getInstance(this).setTempBtAudioFocus(BtAudioManager.mTempFocusLoss);				
+			}
 			BtAudioManager.getInstance(this).onCallChange(false);
+			
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
 				if (lastCallStatus == BtcGlobalData.CALL_IN) {
@@ -1257,9 +1276,13 @@ public class SyncService extends Service {
 		}
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
-		DialogView gpsView = new DialogView(this, isState, isScreen);
-		gpsView.setGetPhoneName(binder.getCallName(BtcNative.getCallNumber()));
-		view = gpsView.getVideoPlayView();
+		if (mCallView == null) {
+			mCallView = new DialogView(this, isState, isScreen);			
+		}else{
+			mCallView.setStatus(isState,isScreen);
+		}
+		mCallView.setGetPhoneName(binder.getCallName(BtcNative.getCallNumber()));
+		view = mCallView.getVideoPlayView();
 		wm.addView(view, params);
 	}
 
