@@ -217,20 +217,20 @@ public class CallLogsFragment extends Fragment {
 		}
 
 		public View build(LayoutInflater inflater, ViewGroup contentParent, View contentChild) {
-			if (mCallView != null) {
-				mLog("mTabTpye =" + mTabTpye + ";mCalllogAdapter ==" + mCalllogAdapter.getCount()
-						+ "build mRootView != null ==" + mPhoneBookInfo.get(mTabTpye).getSize());
-				mLog("build getmUpdateStatus ==" + MainActivity.binder.getmUpdateStatus() + "; mTabTpye==" + mTabTpye);
-				// 有单个更新状态，打开loading
-				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
-					showLoading();
-					// 不是更新状态或有数据就隐藏loading
-				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
-						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
-					hideLoading();
-				}
-				return mCallView;
-			}
+//			if (mCallView != null) {
+//				mLog("mTabTpye =" + mTabTpye + ";mCalllogAdapter ==" + mCalllogAdapter.getCount()
+//						+ "build mRootView != null ==" + mPhoneBookInfo.get(mTabTpye).getSize());
+//				mLog("build getmUpdateStatus ==" + MainActivity.binder.getmUpdateStatus() + "; mTabTpye==" + mTabTpye);
+//				// 有单个更新状态，打开loading
+//				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
+//					showLoading();
+//					// 不是更新状态或有数据就隐藏loading
+//				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
+//						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+//					hideLoading();
+//				}
+//				return mCallView;WW
+//			}
 			mInflater = inflater;
 			mCallView = mInflater.inflate(R.layout.calllogs_list, null);
 			mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();

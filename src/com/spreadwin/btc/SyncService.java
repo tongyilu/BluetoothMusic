@@ -1232,13 +1232,11 @@ public class SyncService extends Service {
 
 	private void removeCallView(boolean isCall) {
 		finishMainActivity();
-		// wm.removeView(view);
 		if (isCall) {
 			sendBroadcast(new Intent(DialogView.ANSWER_UP));
 		} else {
 			sendBroadcast(new Intent(DialogView.FINISH_ACTIVITY));
 		}
-		// wm.removeViewImmediate(view);
 	}
 
 	public void finishMainActivity() {
@@ -1277,11 +1275,10 @@ public class SyncService extends Service {
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
 		if (mCallView == null) {
-			mCallView = new DialogView(this, isState, isScreen);			
+			mCallView = new DialogView(this, isState, isScreen,binder.getCallName(BtcNative.getCallNumber()));			
 		}else{
-			mCallView.setStatus(isState,isScreen);
+			mCallView.setStatus(isState,isScreen,binder.getCallName(BtcNative.getCallNumber()));
 		}
-		mCallView.setGetPhoneName(binder.getCallName(BtcNative.getCallNumber()));
 		view = mCallView.getVideoPlayView();
 		wm.addView(view, params);
 	}
@@ -1431,12 +1428,12 @@ public class SyncService extends Service {
 				mLog("mBatInfoReceiver MUSIC_MUTE_CHANGED_ACTION =="
 						+ (intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false)) + "; mOldBt ==" + mOldBt);
 				boolean status = intent.getBooleanExtra(EXTRA_BLUETOOTH_VOLUME_MUTED, false);
-				//setMute(status, mCallStatus);
+				setMute(status, mCallStatus);
 			} else if (action.equals(VOLUME_CHANGED_ACTION)) {
 				int streamType = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, AudioManager.STREAM_MUSIC);
 				mLog("mBatInfoReceiver streamType ==" + streamType);
 				if (streamType == AudioManager.STREAM_MUSIC) {
-					//setMute(false, mCallStatus);
+					setMute(false, mCallStatus);
 				}
 			} else if (action.equals(ACTION_BT_CALL_ANSWER)) {
 				BtcNative.answerCall();
@@ -1526,12 +1523,12 @@ public class SyncService extends Service {
 	private void setMute(boolean status, int CallStatus) {
 		mLog("setMute status ==" + status + "; CallStatus ==" + CallStatus + ";BtcNative.getVolume() =="
 				+ BtcNative.getVolume());
+		BtAudioManager.getInstance(this).onAudioMuteChange(status);
 	}
 
 	// 凯立德一键通话
 	protected void onCLDCall() {
 		if (mBfpStatus == BtcGlobalData.BFP_CONNECTED) {
-			
 			onCLDCallResult(0);
 			mCLDCall = true;
 			Intent mCustomerIntent = new Intent();

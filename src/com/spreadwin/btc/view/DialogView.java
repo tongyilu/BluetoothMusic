@@ -1,6 +1,5 @@
 package com.spreadwin.btc.view;
 
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +11,6 @@ import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.MobileLocation;
-import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.CallLineraLayout.DetachedFromWindow;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -29,7 +27,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
 import android.widget.Chronometer;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -81,16 +78,13 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	
 	private String getCallNumber;
 	private String getPhoneName;
-	public void setGetPhoneName(String getPhoneName) {
-		this.getPhoneName = getPhoneName;
-		initView(mView);
-	}
-
-	public DialogView(Context context, boolean isFlags, boolean isScreen) {
+	public DialogView(Context context, boolean isFlags, boolean isScreen,String getPhoneName) {
 		this.mContext = context;
 		this.isStart = isFlags;
 		this.isScreen = isScreen;
+		this.getPhoneName = getPhoneName;
 		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
+		initView(mView);
 	}
 	
 
@@ -243,6 +237,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	public View getVideoPlayView() {
 		isFlasg = true;
+		//initView(mView);
 		return mView;
 	}
 
@@ -270,33 +265,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (v == mDeleteButton) {
-			removeNumber();
-		} else if (v == mNumberOne) {
-			addNumber("1");
-		} else if (v == mNumberTwo) {
-			addNumber("2");
-		} else if (v == mNumberThree) {
-			addNumber("3");
-		} else if (v == mNumberFour) {
-			addNumber("4");
-		} else if (v == mNumberFive) {
-			addNumber("5");
-		} else if (v == mNumberSix) {
-			addNumber("6");
-		} else if (v == mNumberSeven) {
-			addNumber("7");
-		} else if (v == mNumberEight) {
-			addNumber("8");
-		} else if (v == mNumberNine) {
-			addNumber("9");
-		} else if (v == mNumberZero) {
-			addNumber("0");
-		} else if (v == mNumberJin) {
-			addNumber("#");
-		} else if (v == mNumberXing) {
-			addNumber("*");
-		}
+		onNumClick(v);
 		switch (v.getId()) {
 		case R.id.mdial_button:
 			BtcNative.answerCall();
@@ -331,6 +300,40 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				mDial.setVisibility(View.GONE);
 			}
 			break;
+		}
+	}
+	
+	/**
+	 * 键盘按钮点击事件
+	 * @param v
+	 */
+	public void onNumClick(View v){
+		if (v == mDeleteButton) {
+			removeNumber();
+		} else if (v == mNumberOne) {
+			addNumber("1");
+		} else if (v == mNumberTwo) {
+			addNumber("2");
+		} else if (v == mNumberThree) {
+			addNumber("3");
+		} else if (v == mNumberFour) {
+			addNumber("4");
+		} else if (v == mNumberFive) {
+			addNumber("5");
+		} else if (v == mNumberSix) {
+			addNumber("6");
+		} else if (v == mNumberSeven) {
+			addNumber("7");
+		} else if (v == mNumberEight) {
+			addNumber("8");
+		} else if (v == mNumberNine) {
+			addNumber("9");
+		} else if (v == mNumberZero) {
+			addNumber("0");
+		} else if (v == mNumberJin) {
+			addNumber("#");
+		} else if (v == mNumberXing) {
+			addNumber("*");
 		}
 	}
 
@@ -389,6 +392,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		try {
 			wm.removeView(mView);
 			isFlasg = false;
+			mContext.unregisterReceiver(mReceiver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -456,9 +460,12 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	 * 设置isStart的状态，true为来电，false为拨出
 	 * @param isState
 	 */
-	public void setStatus(boolean isFlags ,boolean screen) {
+	public void setStatus(boolean isFlags ,boolean screen,String getPhoneName) {
 		this.isStart = isFlags;	
 		this.isScreen = screen;
+		this.getPhoneName = getPhoneName;
+		mView = LayoutInflater.from(mContext).inflate(R.layout.display_call, null);
+		initView(mView);
 	}
 
 }
