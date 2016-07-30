@@ -54,6 +54,8 @@ public class BtAudioManager {
 	public static int AUDIO_MODE_NORMAL = AudioStream.MODE_NORMAL;// 正常模式
 	public static int AUDIO_MODE_BT = 6; // 蓝牙的通路模式
 	public static int AUDIO_MODE_CALL = 7;// 蓝牙通话的音频通路
+	
+	public static int mMode,mLastMode;//当前通路,上一次通路
 
 	public final String ACTION_SCREENSAVER_CLOSE = "ACTION_SCREENSAVER_CLOSE";
 
@@ -134,6 +136,9 @@ public class BtAudioManager {
 			 audioManager.abandonAudioFocus(mAudioFocusListener);
 		 }
 		audioManager.setParameters("cdr_mode=" + mode);
+		
+		mLastMode = mMode;
+		mMode = mode;
 	}
 
 	/**

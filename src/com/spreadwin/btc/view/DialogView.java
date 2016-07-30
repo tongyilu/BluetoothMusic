@@ -73,7 +73,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private RippleBackground rippleBackground;
 
 	private StringBuilder mDisplayNumber = new StringBuilder();
-	private CallLineraLayout callLayout;
 	private Gson msgGson = new Gson();
 	
 	private String getCallNumber;
@@ -116,7 +115,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mNumberXing = (ImageButton) view.findViewById(R.id.number_xing);
 		mInputText = (TextView) view.findViewById(R.id.input_text);
 
-		callLayout = (CallLineraLayout) view.findViewById(R.id.call_layout);
 		rippleBackground = (RippleBackground) view.findViewById(R.id.content);
 
 		rippleBackground.startRippleAnimation();

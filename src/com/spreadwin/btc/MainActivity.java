@@ -1088,7 +1088,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							mMusicRightFragment.openAudioMode();
 						}
 					}
-
 					// LockScreen();
 				} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 					// UnLockScreen();
@@ -1109,7 +1108,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			}
 		}
 	}
-
+	
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub]

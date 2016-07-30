@@ -30,8 +30,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public int A2DP_PLAYING = BtcGlobalData.A2DP_PLAYING;
 	public static final String mActionInfoBfp = "com.spreadwin.btc.bfp.info";
 
-	public static final String DISCONNECT = "BFP_DISCONNECT";
-
 	private int mCallStatus = 0;
 	public static final int CHECK_A2DP_STATUS = 1;
 
@@ -73,16 +71,17 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	}
 
 	public void openAudioMode() {
-		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus()+"; mRight =="+mRight);
+		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus() + "; mRight ==" + mRight);
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-//			BtAudioManager.getInstance(getActivity()).mAudioFocusGain = false;
+			// BtAudioManager.getInstance(getActivity()).mAudioFocusGain =
+			// false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
 					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
 					if (PlayTitle != null) {
 						mPlayArtist.setText(
-								SyncService.mArtist == null ? "" : SyncService.mArtist + "_" + SyncService.mAlbum);
+								SyncService.mArtist == null ? "" : SyncService.mArtist + " " + SyncService.mAlbum);
 					}
 				} else {
 					mPlayTitle.setText("");
@@ -123,7 +122,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				mPlayArtist.setVisibility(View.VISIBLE);
 				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
 				if (PlayTitle != null) {
-					mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + "_" + PlayAlbum);
+					mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
 				}
 			}
 		}
@@ -202,16 +201,24 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
-		openAudioMode();
 		if (mPlayer == 2) {
-			mLog("onClick pauseMusic");
-			BtcNative.pauseMusic();
-			mPlayer = 1;
-		} else if (mPlayer == 1 || mPlayer == 0) {
+			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
+				mLog("onClick pauseMusic");
+				BtcNative.pauseMusic();
+				mPlayer = 1;
+			}else{
+				openAudioMode();
+				mLog("change focus playMusic");
+				BtcNative.playMusic();
+			}
+		} else if (mPlayer == 1 || mPlayer == 0)
+		{
+			openAudioMode();
 			mLog("onClick playMusic");
 			BtcNative.playMusic();
 			mPlayer = 2;
 		}
+
 	}
 
 	public static void mLog(String string) {

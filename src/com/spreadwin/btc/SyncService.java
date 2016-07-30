@@ -65,6 +65,7 @@ public class SyncService extends Service {
 	public static final String ACTION_BFP_STATUS_UPDATE = "ACTION_BFP_STATUS_UPDATE";
 	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
 	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
+	public static final String ACTION_MYACTION_BTC_CALL = "MYACTION.BTC.CALL";
     /***********************************************************************/
 	
 	/*******系统广播********************/
@@ -218,9 +219,7 @@ public class SyncService extends Service {
 		mECarOnline = ECarOnline.getInstance(this);
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		initBtc();
-
 		m_DBAdapter = new DBAdapter(this);
-
 	}
 
 	private void initBtc() {
@@ -235,13 +234,9 @@ public class SyncService extends Service {
 		mPhoneBookInfo.add(mCalloutInfo);
 		mPhoneBookInfo.add(mCallmissInfo);
 		mPhoneBookInfo.add(mCallinInfo);
-		// lbm = LocalBroadcastManager.getInstance(this);
 		// 实例化汉字转拼音类
 		characterParser = CharacterParser.getInstance();
-
-		// pinyinComparator = new PinyinComparator();
 		syncT.start();
-		// mOldBt = BtcNative.getVolume();
 		mOldBt = mDefaultVoice;
 		mCache = new LruJsonCache();
 		onIntentFilter();
@@ -257,16 +252,14 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_BT_CALL_REJECT);
 		filter.addAction(ACTION_BT_CALL_HANGUP);
 		filter.addAction(ACTION_BFP_CONNECT_CLOSE);
+		filter.addAction(ACTION_MYACTION_BTC_CALL);
 		filter.addAction(ACTION_FACTORY_TEST);
 		filter.addAction(ACTION_BFP_STATUS_UPDATE);
-		// filter.addAction(ACTION_BFP_CONNECT_CLOSE);
 		filter.addAction(ACTION_CALL_CUSTOMER_SERVICE);
-		// filter.addAction(ACTION_NOTIFY_SERVICE_CONNECTED);
 		filter.addAction(ACTION_CUSTOMER_SERVICE_NUMBER);
 		filter.addAction(ACTION_ACC_OFF);
 		filter.addAction(ACTION_ACC_ON);
 		filter.addAction(LOCAL_MUSIC_ACTION);
-		// filter.addAction(ACTION_ECAR_CALL_SEND);
 		registerReceiver(mBatInfoReceiver, filter);
 	}
 
@@ -316,7 +309,7 @@ public class SyncService extends Service {
 				}
 
 				// 更新歌曲
-				if (mTitle != BtcNative.getPlayTitle() && !TextUtils.isEmpty(BtcNative.getPlayTitle())) {
+				if (mTitle != BtcNative.getPlayTitle()) {
 					mTitle = BtcNative.getPlayTitle();
 					mArtist = BtcNative.getPlayArtist();
 					mAlbum = BtcNative.getPlayAlbum();
@@ -1136,8 +1129,8 @@ public class SyncService extends Service {
 	protected void onCallStatusChange() {
 		mLog("setMute onCallStatusChange ==" + mTempStatus);
 		int lastCallStatus = mCallStatus;
+		mLog("mCallStatus onCallStatusChange ==" + mCallStatus);
 		mCallStatus = mTempStatus;
-
 		Intent mCallIntent = new Intent();
 		mCallIntent.setAction(MainActivity.mActionCall);
 //		onChaneAudioFocus(mTempStatus);
@@ -1189,6 +1182,8 @@ public class SyncService extends Service {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
 					mUpdateCalllog = BtcGlobalData.PB_IN;
+					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_MISS);
+					mUpdateCalllog = BtcGlobalData.PB_MISS;
 				} else if (lastCallStatus == BtcGlobalData.CALL_OUT
 						|| (lastCallStatus == BtcGlobalData.IN_CALL && mCallStatusOld == BtcGlobalData.CALL_OUT)) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_OUT");
@@ -1510,9 +1505,19 @@ public class SyncService extends Service {
 					mLog("BtcNative.playMusic()");
 					BtcNative.playMusic();
 				}
+			}else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
+				dialCall(intent.getStringExtra("call_number"));
 			}
 		}
 	};
+	
+	// 拨打电话
+	public void dialCall(String callNumber) {
+		mLog("dialCall ==" + callNumber);
+		if (callNumber.length() > 0) {
+			BtcNative.dialCall(callNumber);
+		}
+	}
 
 	public void saySomething(String something) {
 		Intent i = new Intent("ACTION_SAY_SOMETHING");

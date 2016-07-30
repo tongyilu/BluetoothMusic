@@ -18,10 +18,10 @@ public class BtcGlobalData {
     public static final int BFP_CONNECTED = 1;
 
     //CALL STATUS
-    public static final int NO_CALL = 0;
-    public static final int CALL_OUT = 1;
-    public static final int CALL_IN = 2;
-    public static final int IN_CALL = 3;
+    public static final int NO_CALL = 0;//挂断
+    public static final int CALL_OUT = 1;//呼出
+    public static final int CALL_IN = 2; //来电
+    public static final int IN_CALL = 3;//接通
     
     //Pair STATUS
     public static final int NOT_PAIR = 0;
