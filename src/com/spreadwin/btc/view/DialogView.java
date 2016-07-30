@@ -171,14 +171,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 		intentFilter.addAction(ANSWER_UP);
 		mContext.registerReceiver(mReceiver, intentFilter);
-		callLayout.init(mContext, view, new DetachedFromWindow() {
-
-			@Override
-			public void onDetachedFromWindow() {
-				mContext.unregisterReceiver(mReceiver);
-			}
-		});
-
 	}
 
 	/**
@@ -198,7 +190,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		}
 		Log.d(TAG, "send broadcast == ACTION_BT_CALL_IN"+"; phoneName =="+phoneName+"; callNumber =="+callNumber);
 		mContext.sendBroadcast(mCallIntent);
-		
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -213,6 +204,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
 				if (!isScreen && isFlasg) {
 					try {
+						mDismissDialog();
 						isScreen = true;
 						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
@@ -223,7 +215,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						params.y = 0;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);
-						mDismissDialog();
 						wm.addView(mView, params);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -237,7 +228,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	public View getVideoPlayView() {
 		isFlasg = true;
-		//initView(mView);
 		return mView;
 	}
 
@@ -371,11 +361,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	private void denyCall() {
-		// if (isStart) {
 		BtcNative.hangupCall();
-		// } else {
 		BtcNative.denyCall();
-		// }
 		mDismissDialog();
 	}
 
@@ -392,7 +379,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		try {
 			wm.removeView(mView);
 			isFlasg = false;
-			mContext.unregisterReceiver(mReceiver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -438,7 +424,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						e.printStackTrace();
 					}
 				}
-
 				@Override
 				public void onFailure(Throwable error, String content) {
 					Log.d(TAG, "请求报错：" + error + "");
