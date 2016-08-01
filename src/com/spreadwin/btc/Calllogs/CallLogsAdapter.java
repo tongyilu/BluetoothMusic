@@ -91,7 +91,6 @@ public class CallLogsAdapter extends BaseAdapter {
 				holder.mTelName.setText(mCallLogsInfo.getTelName(position));
 			}
 			holder.mTelTime.setText(mCallLogsInfo.getTelTime(position));
-
 			if (mCallLogsInfo.getType() == CallLogsFragment.CALL_OUT_TYPE) {
 				holder.mIcon.setImageResource(R.drawable.placed_);
 			} else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_MISS_TYPE) {
