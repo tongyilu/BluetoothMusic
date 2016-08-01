@@ -23,7 +23,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 		this.mContext = mContext;
 	}
 
-	public void addPhoneBookInfoList(ArrayList<PhoneBookInfo_new> list) {
+	public void addPhoneBookInfoList(List<PhoneBookInfo_new> list) {
 		if (list != null) {
 			this.list.addAll(list);
 		}

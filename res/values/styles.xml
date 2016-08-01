@@ -1,5 +1,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+        <!-- Application theme. -->
+    <style name="AppTheme" parent="@android:style/Theme.NoTitleBar">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+
+    
     <style name="myTextStyle">
         <item name="android:layout_marginTop">10dip</item>
         <item name="android:layout_marginBottom">10dip</item>

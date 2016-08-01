@@ -13,6 +13,7 @@
             android:divider="@null"
             android:verticalSpacing="50dp"
             android:layout_height="wrap_content"/>
+
         
          <LinearLayout              
          	 android:id="@+id/loading"

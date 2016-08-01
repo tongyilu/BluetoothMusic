@@ -7,14 +7,14 @@
         android:id="@+id/sort_key_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#303030" >
+        android:background="#0a1b2d" >
 
         <TextView
             android:id="@+id/sort_key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="14dp"
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </LinearLayout>
@@ -25,6 +25,7 @@
         android:layout_marginLeft="20dp"
         android:layout_height="60dip" >
 
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,12 +35,14 @@
             android:visibility="gone"
             android:src="@drawable/icon" />
 
+
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             style="@style/myTextStyle" />
+
     </LinearLayout>
 
 </LinearLayout>

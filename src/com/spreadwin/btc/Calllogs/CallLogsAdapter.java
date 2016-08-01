@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CallLogsAdapter extends BaseAdapter {
@@ -57,7 +58,9 @@ public class CallLogsAdapter extends BaseAdapter {
 	private class ViewHolder {
 		private TextView mTelName;
 		private TextView mTelNumber;
-//		private TextView mTelTime;
+
+		private TextView mTelTime;
+		private ImageView mIcon;
 	}
 
 	@Override
@@ -70,7 +73,9 @@ public class CallLogsAdapter extends BaseAdapter {
 					+ ";mCallLogsInfo type ==" + mCallLogsInfo.getType());
 			holder.mTelName = (TextView) convertView.findViewById(R.id.tel_name);
 			holder.mTelNumber = (TextView) convertView.findViewById(R.id.tel_number);
-//			holder.mTelTime = (TextView) convertView.findViewById(R.id.tel_time);
+
+			holder.mTelTime = (TextView) convertView.findViewById(R.id.tel_time);
+			holder.mIcon = (ImageView) convertView.findViewById(R.id.icon);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -80,20 +85,20 @@ public class CallLogsAdapter extends BaseAdapter {
 			return convertView;
 		}
 		try {
-			// CallLogsFragment.mLog("getView convertView33
-			// =="+convertView.getId()+"; position =="
-			// +position+";mCallLogsInfo type =="+mCallLogsInfo.getType() +
-			// "; getTelName(position) =="+mCallLogsInfo.getTelName(position)+
-			// "; getTelNumber(position)
-			// =="+mCallLogsInfo.getTelNumber(position)+
-			// "; mCallLogsInfo.getSize() =="+mCallLogsInfo.getSize());
-			// 号码没有配备到名字的
 			if (mCallLogsInfo.getTelName(position).length() == 0) {
 				onMatchingName(holder.mTelName, position);
 			} else {
 				holder.mTelName.setText(mCallLogsInfo.getTelName(position));
 			}
-			// holder.mTelTime.setText(mCallLogsInfo.getTelTime(position));
+			holder.mTelTime.setText(mCallLogsInfo.getTelTime(position));
+
+			if (mCallLogsInfo.getType() == CallLogsFragment.CALL_OUT_TYPE) {
+				holder.mIcon.setImageResource(R.drawable.placed_);
+			} else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_MISS_TYPE) {
+				holder.mIcon.setImageResource(R.drawable.missed);
+			} else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_IN_TYPE) {
+				holder.mIcon.setImageResource(R.drawable.picked_up);
+			}
 		} catch (Exception e) {
 			CallLogsFragment.mLog("getView111 e==" + e);
 			holder.mTelName.setText("未知");

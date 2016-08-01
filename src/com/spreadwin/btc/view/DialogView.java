@@ -1,25 +1,23 @@
 package com.spreadwin.btc.view;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.spreadwin.btc.BtcNative;
-import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.MobileLocation;
-import com.spreadwin.btc.utils.OpenUtils;
 import com.spreadwin.btc.view.CallLineraLayout.DetachedFromWindow;
-
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,12 +27,12 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
 import android.widget.Chronometer;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+@SuppressLint("MissingSuperCall")
 public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private View mView;
@@ -53,40 +51,44 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
-	private OpenUtils openUtils;
+	/**
+	 * 来电状态还是呼出状态
+	 */
 	private boolean isStart;
-	private String getCallNumber;
-	private String getPhoneName;
 	private boolean isScreen;
 	private boolean isCheckout;
 	private LinearLayout mDial;
 	private boolean isAnswer;
+	private WindowManager wm = null;
+	private Handler mHandler = new Handler();
 
 	public static final String FINISH_ACTIVITY = "FINISH_ACTIVITY";
 
 	public static final String ANSWER_UP = "ANSWER_UP";
 
-	ImageButton mDeleteButton, mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
+	private ImageButton mDeleteButton, mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
 			mNumberEight, mNumberNine, mNumberZero, mNumberJin, mNumberXing;
-	TextView mInputText, mIncallText, mIncallTime;
+	private TextView mInputText;
 
-	HorizontalScrollView mHsview;
-	RippleBackground rippleBackground;
+	private RippleBackground rippleBackground;
 
-	StringBuilder mDisplayNumber = new StringBuilder();
-	private CallLineraLayout callLayout;
-	private Gson msgGson;
-
-	public DialogView(Context context, boolean isFlags, boolean isScreen) {
+	private StringBuilder mDisplayNumber = new StringBuilder();
+	private Gson msgGson = new Gson();
+	
+	private String getCallNumber;
+	private String getPhoneName;
+	public DialogView(Context context, boolean isFlags, boolean isScreen,String getPhoneName) {
 		this.mContext = context;
 		this.isStart = isFlags;
 		this.isScreen = isScreen;
+		this.getPhoneName = getPhoneName;
 		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
 		initView(mView);
 	}
+	
 
 	private void initView(View view) {
-		openUtils = new OpenUtils(mContext);
+		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		mDial = (LinearLayout) view.findViewById(R.id.layout_dial);
 		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
 		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
@@ -112,17 +114,16 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mNumberJin = (ImageButton) view.findViewById(R.id.number_jin);
 		mNumberXing = (ImageButton) view.findViewById(R.id.number_xing);
 		mInputText = (TextView) view.findViewById(R.id.input_text);
-		mIncallText = (TextView) view.findViewById(R.id.in_call_name);
-		mIncallTime = (TextView) view.findViewById(R.id.in_call_timet);
-		mHsview = (HorizontalScrollView) view.findViewById(R.id.scroollview);
 
-		callLayout = (CallLineraLayout) view.findViewById(R.id.call_layout);
 		rippleBackground = (RippleBackground) view.findViewById(R.id.content);
 
 		rippleBackground.startRippleAnimation();
 		getCallNumber = BtcNative.getCallNumber();
-		getPhoneName = getCallName(getCallNumber);
 		callUrlByGet(getCallNumber);
+//		getPhoneName = getCallName(getCallNumber);
+		Log.d("电话号码：===========", getCallNumber);
+		Log.d("名称：===========", getPhoneName);
+//		getPhoneName = getCallName(mContactsInfo,BtcNative.getCallNumber());
 
 		if (TextUtils.isEmpty(getPhoneName)) {
 			mNameText.setText(getCallNumber);
@@ -150,23 +151,17 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mNumberZero.setOnClickListener(this);
 		mNumberJin.setOnClickListener(this);
 		mNumberXing.setOnClickListener(this);
+		mSwitch.setVisibility(View.GONE);
 
 		if (!isStart) {
 			mCallText.setText("正在呼叫...");
 			mMute.setVisibility(View.GONE);
 			mDialButton.setVisibility(View.GONE);
-			mSwitch.setVisibility(View.GONE);
 		} else {
 			mCallText.setText("来电");
 			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.VISIBLE);
-			mSwitch.setVisibility(View.GONE);
-			Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
-			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
-			Log.d(TAG, getPhoneName);
-			Log.d(TAG, getCallNumber);
-			mContext.sendBroadcast(mCallIntent);
+			onSendBTCall(ACTION_BT_CALL_IN,getPhoneName,getCallNumber);
 		}
 		setChckoutAudio();
 		IntentFilter intentFilter = new IntentFilter();
@@ -174,14 +169,26 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 		intentFilter.addAction(ANSWER_UP);
 		mContext.registerReceiver(mReceiver, intentFilter);
-		callLayout.init(mContext, view, new DetachedFromWindow() {
+	}
 
-			@Override
-			public void onDetachedFromWindow() {
-				mContext.unregisterReceiver(mReceiver);
-			}
-		});
 
+	/**
+	 * 发送广播：ACTION_BT_CALL_IN
+	 * @param actionBtCallIn
+	 * @param phoneName
+	 * @param callNumber
+	 */
+	private void onSendBTCall(String action, String phoneName,
+			String callNumber) {
+		Intent mCallIntent = new Intent(action);
+		if (phoneName != null) {
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, phoneName);			
+		}
+		if (callNumber != null) {
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, callNumber);			
+		}
+		Log.d(TAG, "send broadcast == ACTION_BT_CALL_IN"+"; phoneName =="+phoneName+"; callNumber =="+callNumber);
+		mContext.sendBroadcast(mCallIntent);
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -189,15 +196,37 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (action == FINISH_ACTIVITY || action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
+			if (action == FINISH_ACTIVITY) {
 				mDismissDialog();
 			} else if (action == ANSWER_UP) {
 				setCaller();
+			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
+				if (!isScreen && isFlasg) {
+					try {
+						mDismissDialog();
+						isScreen = true;
+						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
+								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+						params.x = 800;
+						params.width = 625;
+						params.y = 0;
+						params.height = WindowManager.LayoutParams.MATCH_PARENT;
+						mCheckout.setVisibility(View.GONE);
+						wm.addView(mView, params);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	};
 
+	boolean isFlasg;
+
 	public View getVideoPlayView() {
+		isFlasg = true;
 		return mView;
 	}
 
@@ -223,17 +252,53 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		}
 	}
 
-	// 获取来电时名字
-	private String getCallName(String getCallNumber) {
-		String mCallName = "";
-		if (MainActivity.binder != null) {
-			return MainActivity.binder.getCallName(getCallNumber);
-		}
-		return mCallName;
-	}
-
 	@Override
 	public void onClick(View v) {
+		onNumClick(v);
+		switch (v.getId()) {
+		case R.id.mdial_button:
+			BtcNative.answerCall();
+			setCaller();
+			break;
+		case R.id.mdropped_button:
+			denyCall();
+			break;
+		case R.id.mute:
+			if (isMuteState) {
+				BtcNative.muteCall(0);
+				setMuteImageView(true);
+				isMuteState = false;
+			} else {
+				BtcNative.muteCall(1);
+				setMuteImageView(false);
+				isMuteState = true;
+			}
+			break;
+		case R.id.image_switch:
+			BtcNative.changeAudioPath();
+			setChckoutAudio();
+			break;
+		case R.id.checkout:
+			if (isCheckout) {
+				isCheckout = false;
+				mCheckout.setImageResource(R.drawable.keyboard_d);
+				mDial.setVisibility(View.VISIBLE);
+			} else {
+				isCheckout = true;
+				mCheckout.setImageResource(R.drawable.keyboard_u);
+				mDial.setVisibility(View.GONE);
+			}
+			break;
+		}
+
+	}
+
+	
+	/**
+	 * 键盘按钮点击事件
+	 * @param v
+	 */
+	public void onNumClick(View v){
 		if (v == mDeleteButton) {
 			removeNumber();
 		} else if (v == mNumberOne) {
@@ -261,52 +326,19 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		} else if (v == mNumberXing) {
 			addNumber("*");
 		}
-		switch (v.getId()) {
-		case R.id.mdial_button:
-			BtcNative.answerCall();
-			setCaller();
-			break;
-		case R.id.mdropped_button:
-			denyCall();
-			break;
-		case R.id.mute:
-			if (isMuteState) {
-				openUtils.setRingerMode(false);
-				setMuteImageView(true);
-				isMuteState = false;
-			} else {
-				openUtils.setRingerMode(true);
-				setMuteImageView(false);
-				isMuteState = true;
-			}
-			break;
-		case R.id.image_switch:
-			setChckoutAudio();
-			break;
-		case R.id.checkout:
-			if (isCheckout) {
-				isCheckout = false;
-				mCheckout.setImageResource(R.drawable.keyboard_d);
-				mDial.setVisibility(View.VISIBLE);
-			} else {
-				isCheckout = true;
-				mCheckout.setImageResource(R.drawable.keyboard_u);
-				mDial.setVisibility(View.GONE);
-			}
-			break;
-		}
-
 	}
 
 	public void setChckoutAudio() {
-		BtcNative.changeAudioPath();
-		if (BtcNative.getAudioPath() == 0) {
-			Log.d("Dialog", "镜子接听===" + BtcNative.getAudioPath());
-			mSwitch.setImageResource(R.drawable.switching_02);
-		} else {
-			Log.d("Dialog", "手机接听===" + BtcNative.getAudioPath());
-			mSwitch.setImageResource(R.drawable.switching_01);
-		}
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (BtcNative.getAudioPath() == 0) {
+					mSwitch.setImageResource(R.drawable.switching_02);
+				} else {
+					mSwitch.setImageResource(R.drawable.switching_01);
+				}
+			}
+		}, 1000);
 	}
 
 	private void removeNumber() {
@@ -320,6 +352,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private void addNumber(String str) {
 		mDisplayNumber.append(str);
+		BtcNative.dtmfCall(str);
 		mInputText.setText(mDisplayNumber.toString());
 		mInputText.setTextColor(mContext.getResources().getColor(R.color.white));
 	}
@@ -329,29 +362,28 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	private void denyCall() {
-		if (!isStart) {
-			BtcNative.hangupCall();
-		} else {
-			BtcNative.denyCall();
-		}
+		BtcNative.hangupCall();
+		BtcNative.denyCall();
 		mDismissDialog();
 	}
 
 	private void mDismissDialog() {
-		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+//		BtcNative.muteCall(0);
+		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
+		Log.d(TAG, "mDismissDialog " + ACTION_BT_CALL_IN);
 		if (isStart) {
-			// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-			// mContext.sendBroadcast(mCallIntent);
-			Log.d("ACTION_BT_CALL_IN", "发送了" + ACTION_BT_CALL_IN);
+
+			Log.d(TAG, "send broadcast " + ACTION_BT_CALL_IN);
+			onSendBTCall(ACTION_BT_CALL_IN, null, null);
 		}
 		try {
 			wm.removeView(mView);
+			isFlasg = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -376,7 +408,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						int error_code = object.getInt("error_code");
 						if (error_code == 0) {
 							Log.d(TAG, "有效的电话号码:" + tel);
-							msgGson = new Gson();
 							MobileLocation location = msgGson.fromJson(content, MobileLocation.class);
 							String mobile = location.getResult().getProvince() + " " + location.getResult().getCity()
 									+ " " + location.getResult().getCompany();
@@ -395,7 +426,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						e.printStackTrace();
 					}
 				}
-
 				@Override
 				public void onFailure(Throwable error, String content) {
 					Log.d(TAG, "请求报错：" + error + "");
@@ -411,6 +441,18 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mInputText.setText("");
 		}
 		return false;
+	}
+
+	/**
+	 * 设置isStart的状态，true为来电，false为拨出
+	 * @param isState
+	 */
+	public void setStatus(boolean isFlags ,boolean screen,String getPhoneName) {
+		this.isStart = isFlags;	
+		this.isScreen = screen;
+		this.getPhoneName = getPhoneName;
+		mView = LayoutInflater.from(mContext).inflate(R.layout.display_call, null);
+		initView(mView);
 	}
 
 }

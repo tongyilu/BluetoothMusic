@@ -41,8 +41,7 @@ public class ClearEditText extends EditText implements
     	//获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
     	mClearDrawable = getCompoundDrawables()[2]; 
         if (mClearDrawable == null) { 
-        	mClearDrawable = getResources() 
-                    .getDrawable(R.drawable.emotionstore_progresscancelbtn); 
+        	mClearDrawable = getResources().getDrawable(R.drawable.emotionstore_progresscancelbtn); 
         } 
         mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight()); 
         setClearIconVisible(false); 
@@ -93,6 +92,7 @@ public class ClearEditText extends EditText implements
         Drawable right = visible ? mClearDrawable : null; 
         setCompoundDrawables(getCompoundDrawables()[0], 
                 getCompoundDrawables()[1], right, getCompoundDrawables()[3]); 
+        setPadding(20, 0, 20, 0);
     } 
      
     

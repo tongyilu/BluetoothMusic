@@ -7,35 +7,37 @@
     <com.spreadwin.btc.contacts.ClearEditText
         android:id="@+id/filter_edit"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"       
+        android:layout_height="50dp"
         android:layout_margin="5dip"
         android:background="@drawable/search_bar_edit"
         android:drawableLeft="@drawable/search_bar_icon_normal"
         android:hint="请输入关键字"
-        android:singleLine="true"
-        android:textColor="@android:color/background_dark"
         android:imeOptions="flagNoExtractUi"
         android:textSize="20.0sp" />
-    
-    <TextView 
+
+    <TextView
         android:id="@+id/mContactsNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:text="联系人数量：0"
         android:textSize="20sp"
-        android:text="联系人数量：0"/>
+        android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="10dp" >
 
         <ListView
             android:id="@+id/country_lvcountry"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
             android:layout_gravity="center"
-            android:divider="@null" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="25dp"
+            android:divider="@color/gray_61"
+            android:dividerHeight="1dp" />
 
         <TextView
             android:id="@+id/dialog"
@@ -43,7 +45,7 @@
             android:layout_height="80.0dip"
             android:layout_gravity="center"
             android:background="@drawable/show_head_toast_bg"
-            android:gravity="center"            
+            android:gravity="center"
             android:textColor="#ffffffff"
             android:textSize="26.0sp"
             android:visibility="invisible" />
@@ -52,27 +54,30 @@
             android:id="@+id/sidrbar"
             android:layout_width="30.0dip"
             android:layout_height="fill_parent"
-            android:layout_gravity="right|center" />
-        
-        <LinearLayout              
-         	 android:id="@+id/loading"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-		     android:gravity="center"	
-		     android:visibility="gone"
-             >	  
-	        <ProgressBar android:id="@+id/widget43"
-     			 android:layout_width="wrap_content" 
-      			android:layout_height="wrap_content"    
-      			android:layout_gravity="center_vertical">
-			</ProgressBar>
-	         <TextView 
-	              android:layout_width="wrap_content"
-	              android:layout_height="wrap_content"
-	              android:textSize="26sp"
-	              android:text="正在同步中。。。"
-	              />
-         </LinearLayout>
+            android:layout_gravity="left|center"
+            android:background="#0a1b2d"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/loading"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:visibility="gone" >
+
+            <ProgressBar
+                android:id="@+id/widget43"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" >
+            </ProgressBar>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在同步中。。。"
+                android:textSize="26sp" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

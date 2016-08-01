@@ -3,6 +3,7 @@ package com.spreadwin.btc.Calllogs;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.Calllogs.MyListView.OnRefreshListener;
 import com.spreadwin.btc.utils.PhoneBookInfo;
+import com.spreadwin.btc.utils.PhoneBookInfo_new;
+import com.spreadwin.btc.view.SlidingTabLayout;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
 import android.app.Activity;
@@ -19,6 +22,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler; //import android.support.v4.app.FragmentManager;
@@ -54,9 +58,9 @@ public class CallLogsFragment extends Fragment {
 	public static final String TAG = "CallLogsFragment";
 	public static final boolean DEBUG = MainActivity.DEBUG;
 
-	private static final int CALL_OUT_TYPE = BtcGlobalData.PB_OUT;
-	private static final int CALL_MISS_TYPE = BtcGlobalData.PB_MISS;
-	private static final int CALL_IN_TYPE = BtcGlobalData.PB_IN;
+	public static final int CALL_OUT_TYPE = BtcGlobalData.PB_OUT;
+	public static final int CALL_MISS_TYPE = BtcGlobalData.PB_MISS;
+	public static final int CALL_IN_TYPE = BtcGlobalData.PB_IN;
 
 	public static Map<String, String> mNumberParams = new HashMap<String, String>();
 
@@ -66,14 +70,14 @@ public class CallLogsFragment extends Fragment {
 	private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 	// private final ArrayList<PhoneBookInfo> mCallLogsInfo = new
 	// ArrayList<PhoneBookInfo>();
-	private ArrayList<PhoneBookInfo> mPhoneBookInfo = new ArrayList<PhoneBookInfo>();
+	private List<PhoneBookInfo> mPhoneBookInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo>());
 	PhoneBookInfo mCalloutInfo, mCallinInfo, mCallmissInfo;
 	MyAdapter mAdapter;
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;
 	private View mRootView;
 	int tabType = 1;
-	private PagerTabStrip mtab;
+	private SlidingTabLayout slidingTabLayout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -124,12 +128,20 @@ public class CallLogsFragment extends Fragment {
 		mLog("onCreateView 222222222");
 		View rootView = inflater.inflate(R.layout.fragment_call_logs, container, false);
 		mRootView = rootView;
-		mtab = (PagerTabStrip) rootView.findViewById(R.id.tabs);
-		mtab.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+
+		slidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.tabs);
 		viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 		mAdapter = new MyAdapter();
 		viewPager.setAdapter(mAdapter);
 		viewPager.setOnPageChangeListener(mAdapter);
+
+		slidingTabLayout.setViewPager(viewPager);
+		slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+			@Override
+			public int getIndicatorColor(int position) {
+				return getActivity().getResources().getColor(R.color.blue_00);
+			}
+		});
 		return rootView;
 	}
 
@@ -139,7 +151,6 @@ public class CallLogsFragment extends Fragment {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return mTitle.length;
 		}
 
@@ -154,7 +165,6 @@ public class CallLogsFragment extends Fragment {
 			TabInfo tab = mTabs.get(position);
 			View root = tab.build(mInflater, mContentContainer, mRootView);
 			container.addView(root);
-			// root.setTag(R.id.name, tab);
 			return root;
 		}
 
@@ -209,20 +219,20 @@ public class CallLogsFragment extends Fragment {
 		}
 
 		public View build(LayoutInflater inflater, ViewGroup contentParent, View contentChild) {
-			if (mCallView != null) {
-				mLog("mTabTpye =" + mTabTpye + ";mCalllogAdapter ==" + mCalllogAdapter.getCount()
-						+ "build mRootView != null ==" + mPhoneBookInfo.get(mTabTpye).getSize());
-				mLog("build getmUpdateStatus ==" + MainActivity.binder.getmUpdateStatus() + "; mTabTpye==" + mTabTpye);
-				// 有单个更新状态，打开loading
-				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
-					showLoading();
-					// 不是更新状态或有数据就隐藏loading
-				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
-						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
-					hideLoading();
-				}
-				return mCallView;
-			}
+//			if (mCallView != null) {
+//				mLog("mTabTpye =" + mTabTpye + ";mCalllogAdapter ==" + mCalllogAdapter.getCount()
+//						+ "build mRootView != null ==" + mPhoneBookInfo.get(mTabTpye).getSize());
+//				mLog("build getmUpdateStatus ==" + MainActivity.binder.getmUpdateStatus() + "; mTabTpye==" + mTabTpye);
+//				// 有单个更新状态，打开loading
+//				if (MainActivity.binder.getmUpdateStatus() != BtcGlobalData.NO_CALL) {
+//					showLoading();
+//					// 不是更新状态或有数据就隐藏loading
+//				} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC
+//						|| mPhoneBookInfo.get(mTabTpye).getSize() > 0) {
+//					hideLoading();
+//				}
+//				return mCallView;WW
+//			}
 			mInflater = inflater;
 			mCallView = mInflater.inflate(R.layout.calllogs_list, null);
 			mPhoneBookInfo = MainActivity.binder.getPhoneBookInfo();

@@ -7,44 +7,39 @@ import java.util.List;
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
-import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.contacts.SideBar.OnTouchingLetterChangedListener;
-import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.BtcGlobalData;
+import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 
-import android.app.Fragment;
 import android.app.ActionBar.LayoutParams;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 public class ContactsFragment extends Fragment implements OnCreateContextMenuListener, OnItemLongClickListener {
 	public static final String TAG = "ContactsFragment";
@@ -58,7 +53,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	private ListView sortListView;
 	private SideBar sideBar;
 	private TextView dialog;
-	private TextView mContactsNumber;
+//	private TextView mContactsNumber;
 	private ContactsAdapter adapter;
 	private ClearEditText mClearEditText;
 
@@ -79,7 +74,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	private PinyinComparator pinyinComparator;
 
 	public List<Fragment> fragments = new ArrayList<Fragment>();
-	private ArrayList<PhoneBookInfo_new> mContactsInfo = new ArrayList<PhoneBookInfo_new>();
+	public static List<PhoneBookInfo_new> mContactsInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo_new>());
 	PhoneBookInfo mPhoneContactsInfo, mSIMContactsInfo;
 	private LayoutInflater mInflater;
 	private ViewGroup mContentContainer;
@@ -92,11 +87,10 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		super.onCreate(savedInstanceState);
 		mLog("onCreate 111111111");
 		try {
-			mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+			mContactsInfo = (List<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
 			characterParser = CharacterParser.getInstance();
 			pinyinComparator = new PinyinComparator();
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		// 实例化汉字转拼音类
@@ -109,7 +103,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		mRootView = inflater.inflate(R.layout.fragment_contacts_new, container, false);
 		sideBar = (SideBar) mRootView.findViewById(R.id.sidrbar);
 		dialog = (TextView) mRootView.findViewById(R.id.dialog);
-		mContactsNumber = (TextView) mRootView.findViewById(R.id.mContactsNumber);
+//		mContactsNumber = (TextView) mRootView.findViewById(R.id.mContactsNumber);
 		mLoading = (LinearLayout) mRootView.findViewById(R.id.loading);
 		sideBar.setTextView(dialog);
 		// 设置右侧触摸监听
@@ -179,10 +173,10 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		sortListView.setEmptyView(emptyView);
 		// mLog("onCreateView getSyncStatus ==" + BtcNative.getSyncStatus(D));
 		mLog("mContactsInfo.size() ==" + mContactsInfo.size());
-		if (MainActivity.binder!=null) {
-			if (MainActivity.binder.getSyncStatus() == BtcGlobalData.NEW_SYNC || mContactsInfo.size() > 0) {
+		if (MainActivity.binder != null) {
+			if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_DISCONNECT || mContactsInfo.size() > 0) {
 				hideLoading();
-			} else if (MainActivity.binder.getSyncStatus() == BtcGlobalData.BFP_CONNECTED ) {
+			} else if (MainActivity.binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
 				showLoading();
 			}
 		}
@@ -218,8 +212,8 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		// mCustomDialog.show();
 		emptyView.setText("");
 		mLoading.setVisibility(View.VISIBLE);
-		mContactsNumber.setVisibility(View.GONE);
-
+//		mContactsNumber.setVisibility(View.GONE);
+        sideBar.setVisibility(View.GONE);
 		// handler.post(mRunnable);
 	}
 
@@ -228,11 +222,13 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 			return;
 		}
 		if (mContactsInfo.size() > 0) {
-			mContactsNumber.setVisibility(View.VISIBLE);
-			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
+//			mContactsNumber.setVisibility(View.VISIBLE);
+			sideBar.setVisibility(View.VISIBLE);
+//			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
 		} else {
 			mContactsInfo.clear();
-			mContactsNumber.setVisibility(View.GONE);
+			sideBar.setVisibility(View.GONE);
+//			mContactsNumber.setVisibility(View.GONE);
 		}
 		emptyView.setText(getResources().getString(R.string.no_conntacts));
 		// if (mCustomDialog != null) {
@@ -327,7 +323,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		// mContactsInfo = (ArrayList<PhoneBookInfo_new>)
 		// MainActivity.binder.getPhoneBookInfo_new();
 
-		mContactsInfo = (ArrayList<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+		mContactsInfo = (List<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
 
 		mLog("notifyDataSetChanged mContactsInfo size ==" + mContactsInfo.size());
 		// 根据a-z进行排序
