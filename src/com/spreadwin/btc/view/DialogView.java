@@ -171,7 +171,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mContext.registerReceiver(mReceiver, intentFilter);
 	}
 
-
 	/**
 	 * 发送广播：ACTION_BT_CALL_IN
 	 * @param actionBtCallIn
@@ -209,8 +208,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
 								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-						params.x = 800;
-						params.width = 625;
+						params.x = 715;
+						params.width = 400;
 						params.y = 0;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);
@@ -290,9 +289,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			}
 			break;
 		}
-
 	}
-
 	
 	/**
 	 * 键盘按钮点击事件
@@ -368,13 +365,12 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	}
 
 	private void mDismissDialog() {
-//		BtcNative.muteCall(0);
+		BtcNative.muteCall(0);
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
 		Log.d(TAG, "mDismissDialog " + ACTION_BT_CALL_IN);
 		if (isStart) {
-
 			Log.d(TAG, "send broadcast " + ACTION_BT_CALL_IN);
 			onSendBTCall(ACTION_BT_CALL_IN, null, null);
 		}
