@@ -363,9 +363,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (mMusicRightFragment != null) {
 			mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 		}
-//		if (mMusicRightFragment.isAdded()) {
-//			return;
-//		}
+
 		mAddFragment.commitAllowingStateLoss();
 		mVto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
@@ -399,6 +397,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
 						mContectText.setVisibility(View.VISIBLE);
+						mFragmetContext.setVisibility(View.VISIBLE);
+						mLeftMenu.setVisibility(View.VISIBLE);
 						mMusicRightFragment.openAudioMode();
 						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
 							setDefaultFragment();
