@@ -379,6 +379,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 						Log.d(TAG, "mRightMode");
 						isOrso = true;
+						mContectText.setVisibility(View.GONE);
 						mLayoutMode = mRightMode;
 						mFragmetContext.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
@@ -389,6 +390,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mLayoutMode = mLeftMode;
 						mMusicLayoutAdd.setVisibility(View.VISIBLE);
 						mAddLayout.setVisibility(View.GONE);
+						mContectText.setVisibility(View.VISIBLE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
 					} else if (width == 1115 && mLayoutMode != mFullMode) {
@@ -396,6 +398,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mLayoutMode = mFullMode;
 						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
+						mContectText.setVisibility(View.VISIBLE);
 						mMusicRightFragment.openAudioMode();
 						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
 							setDefaultFragment();

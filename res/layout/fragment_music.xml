@@ -23,13 +23,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
             android:ellipsize="marquee"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textSize="30sp" />
+            android:textSize="18sp" />
 
         <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_artist"
@@ -63,9 +62,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="80dip"
-        android:layout_marginRight="80dip"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="40dip"
+        android:layout_marginRight="40dip"
         android:orientation="horizontal" >
 
         <LinearLayout

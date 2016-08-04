@@ -18,12 +18,12 @@ public class SideBar extends View {
 	// 触摸事件
 	private OnTouchingLetterChangedListener onTouchingLetterChangedListener;
 	// 26个字母
-	public static String[] b = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
+	public static String[] b = {" ", "A", "B", "C", "D", "E", "F", "G", "H", "I",
 			"J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-			"W", "X", "Y", "Z", "#" };
-	public static String[] c = { "A", ".", ".", ".", ".", "F", ".", ".", ".",
+			"W", "X", "Y", "Z","  ", "#" };
+	public static String[] c = {" ", "A", ".", ".", ".", ".", "F", ".", ".", ".",
 		".", "K", ".", ".", ".", ".", "P", ".", ".", ".", ".", "U", ".",
-		".", ".", ".", "Z", "#" };
+		".", ".", ".", "Z","  ", "#" };
 	private int choose = -1;// 选中
 	private Paint paint = new Paint();
 
@@ -109,7 +109,9 @@ public class SideBar extends View {
 			if (oldChoose != c) {
 				if (c >= 0 && c < b.length) {
 					if (listener != null) {
-						listener.onTouchingLetterChanged(b[c]);
+						if (!b[c].equals(" ")) {
+							listener.onTouchingLetterChanged(b[c]);
+						}
 					}
 					if (mTextDialog != null) {
 						mTextDialog.setText(b[c]);

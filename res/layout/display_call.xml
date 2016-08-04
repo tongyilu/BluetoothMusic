@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.spreadwin.btc.view.CallLineraLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/call_layout"
     android:layout_width="match_parent"
@@ -355,4 +355,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</com.spreadwin.btc.view.CallLineraLayout>
+</LinearLayout>

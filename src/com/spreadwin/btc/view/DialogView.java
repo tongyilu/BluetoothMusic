@@ -11,7 +11,7 @@ import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.MobileLocation;
-import com.spreadwin.btc.view.CallLineraLayout.DetachedFromWindow;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
