@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
@@ -155,7 +156,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
-				updateContacts(binder.getPhoneBookInfo_new().size());				
+				updateContacts(binder.getPhoneBookInfo_new().size());
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 		}
@@ -362,9 +363,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (mMusicRightFragment != null) {
 			mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 		}
-//		if (mMusicRightFragment.isAdded()) {
-//			return;
-//		}
+		// if (mMusicRightFragment.isAdded()) {
+		// return;
+		// }
 		mAddFragment.commitAllowingStateLoss();
 		mVto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
@@ -379,7 +380,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					int mHeight = wm.getDefaultDisplay().getHeight();
 					Log.d("WindowManager", mWidth + "");
 					Log.d("WindowManager", mHeight + "");
-					if (width == 625 && mLayoutMode != mRightMode) {
+					if (width == 818 && mLayoutMode != mRightMode) {
 						Log.d(TAG, "mRightMode");
 						isOrso = true;
 						mLayoutMode = mRightMode;
@@ -387,7 +388,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mAddLayout.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.GONE);
 						mMusicRightFragment.openAudioMode();
-					} else if (width == 800 && mLayoutMode != mLeftMode) {
+						onRightLayout();
+					} else if (width == 854 && mLayoutMode != mLeftMode) {
 						Log.d(TAG, "mLeftMode");
 						isOrso = false;
 						mLayoutMode = mLeftMode;
@@ -395,17 +397,33 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						mAddLayout.setVisibility(View.GONE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
-					} else if (width == 1425 && mLayoutMode != mFullMode) {
+						onLeftLayout();
+					} else if (width == 1424 && mLayoutMode != mFullMode) {
 						Log.d(TAG, "mFullMode");
 						mLayoutMode = mFullMode;
 						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
 						mMusicRightFragment.openAudioMode();
+						onLeftLayout();
 						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
 							setDefaultFragment();
 						}
 					}
 				}
+			}
+
+			LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT);
+
+			private void onLeftLayout() {
+				layoutParams.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
+				mBluetoothName.setLayoutParams(layoutParams);
+			}
+
+			private void onRightLayout() {
+				mContectText.setVisibility(View.GONE);
+				layoutParams.setMargins(0, 0, 220, 0);// 4个参数按顺序分别是左上右下
+				mBluetoothName.setLayoutParams(layoutParams);
 			}
 		});
 
@@ -511,7 +529,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						if (SyncService.isTopMyself(getBaseContext())) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
-							}							
+							}
 							// if (mMusicRightFragment.isVisible()) {
 							// mMusicRightFragment.openMusicFragment();
 							// }
@@ -1080,11 +1098,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							mLog("Receiver mMusicFragment 11111111");
 							mMusicFragment.openAudioMode();
 						}
-						mLog("Receiver mMusicRightFragment isVisible =="+mMusicRightFragment.isVisible()+
-								"; getVisibility =="+mMusicRightFragment.getView().getVisibility() + 
-								"; mAddLayout =="+mAddLayout.getVisibility()+View.GONE);
+						mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
+								+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
+								+ "; mAddLayout ==" + mAddLayout.getVisibility() + View.GONE);
 						if (getFragmentManager().findFragmentById(R.id.add_bluetooth_music) == mMusicRightFragment
-								&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {						
+								&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
 							mMusicRightFragment.openAudioMode();
 						}
 					}
@@ -1108,7 +1126,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub]
