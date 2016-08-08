@@ -128,7 +128,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	boolean tempApp = false; // 为true时，活动结束后退到后台
 
-	// private BtAudioManager mBtAudioManager;
 	boolean phoneCall;
 	boolean isOrso;
 	boolean isCall;
@@ -158,8 +157,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 				updateContacts(binder.getPhoneBookInfo_new().size());
-			} else if (binder.getBfpStatuss() == BtcGlobalData.BFP_DISCONNECT) {
-				updateContacts(0);
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 		}
@@ -179,79 +176,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setContentView(R.layout.main);
 		init();
 		mLog("MainActivity onCreate1111");
-		// 读取状态
-		// try {
-		// mPowerManager = (PowerManager)
-		// getSystemService(Context.POWER_SERVICE);
-		// mWakeLock = mPowerManager.newWakeLock(
-		// PowerManager.PARTIAL_WAKE_LOCK, TAG);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// mBtAudioManager = BtAudioManager.getInstance(this);
 		setVolumeControlStream(10);
 	}
-
-	// @Override
-	// public void onWindowFocusChanged(boolean hasFocus) {
-	// // TODO Auto-generated method stub
-	// super.onWindowFocusChanged(hasFocus);
-	// }
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// if (binder != null
-		// && binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
-		// mBluetoothStatus.setText(getResources().getString(
-		// R.string.connect_title));
-		// handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
-		// mShowDeviceNameDelayed);
-		// }
-		// IntentFilter intent = new
-		// IntentFilter("android.intent.action.SPLIT_WINDOW_HAS_CHANGED");
-		// registerReceiver(mScreenSizeChangeReceiver, intent);
-		// Log.d(TAG, "onresume for MainWindows");
-
-		// mFragmetContext.setVisibility(View.VISIBLE);
-		// mLeftMenu.setVisibility(View.VISIBLE);
-		// if (ScreenUtils.setBluetoothStatus(this) == 0) {
-		// mAddLayout.setVisibility(View.GONE);
-		// mMusicLayoutAdd.setVisibility(View.VISIBLE);
-		// } else if (ScreenUtils.setBluetoothStatus(this) == 1) {
-		// mAddLayout.setVisibility(View.VISIBLE);
-		// mMusicLayoutAdd.setVisibility(View.GONE);
-		// }
-
-		// tempApp = false;
-		//
-		// String action = getIntent().getAction();
-		// mLog("MainActivity onResume action ==" + action);
-		// if (action != null) {
-		// if (action.equals("MYACTION.BTC.CALL")) {
-		// callNumber = getIntent().getStringExtra("call_number");
-		// callName = getIntent().getStringExtra("call_name");
-		// tempApp = true;
-		// if (callNumber != null || callName != null) {
-		// // FragmentManager fm = getFragmentManager();
-		// // FragmentTransaction transaction = fm.beginTransaction();
-		// // if (mBluetoothFragment == null) {
-		// // mBluetoothFragment = new BluetoothFragment();
-		// // }
-		// // transaction.replace(R.id.id_fragment_content,
-		// // mBluetoothFragment);
-		// // transaction.commit();
-		// setDefaultFragment();
-		// handler.sendEmptyMessage(mMessageCall);
-		// }
-		// } else if (action.equals(mActionCall)) {
-		// tempApp = true;
-		// mLog("MainActivity onResume action222222222 ==" + mActionCall);
-		// handler.sendEmptyMessageDelayed(mMessageActionCall, 100);
-		// }
-		// }
 		mLog("MainActivity onResume");
-		// isAppRunning = true;
 		parserIntent();
 
 	}
@@ -302,8 +233,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		// isAppRunning = false;
-		// unregisterReceiver(mScreenSizeChangeReceiver);
 	}
 
 	@Override
@@ -418,29 +347,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setDefaultFragment();
 		registerReceiver();
 		handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
-		// audioManager = (AudioManager)
-		// getSystemService(Context.AUDIO_SERVICE);
-		// VoiceReceiver();
 
 	}
-
-	// private void VoiceReceiver() {
-	// mVoiceReceiver = new BroadcastReceiver() {
-	// @Override
-	// public void onReceive(Context context, Intent intent) {
-	// mLog("mVoiceReceiver ==" + intent.getAction());
-	// if (intent.getAction().equals(ACTION_BT_CALL_ANSWER)) {
-	// answerCall();
-	// }else if (intent.getAction().equals(ACTION_BT_CALL_REJECT)) {
-	// denyCall();
-	// }
-	// }
-	// };
-	// IntentFilter intentFilter = new IntentFilter();
-	// intentFilter.addAction(ACTION_BT_CALL_ANSWER);
-	// intentFilter.addAction(ACTION_BT_CALL_REJECT);
-	// registerReceiver(mVoiceReceiver,intentFilter);
-	// }
 
 	private void registerReceiver() {
 		mBroadcastReceiver = new BroadcastReceiver() {
@@ -582,8 +490,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				break;
 			case mMessageActionCall:
 				int mStatus = getIntent().getIntExtra("call_status", BtcGlobalData.NO_CALL);
-				// mLog("handler mStatus ==" + mStatus +
-				// "; binder.getCallStatus( )==" + binder.getCallStatus());
+				mLog("handler mStatus ==" + mStatus + "; binder.getCallStatus( )==" + binder.getCallStatus());
 				if (mStatus == BtcGlobalData.CALL_IN && binder.getCallStatus() == BtcGlobalData.CALL_IN) {
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
@@ -650,38 +557,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	protected void mShowDialog(int id) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		// LayoutInflater inflater = LayoutInflater.from(this);
 		if (id == DIALOG1) {
-			// View mCallView = inflater.inflate(R.layout.display_call, null);
-			// builder.setView(mCallView);
-			// mDialButton = (ImageButton) mCallView
-			// .findViewById(R.id.mdial_button);
-			// mdroppedbutton = (ImageButton) mCallView
-			// .findViewById(R.id.mdropped_button);
-			// mNumberText = (TextView)
-			// mCallView.findViewById(R.id.number_text);
-			// mNameText = (TextView) mCallView.findViewById(R.id.name_text);
-			//
-			// String getCallNumber = BtcNative.getCallNumber();
-			// String getPhoneName = getCallName(getCallNumber);
-			// mLog("onCreateDialog 1111111111");
-			// mNameText.setText(getPhoneName);
-			// mNumberText.setText(getCallNumber);
-			// mDialButton.setOnClickListener(this);
-			// mdroppedbutton.setOnClickListener(this);
-			// if (mCallDialog != null) {
-			// mCallDialog.dismiss();
-			// mCallDialog = null;
-			// }
-			//
-			// mCallDialog = builder.create();
-			// mCallDialog.setCanceledOnTouchOutside(false);
-			// mCallDialog.show();
-			//
-			// Intent mCallIntent = new Intent(ACTION_BT_CALL_IN);
-			// mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, getPhoneName);
-			// mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, getCallNumber);
-			// sendBroadcast(mCallIntent);
 			if (mCallDialog != null && mCallDialog.isShowing()) {
 				return;
 			}
@@ -720,30 +596,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		return mCallNmber;
 	}
 
-	// private String getCallName(String getCallNumber) {
-	// String mCallName = "";
-	// if (binder != null) {
-	// return binder.getCallName(getCallNumber);
-	// }
-	// return mCallName;
-	// }
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		if (binded) {
 			unbindService(conn);
 		}
-		// Intent intent = new Intent(this, SyncService.class);
-		// stopService(intent);
 		if (mLocalBroadcastManager != null && mBroadcastReceiver != null) {
 			mBroadcast = false;
 			mLog("onDestroy()");
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
-		// if (mVoiceReceiver != null) {
-		// unregisterReceiver(mVoiceReceiver);
-		// }
 	}
 
 	@Override
@@ -752,14 +615,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	public void setDefaultFragment() {
-		// String action = getIntent().getAction();
-		// if (action != null && action.equals(mActionCall)) {
-		// FragmentManager fm = getFragmentManager();
-		// FragmentTransaction transaction = fm.beginTransaction();
-		// transaction.replace(R.id.id_fragment_content, mBluetoothFragment);
-		// transaction.commit();
-		// } else {
-		// }
 		isCall = true;
 		setDefaultColor();
 		FragmentManager fm = getFragmentManager();
@@ -792,30 +647,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		// case R.id.action_refresh:
-		// Toast.makeText(this, "Menu Item refresh selected",
-		// Toast.LENGTH_SHORT).show();
-		// // Log.d(TAG, "pair "+ BtcNative.getPairStatus());
-		// break;
-		// case R.id.action_about:
-		// Toast
-		// .makeText(this, "Menu Item about selected",
-		// Toast.LENGTH_SHORT).show();
-		// // Log.d(TAG, "bfp "+ BtcNative.getBfpStatus());
-		// break;
-		// case R.id.action_edit:
-		// Toast.makeText(this, "Menu Item edit selected", Toast.LENGTH_SHORT)
-		// .show();
-		// // Log.d(TAG, "call "+ BtcNative.getCallStatus());
-		// break;
-		// case R.id.action_search:
-		// Toast.makeText(this, "Menu Item search selected",
-		// Toast.LENGTH_SHORT).show();
-		// // Log.d(TAG, "a2dp "+ BtcNative.getA2dpStatus());
-		// break;
 		case R.id.action_help:
 			Toast.makeText(this, getResources().getString(R.string.help_text), Toast.LENGTH_SHORT).show();
-			// Log.d(TAG, "a2dp "+ BtcNative.getA2dpStatus());
+			Log.d(TAG, "a2dp " + BtcNative.getA2dpStatus());
 			break;
 		default:
 			break;
@@ -909,9 +743,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				transaction.replace(R.id.id_fragment_content, mMusicFragment);
 				break;
 			}
-			// transaction.addToBackStack();
-			// 事务提交
-			// transaction.commit();
 			transaction.commitAllowingStateLoss();
 		}
 	}
@@ -1127,7 +958,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	public void updateContacts(int i) {
-		mLog("显示==="+i);
+		mLog("显示===" + i);
 		if (i != 0) {
 			mLog("显示");
 			mContectText.setText("已更新" + i + "位联系人");

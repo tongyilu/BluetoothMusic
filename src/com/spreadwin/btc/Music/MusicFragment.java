@@ -211,14 +211,12 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				mLog("change focus playMusic");
 				BtcNative.playMusic();
 			}
-		} else if (mPlayer == 1 || mPlayer == 0)
-		{
+		} else if (mPlayer == 1 || mPlayer == 0){
 			openAudioMode();
 			mLog("onClick playMusic");
 			BtcNative.playMusic();
 			mPlayer = 2;
 		}
-
 	}
 
 	public static void mLog(String string) {
