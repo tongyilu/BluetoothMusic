@@ -310,7 +310,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						isShow = true;
 						Log.d(TAG, "mRightMode");
 						isOrso = true;
-						mContectText.setVisibility(View.GONE);
+						updateContacts(0);
 						mLayoutMode = mRightMode;
 						mFragmetContext.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
@@ -330,6 +330,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						isShow = false;
 						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
+						mContectText.setVisibility(View.VISIBLE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
 						mMusicRightFragment.openAudioMode();
@@ -954,6 +955,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static void mLog(String string) {
 		if (DEBUG) {
 			Log.d(TAG, string);
+		}
+	}
+
+	@Override
+	protected void onActivityMove(boolean isToLeft) {
+		// TODO Auto-generated method stub
+		super.onActivityMove(isToLeft);
+		if (isToLeft) {
+			mContectText.setVisibility(View.VISIBLE);
 		}
 	}
 

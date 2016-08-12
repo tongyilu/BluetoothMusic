@@ -15,6 +15,7 @@ import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import android.app.ActionBar.LayoutParams;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -225,6 +226,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 //			mContactsNumber.setVisibility(View.VISIBLE);
 			sideBar.setVisibility(View.VISIBLE);
 //			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
+			getActivity().sendBroadcast(new Intent(MainActivity.mActionBookInfoOver));
 		} else {
 			mContactsInfo.clear();
 			sideBar.setVisibility(View.GONE);
