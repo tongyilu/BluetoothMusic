@@ -67,11 +67,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
-	// public static final String ACTION_BT_CALL_ANSWER =
-	// "ACTION_BT_CALL_ANSWER";
-	// public static final String ACTION_BT_CALL_REJECT =
-	// "ACTION_BT_CALL_REJECT";
-
 	private final int DIALOG1 = 1;
 	private final int DIALOG2 = 2;
 	private final int DIALOG3 = 3;
@@ -155,8 +150,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			if (binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
 				mBluetoothLayout.setBackgroundResource(R.drawable.bluetooth_lianjie);
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
-				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 				updateContacts(binder.getPhoneBookInfo_new().size());
+				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 		}
@@ -330,7 +325,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						isShow = false;
 						mMusicLayoutAdd.setVisibility(View.GONE);
 						mAddLayout.setVisibility(View.VISIBLE);
-						mContectText.setVisibility(View.VISIBLE);
 						mFragmetContext.setVisibility(View.VISIBLE);
 						mLeftMenu.setVisibility(View.VISIBLE);
 						mMusicRightFragment.openAudioMode();
@@ -960,9 +954,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityMove(boolean isToLeft) {
-		// TODO Auto-generated method stub
 		super.onActivityMove(isToLeft);
-		if (isToLeft) {
+		if (isToLeft&&binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
 			mContectText.setVisibility(View.VISIBLE);
 		}
 	}

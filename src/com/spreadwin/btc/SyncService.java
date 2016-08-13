@@ -1049,12 +1049,12 @@ public class SyncService extends Service {
 		}
 		if (!isConnect) {
 			mPhoneBook.clear();
-			mContactsInfo.clear();
+			mContactsInfo.clear(); 
 			return;
 		}
 		mContactsInfo.add(sortModel);
 		// 延迟100ms 发送mActionBookInfoOver
-//		handler.removeMessages(mUpdateBookInfoOver);s
+//		handler.removeMessages(mUpdateBookInfoOver);
 		handler.sendEmptyMessageDelayed(mUpdateBookInfoOver, 100);
 	}
 
@@ -1516,6 +1516,7 @@ public class SyncService extends Service {
 	}
 
 	public void saySomething(String something) {
+		mLog("播报======"+something);
 		Intent i = new Intent("ACTION_SAY_SOMETHING");
 		i.putExtra("EXTRA_SAY_SOMETHING", something);
 		sendBroadcast(i);
