@@ -561,7 +561,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			mLog("onDestroy()");
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
-		mVto.removeOnGlobalLayoutListener(this);
+		try {
+			mVto.removeOnGlobalLayoutListener(this);			
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

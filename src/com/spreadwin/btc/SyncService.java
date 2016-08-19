@@ -1074,7 +1074,7 @@ public class SyncService extends Service {
 		}
 		mContactsInfo.add(sortModel);
 		// 延迟100ms 发送mActionBookInfoOver
-//		handler.removeMessages(mUpdateBookInfoOver);
+		handler.removeMessages(mUpdateBookInfoOver);
 		handler.sendEmptyMessageDelayed(mUpdateBookInfoOver, 100);
 	}
 
