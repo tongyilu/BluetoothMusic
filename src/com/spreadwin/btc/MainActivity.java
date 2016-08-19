@@ -47,7 +47,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class MainActivity extends FragmentActivity implements OnClickListener, OnGlobalLayoutListener {
 	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
 
@@ -293,48 +293,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 
 		mAddFragment.commitAllowingStateLoss();
-		mVto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-
-			@Override
-			public void onGlobalLayout() {
-				mLog("onGlobalLayout phoneCall ==" + phoneCall);
-				if (!phoneCall) {
-					int width = main.getWidth();
-					Log.d(TAG, "width ==" + width);
-					if (width == 400 && mLayoutMode != mRightMode) {
-						isShow = true;
-						Log.d(TAG, "mRightMode");
-						isOrso = true;
-						updateContacts(0);
-						mLayoutMode = mRightMode;
-						mFragmetContext.setVisibility(View.GONE);
-						mAddLayout.setVisibility(View.VISIBLE);
-						mLeftMenu.setVisibility(View.GONE);
-					} else if (width == 715 && mLayoutMode != mLeftMode) {
-						Log.d(TAG, "mLeftMode");
-						isOrso = false;
-						isShow = false;
-						mLayoutMode = mLeftMode;
-						mMusicLayoutAdd.setVisibility(View.VISIBLE);
-						mAddLayout.setVisibility(View.GONE);
-						mFragmetContext.setVisibility(View.VISIBLE);
-						mLeftMenu.setVisibility(View.VISIBLE);
-					} else if (width == 1115 && mLayoutMode != mFullMode) {
-						Log.d(TAG, "mFullMode");
-						mLayoutMode = mFullMode;
-						isShow = false;
-						mMusicLayoutAdd.setVisibility(View.GONE);
-						mAddLayout.setVisibility(View.VISIBLE);
-						mFragmetContext.setVisibility(View.VISIBLE);
-						mLeftMenu.setVisibility(View.VISIBLE);
-						mMusicRightFragment.openAudioMode();
-						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
-							setDefaultFragment();
-						}
-					}
-				}
-			}
-		});
+		mVto.addOnGlobalLayoutListener(this);
 
 		Intent intent = new Intent(this, SyncService.class);
 		startService(intent);
@@ -602,6 +561,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mLog("onDestroy()");
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
+		mVto.removeOnGlobalLayoutListener(this);
 	}
 
 	@Override
@@ -936,9 +896,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (binder != null) {
 					updateContacts(binder.getPhoneBookInfo_new().size());
 				}
+			}else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
+				if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+					mMusicFragment.setPlayTitle(intent);
+					mMusicRightFragment.setPlayTitle(intent);
+				}
 			}
 		}
 	}
+	
 
 	@Override
 	public void onBackPressed() {
@@ -972,5 +938,45 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mLog("隐藏");
 			mContectText.setVisibility(View.GONE);
 		}
+	}
+
+	@Override
+	public void onGlobalLayout() {
+		mLog("onGlobalLayout phoneCall ==" + phoneCall);
+		if (!phoneCall) {
+			int width = main.getWidth();
+			Log.d(TAG, "width ==" + width);
+			if (width == 400 && mLayoutMode != mRightMode) {
+				isShow = true;
+				Log.d(TAG, "mRightMode");
+				isOrso = true;
+				updateContacts(0);
+				mLayoutMode = mRightMode;
+				mFragmetContext.setVisibility(View.GONE);
+				mAddLayout.setVisibility(View.VISIBLE);
+				mLeftMenu.setVisibility(View.GONE);
+			} else if (width == 715 && mLayoutMode != mLeftMode) {
+				Log.d(TAG, "mLeftMode");
+				isOrso = false;
+				isShow = false;
+				mLayoutMode = mLeftMode;
+				mMusicLayoutAdd.setVisibility(View.VISIBLE);
+				mAddLayout.setVisibility(View.GONE);
+				mFragmetContext.setVisibility(View.VISIBLE);
+				mLeftMenu.setVisibility(View.VISIBLE);
+			} else if (width == 1115 && mLayoutMode != mFullMode) {
+				Log.d(TAG, "mFullMode");
+				mLayoutMode = mFullMode;
+				isShow = false;
+				mMusicLayoutAdd.setVisibility(View.GONE);
+				mAddLayout.setVisibility(View.VISIBLE);
+				mFragmetContext.setVisibility(View.VISIBLE);
+				mLeftMenu.setVisibility(View.VISIBLE);
+				mMusicRightFragment.openAudioMode();
+				if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
+					setDefaultFragment();
+				}
+			}
+		}	
 	}
 }

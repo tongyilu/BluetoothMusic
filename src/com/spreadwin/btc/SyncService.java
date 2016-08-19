@@ -310,16 +310,10 @@ public class SyncService extends Service {
 				}
 
 				// 更新歌曲
-				if (mTitle != BtcNative.getPlayTitle()) {
-					mTitle = BtcNative.getPlayTitle();
-					mArtist = BtcNative.getPlayArtist();
-					mAlbum = BtcNative.getPlayAlbum();
-					Intent mA2dpIntent = new Intent();
-					mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
-					mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
-					mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
-					mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
-					sendBroadcast(mA2dpIntent);
+				if (isPlayTitleChange()) {
+					mLog("isPlayTitleChange getPlayTitle.isEmpty =="+TextUtils.isEmpty(BtcNative.getPlayTitle())+
+							"; mTitle.isEmpty =="+TextUtils.isEmpty(mTitle)+"; equals =="+BtcNative.getPlayTitle().equals(mTitle));
+					onPlayTitleChange();
 				}
 
 				// 更新A2dp状态
@@ -410,6 +404,32 @@ public class SyncService extends Service {
 		// if (!isFlage) {
 		// updatePbPhone();
 		// }
+	}
+
+	protected void onPlayTitleChange() {
+		mLog("onPlayTitleChange");
+		mTitle = BtcNative.getPlayTitle();
+		mArtist = BtcNative.getPlayArtist();
+		mAlbum = BtcNative.getPlayAlbum();
+		Intent mA2dpIntent = new Intent();
+		mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
+		mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
+		mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
+		mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
+		sendObjMessage(1,mA2dpIntent);
+	}
+
+	/**
+	 * 歌曲名字变化状态
+	 * @return
+	 */
+	protected boolean isPlayTitleChange() {
+		if (TextUtils.isEmpty(BtcNative.getPlayTitle()) && !TextUtils.isEmpty(mTitle)) {
+			return true;			
+		}else if (!TextUtils.isEmpty(BtcNative.getPlayTitle()) && !BtcNative.getPlayTitle().equals(mTitle)) {
+			return true;
+		}
+		return false;
 	}
 
 	private void updatePbIn() {
