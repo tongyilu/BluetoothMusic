@@ -143,7 +143,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
 	public final Messenger mMessenger = new Messenger(mIncomingHandler);
-
+	
 	private ServiceConnection conn = new ServiceConnection() {
 
 		@Override
@@ -1161,6 +1161,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mRightMode");
 				isOrso = true;
 				mLayoutMode = mRightMode;
+				mContectText.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.GONE);
@@ -1169,6 +1170,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mLeftMode");
 				isOrso = false;
 				mLayoutMode = mLeftMode;
+				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.VISIBLE);
 				mAddLayout.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.VISIBLE);
@@ -1176,6 +1178,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			} else if (width == 1425 && mLayoutMode != mFullMode) {
 				Log.d(TAG, "mFullMode");
 				mLayoutMode = mFullMode;
+				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mMusicRightFragment.openAudioMode();

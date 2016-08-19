@@ -42,8 +42,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private String PlayTitle = null;
 	private String PlayArtist = null;
 	private String PlayAlbum = null;
+	
+	private boolean isPlaySong = false;//歌曲信息
 
 	public MusicFragment() {
+		this(false);
 	}
 
 	public MusicFragment(boolean isRight) {
@@ -106,11 +109,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
 		
-		getActivity().registerReceiver(mReceiver, intentFilter);
+//		getActivity().registerReceiver(mReceiver, intentFilter);
+		mLog("onCreateView isPlaySong =="+isPlaySong);
+		if (isPlaySong) {
+			onUpdateSongInfo();
+		}
 		return mRootView;
 	}
 
-	boolean isPlaySong;
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -243,6 +249,13 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		PlayTitle = intent.getStringExtra("mTitle");
 		PlayArtist = intent.getStringExtra("mArtist");
 		PlayAlbum = intent.getStringExtra("mAlbum");
+		onUpdateSongInfo();
+	}
+
+	private void onUpdateSongInfo() {
+		if (mPlayTitle == null) {
+			return;
+		}
 		mPlayTitle.setVisibility(View.VISIBLE);
 		mPlayArtist.setVisibility(View.VISIBLE);
 		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);

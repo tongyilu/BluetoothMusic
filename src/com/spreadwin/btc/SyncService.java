@@ -881,7 +881,7 @@ public class SyncService extends Service {
 					+ mNumber + "; length ==" + mNumber.length());
 			isNew = true;
 			for (int j = 0; j < tempSize; j++) {
-				mLog("isNewContacts addContactsInfo setName==" + mName + ";mNumber==" + mNumber);
+//				mLog("isNewContacts addContactsInfo setName==" + mName + ";mNumber==" + mNumber);
 				if (mName.length() == 0) {
 					if (mContactsInfo.get(j).getNumber().indexOf(mNumber) != -1) {
 						isNew = false;
