@@ -56,7 +56,7 @@ public class SyncService extends Service {
 	public static final String EXTRA_BLUETOOTH_VOLUME_MUTED = "android.media.EXTRA_BLUETOOTH_VOLUME_MUTED";
 	public static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
 	public static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
-    /*************************************主界面和语音的交互广播*********************/
+	/************************************* 主界面和语音的交互广播 *********************/
 	public static final String ACTION_BT_CALL_ANSWER = "ACTION_BT_CALL_ANSWER";// 接听
 	public static final String ACTION_BT_CALL_REJECT = "ACTION_BT_CALL_REJECT";// 拒听
 	public static final String ACTION_BT_CALL_HANGUP = "ACTION_BT_CALL_HANGUP";// 挂断
@@ -66,13 +66,13 @@ public class SyncService extends Service {
 	public static final String ACTION_BFP_STATUS_RETURN = "ACTION_BFP_STATUS_RETURN";
 	public static final String ACTION_BFP_CONNECT_CLOSE = "ACTION_BFP_CONNECT_CLOSE";
 	public static final String ACTION_MYACTION_BTC_CALL = "MYACTION.BTC.CALL";
-    /***********************************************************************/
-	
-	/*******系统广播********************/
-	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";   
+	/***********************************************************************/
+
+	/******* 系统广播 ********************/
+	public static final String ACTION_ACC_OFF = "ACTION_ACC_OFF";
 	public static final String ACTION_ACC_ON = "ACTION_ACC_ON";
 	/**********************************/
-	
+
 	public static final String ACTION_BTC_CALL = "MYACTION.BTC.CALL";// 通过蓝牙拨打电话
 
 	public static final String BLUETOOTH_CONNECT_CHANGE = "BLUETOOTH_CONNECT_CHANGE";
@@ -107,34 +107,34 @@ public class SyncService extends Service {
 	 */
 	public boolean mCLDCall = false;
 
-	private boolean mThreadRun = false; //状态监听线程run控制位
+	private boolean mThreadRun = false; // 状态监听线程run控制位
 
-	private int index = 0;     //设备配对倒计时
-	private int bfpUpdateTime = 0;      //deprecated
-	private int mA2dpStatus = BtcGlobalData.A2DP_DISCONNECT;  //蓝牙音乐状态
+	private int index = 0; // 设备配对倒计时
+	private int bfpUpdateTime = 0; // deprecated
+	private int mA2dpStatus = BtcGlobalData.A2DP_DISCONNECT; // 蓝牙音乐状态
 	public int mBfpStatus = BtcGlobalData.BFP_DISCONNECT;// 蓝牙连接状态
-	public int mCallStatus = BtcGlobalData.NO_CALL;//来电 ，接听，挂断的等状态
+	public int mCallStatus = BtcGlobalData.NO_CALL;// 来电 ，接听，挂断的等状态
 	private int mCallStatusOld = BtcGlobalData.NO_CALL;
 	private int mPairStatus = BtcGlobalData.NOT_PAIR;
 	private int mPowerStatus = BtcGlobalData.NOT_PAIR;
-	private int mSyncStatus = BtcGlobalData.NOT_SYNC;//蓝牙和手机同步状态
-	private int mUpdateCalllog = BtcGlobalData.NO_CALL;//通话记录同步状态
+	private int mSyncStatus = BtcGlobalData.NOT_SYNC;// 蓝牙和手机同步状态
+	private int mUpdateCalllog = BtcGlobalData.NO_CALL;// 通话记录同步状态
 
 	private NotificationManager nm;
-	private SyncBinder binder = new SyncBinder();//service的外部接口
+	private SyncBinder binder = new SyncBinder();// service的外部接口
 	// private int mUpdaime = 10000;
-	/************hander.msg消息*************/
+	/************ hander.msg消息 *************/
 	public final int mShowNotification = 1;
 	public final int mCancelNotification = 2;
 	public final int mPhoneBookSyncBroadcast = 3;
 	public final int mAddDatabase = 5;
-	public final int mUpdateBookInfoOver = 7;   
+	public final int mUpdateBookInfoOver = 7;
 	/********************************/
-	public final int mNewSyncStatus = 4;  //deprecated
-	public final int mUpdateDataBase = 6;   //deprecated
-	private int RecordNum = 0;           //临时计数器：改成临时变量
-	private final List<PhoneBookInfo> mPhoneBookInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo>()); //联系人列表
-	ArrayList<String> mPhoneBook = new ArrayList<String>(); //存联系人 姓名 电话号码
+	public final int mNewSyncStatus = 4; // deprecated
+	public final int mUpdateDataBase = 6; // deprecated
+	private int RecordNum = 0; // 临时计数器：改成临时变量
+	private final List<PhoneBookInfo> mPhoneBookInfo = Collections.synchronizedList(new ArrayList<PhoneBookInfo>()); // 联系人列表
+	ArrayList<String> mPhoneBook = new ArrayList<String>(); // 存联系人 姓名 电话号码
 	PhoneBookInfo mSIMContactsInfo;
 	PhoneBookInfo mPhoneContactsInfo;
 	PhoneBookInfo mCalloutInfo;
@@ -152,13 +152,13 @@ public class SyncService extends Service {
 	 */
 	// private PinyinComparator pinyinComparator;
 
-	int mTempStatus = 0;       //临时储存状态
+	int mTempStatus = 0; // 临时储存状态
 
 	String result;
 
 	boolean upload_toggle = false;
 
-	private int mOldBt = 0;//deprecated
+	private int mOldBt = 0;// deprecated
 	private int mDefaultVoice = 13;// 默认声音大小//deprecated
 
 	public DBAdapter m_DBAdapter = null;
@@ -170,8 +170,8 @@ public class SyncService extends Service {
 	private WindowManager wm;
 
 	private View view;
-	
-	private DialogView mCallView;//来电的界面
+
+	private DialogView mCallView;// 来电的界面
 
 	/**
 	 * 来电状态还是呼出状态
@@ -184,15 +184,14 @@ public class SyncService extends Service {
 	public static String mArtist = null;
 	public static String mAlbum = null;
 
-
-	public static LruJsonCache mCache;          // 缓存来电归属：换成数据库考虑没网络的情况
+	public static LruJsonCache mCache; // 缓存来电归属：换成数据库考虑没网络的情况
 	public static boolean isConnect;
 
 	// private OpenUtils openUtils;
-	boolean mdatabase;            //是否从数据库读取电话本信息标识位
+	boolean mdatabase; // 是否从数据库读取电话本信息标识位
 	private Handler mHandler = new Handler();
-	
-	/************数据库和网络获取电话本线程**************/
+
+	/************ 数据库和网络获取电话本线程 **************/
 	private Runnable mRunnble = new Runnable() {
 
 		@Override
@@ -241,7 +240,8 @@ public class SyncService extends Service {
 		mCache = new LruJsonCache();
 		onIntentFilter();
 	}
-    /************初始化外界广播******************/
+
+	/************ 初始化外界广播 ******************/
 	private void onIntentFilter() {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -267,7 +267,8 @@ public class SyncService extends Service {
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 	}
-   /**********************监听底层蓝牙状态线程*****************/
+
+	/********************** 监听底层蓝牙状态线程 *****************/
 	Thread syncT = new Thread(new Runnable() {
 		@Override
 		public void run() {
@@ -309,17 +310,21 @@ public class SyncService extends Service {
 				}
 
 				// 更新歌曲
-				if (mTitle != BtcNative.getPlayTitle()) {
-					mTitle = BtcNative.getPlayTitle();
-					mArtist = BtcNative.getPlayArtist();
-					mAlbum = BtcNative.getPlayAlbum();
-					Intent mA2dpIntent = new Intent();
-					mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
-					mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
-					mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
-					mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
-					sendBroadcast(mA2dpIntent);
+				if (isPlayTileChenger()) {
+					mLog("isPlayTileChenger" + isPlayTileChenger());
+					onPlayTitleChenger();
 				}
+				// if (mTitle != BtcNative.getPlayTitle()) {
+				// mTitle = BtcNative.getPlayTitle();
+				// mArtist = BtcNative.getPlayArtist();
+				// mAlbum = BtcNative.getPlayAlbum();
+				// Intent mA2dpIntent = new Intent();
+				// mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
+				// mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
+				// mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
+				// mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
+				// sendBroadcast(mA2dpIntent);
+				// }
 
 				// 更新A2dp状态
 				mTempStatus = BtcNative.getA2dpStatus();
@@ -371,6 +376,31 @@ public class SyncService extends Service {
 			}
 		}
 	});
+
+	public void onPlayTitleChenger() {
+		mLog("onPlayTitleChenger");
+		mTitle = BtcNative.getPlayTitle();
+		mArtist = BtcNative.getPlayArtist();
+		mAlbum = BtcNative.getPlayAlbum();
+		Intent mA2dpIntent = new Intent();
+		mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
+		mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
+		mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
+		mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
+		sendObjMessage(1, mA2dpIntent);
+	}
+
+	/**
+	 * 歌曲状态
+	 */
+	protected boolean isPlayTileChenger() {
+		if (TextUtils.isEmpty(BtcNative.getPlayTitle()) && !TextUtils.isEmpty(mTitle)) {
+			return true;
+		} else if (!TextUtils.isEmpty(BtcNative.getPlayTitle()) && !BtcNative.getPlayTitle().equals(mTitle)) {
+			return true;
+		}
+		return false;
+	}
 
 	private void updatePbOut() {
 		Message message = new Message();
@@ -493,8 +523,8 @@ public class SyncService extends Service {
 		// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
 		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
 			addContacts();
-//			 handler.sendEmptyMessage(mAddDatabase);
-			
+			// handler.sendEmptyMessage(mAddDatabase);
+
 			Thread mDataThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -519,7 +549,8 @@ public class SyncService extends Service {
 		mSyncStatus = mTempStatus;
 		// isFlage = true;
 	}
-   /*********service外部接口***********/
+
+	/********* service外部接口 ***********/
 	public class SyncBinder extends Binder {
 
 		/**
@@ -625,11 +656,11 @@ public class SyncService extends Service {
 		}
 
 		public void setClientMessager(Messenger client) {
-			mClient = client; //蓝牙主界面Messenger
+			mClient = client; // 蓝牙主界面Messenger
 		}
 	}
-	
-    /***************蓝牙信息变化更新至蓝牙主界面***************/
+
+	/*************** 蓝牙信息变化更新至蓝牙主界面 ***************/
 	public void sendObjMessage(int msg_id, Object obj) {
 		if (mClient != null) {
 			try {
@@ -665,8 +696,6 @@ public class SyncService extends Service {
 			}
 		}
 	}
-
-
 
 	protected void onBfpStatusChange() {
 		Intent mBfpIntent = new Intent();
@@ -704,7 +733,8 @@ public class SyncService extends Service {
 		mBfpStatus = mTempStatus;
 		mECarOnline.onReturnBfpStatus();
 	}
-	/**************连接状态监听线程syncT和UI主线的hander*********************/
+
+	/************** 连接状态监听线程syncT和UI主线的hander *********************/
 	Handler handler = new Handler() {
 
 		public void handleMessage(android.os.Message msg) {
@@ -713,13 +743,13 @@ public class SyncService extends Service {
 				// 初始化数据库
 				m_DBAdapter.open();
 				showNotification();
-//				mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-				mHandler.post(mRunnble);      //执行从数据库读取电话本
+				// mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
+				mHandler.post(mRunnble); // 执行从数据库读取电话本
 				break;
 			case mCancelNotification:
 				// 关闭数据库
 				cancelNotification();
-//				mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
+				// mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
 				break;
 			case mPhoneBookSyncBroadcast:
 				mLog("mPhoneBookSyncBroadcast msg.arg1 ==" + msg.arg1);
@@ -771,7 +801,7 @@ public class SyncService extends Service {
 	}
 
 	protected void mSendBluetoothBroadcast(String action, boolean status) {
-		mLog("card_state=============="+status);
+		mLog("card_state==============" + status);
 		Intent intent = new Intent();
 		intent.setAction(action);
 		intent.putExtra("status", status);
@@ -833,7 +863,6 @@ public class SyncService extends Service {
 		intent.putExtra("KEY_NAME", "bluetooth");
 		sendBroadcast(intent);
 	}
-
 
 	private boolean isNewContacts() {
 		boolean isNew = false;
@@ -1057,7 +1086,7 @@ public class SyncService extends Service {
 			return;
 		}
 		mContactsInfo.add(sortModel);
-		//延迟100ms 发送mActionBookInfoOver
+		// 延迟100ms 发送mActionBookInfoOver
 		handler.removeMessages(mUpdateBookInfoOver);
 		handler.sendEmptyMessageDelayed(mUpdateBookInfoOver, 100);
 	}
@@ -1107,7 +1136,7 @@ public class SyncService extends Service {
 	public Handler HandlerCallin = new Handler() {
 
 		@Override
-		
+
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			showCallDisplay(msg.what);
@@ -1133,23 +1162,23 @@ public class SyncService extends Service {
 		mCallStatus = mTempStatus;
 		Intent mCallIntent = new Intent();
 		mCallIntent.setAction(MainActivity.mActionCall);
-//		onChaneAudioFocus(mTempStatus);
+		// onChaneAudioFocus(mTempStatus);
 		switch (mTempStatus) {
 		case BtcGlobalData.CALL_IN:
 			isState = true;
-//			BtAudioManager.getInstance(this).mAudioFocusGain = true;
-			//BtAudioFocus 为false时，设置TempAudioFocus为true,提前获取焦点
+			// BtAudioManager.getInstance(this).mAudioFocusGain = true;
+			// BtAudioFocus 为false时，设置TempAudioFocus为true,提前获取焦点
 			if (!BtAudioManager.getInstance(this).isBtAudioFocus()) {
-				BtAudioManager.getInstance(this).setTempBtAudioFocus(BtAudioManager.mTempFocusGain);				
+				BtAudioManager.getInstance(this).setTempBtAudioFocus(BtAudioManager.mTempFocusGain);
 			}
 			BtAudioManager.getInstance(this).onCallChange(false);
-			
+
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_IN);
-			mLog("add_window"+ BtcGlobalData.CALL_IN);
+			mLog("add_window" + BtcGlobalData.CALL_IN);
 			addCallView();
 			break;
 		case BtcGlobalData.IN_CALL:
-//			BtAudioManager.getInstance(this).mAudioFocusGain = true;
+			// BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			mCallIntent.putExtra("call_status", BtcGlobalData.IN_CALL);
 			Intent mIN_CallIntent = new Intent(DialogView.ACTION_BT_CALL_IN);
@@ -1158,24 +1187,24 @@ public class SyncService extends Service {
 			removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
-//			BtAudioManager.getInstance(this).mAudioFocusGain = true;
+			// BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
 				mCLDCallResult = 0;
 			}
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
-			mLog("add_window"+ BtcGlobalData.CALL_IN);
+			mLog("add_window" + BtcGlobalData.CALL_IN);
 			isState = false;
 			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
 			isState = false;
-			//临时焦点：mTempAudioFocus 为true时，设置失去临时焦点
+			// 临时焦点：mTempAudioFocus 为true时，设置失去临时焦点
 			if (BtAudioManager.getInstance(this).isTempBtAudioFocusGain()) {
-				BtAudioManager.getInstance(this).setTempBtAudioFocus(BtAudioManager.mTempFocusLoss);				
+				BtAudioManager.getInstance(this).setTempBtAudioFocus(BtAudioManager.mTempFocusLoss);
 			}
 			BtAudioManager.getInstance(this).onCallChange(false);
-			
+
 			if (mSyncStatus != BtcGlobalData.IN_SYNC) {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
 				if (lastCallStatus == BtcGlobalData.CALL_IN) {
@@ -1270,9 +1299,9 @@ public class SyncService extends Service {
 		params.y = 0;
 		params.height = WindowManager.LayoutParams.MATCH_PARENT;
 		if (mCallView == null) {
-			mCallView = new DialogView(this, isState, isScreen,binder.getCallName(BtcNative.getCallNumber()));			
-		}else{
-			mCallView.setStatus(isState,isScreen,binder.getCallName(BtcNative.getCallNumber()));
+			mCallView = new DialogView(this, isState, isScreen, binder.getCallName(BtcNative.getCallNumber()));
+		} else {
+			mCallView.setStatus(isState, isScreen, binder.getCallName(BtcNative.getCallNumber()));
 		}
 		view = mCallView.getVideoPlayView();
 		wm.addView(view, params);
@@ -1294,7 +1323,7 @@ public class SyncService extends Service {
 				}
 			}
 			sendObjMessage(1, mCallIntent);
-		} 
+		}
 		mLog("ainActivity.mBroadcast ==" + MainActivity.mBroadcast);
 		sendBroadcast(mCallIntent);
 	}
@@ -1505,12 +1534,12 @@ public class SyncService extends Service {
 					mLog("BtcNative.playMusic()");
 					BtcNative.playMusic();
 				}
-			}else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
+			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
 				dialCall(intent.getStringExtra("call_number"));
 			}
 		}
 	};
-	
+
 	// 拨打电话
 	public void dialCall(String callNumber) {
 		mLog("dialCall ==" + callNumber);

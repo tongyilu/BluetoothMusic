@@ -47,7 +47,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class MainActivity extends FragmentActivity implements OnClickListener, OnGlobalLayoutListener {
 	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
 
@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_u);
 				mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 				handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
-				updateContacts(binder.getPhoneBookInfo_new().size());				
+				updateContacts(binder.getPhoneBookInfo_new().size());
 			}
 			mLog("onServiceConnected 1111 arg0 ==" + arg0);
 		}
@@ -362,52 +362,55 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (mMusicRightFragment != null) {
 			mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 		}
-//		if (mMusicRightFragment.isAdded()) {
-//			return;
-//		}
+		// if (mMusicRightFragment.isAdded()) {
+		// return;
+		// }
 		mAddFragment.commitAllowingStateLoss();
-		mVto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-
-			@Override
-			public void onGlobalLayout() {
-				mLog("onGlobalLayout phoneCall ==" + phoneCall);
-				if (!phoneCall) {
-					int width = main.getWidth();
-					Log.d(TAG, "width ==" + width);
-					WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-					int mWidth = wm.getDefaultDisplay().getWidth();
-					int mHeight = wm.getDefaultDisplay().getHeight();
-					Log.d("WindowManager", mWidth + "");
-					Log.d("WindowManager", mHeight + "");
-					if (width == 625 && mLayoutMode != mRightMode) {
-						Log.d(TAG, "mRightMode");
-						isOrso = true;
-						mLayoutMode = mRightMode;
-						mFragmetContext.setVisibility(View.GONE);
-						mAddLayout.setVisibility(View.VISIBLE);
-						mLeftMenu.setVisibility(View.GONE);
-						mMusicRightFragment.openAudioMode();
-					} else if (width == 800 && mLayoutMode != mLeftMode) {
-						Log.d(TAG, "mLeftMode");
-						isOrso = false;
-						mLayoutMode = mLeftMode;
-						mMusicLayoutAdd.setVisibility(View.VISIBLE);
-						mAddLayout.setVisibility(View.GONE);
-						mFragmetContext.setVisibility(View.VISIBLE);
-						mLeftMenu.setVisibility(View.VISIBLE);
-					} else if (width == 1425 && mLayoutMode != mFullMode) {
-						Log.d(TAG, "mFullMode");
-						mLayoutMode = mFullMode;
-						mMusicLayoutAdd.setVisibility(View.GONE);
-						mAddLayout.setVisibility(View.VISIBLE);
-						mMusicRightFragment.openAudioMode();
-						if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
-							setDefaultFragment();
-						}
-					}
-				}
-			}
-		});
+		mVto.addOnGlobalLayoutListener(this);
+		// mVto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+		//
+		// @Override
+		// public void onGlobalLayout() {
+		// mLog("onGlobalLayout phoneCall ==" + phoneCall);
+		// if (!phoneCall) {
+		// int width = main.getWidth();
+		// Log.d(TAG, "width ==" + width);
+		// WindowManager wm = (WindowManager)
+		// getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+		// int mWidth = wm.getDefaultDisplay().getWidth();
+		// int mHeight = wm.getDefaultDisplay().getHeight();
+		// Log.d("WindowManager", mWidth + "");
+		// Log.d("WindowManager", mHeight + "");
+		// if (width == 625 && mLayoutMode != mRightMode) {
+		// Log.d(TAG, "mRightMode");
+		// isOrso = true;
+		// mLayoutMode = mRightMode;
+		// mFragmetContext.setVisibility(View.GONE);
+		// mAddLayout.setVisibility(View.VISIBLE);
+		// mLeftMenu.setVisibility(View.GONE);
+		// mMusicRightFragment.openAudioMode();
+		// } else if (width == 800 && mLayoutMode != mLeftMode) {
+		// Log.d(TAG, "mLeftMode");
+		// isOrso = false;
+		// mLayoutMode = mLeftMode;
+		// mMusicLayoutAdd.setVisibility(View.VISIBLE);
+		// mAddLayout.setVisibility(View.GONE);
+		// mFragmetContext.setVisibility(View.VISIBLE);
+		// mLeftMenu.setVisibility(View.VISIBLE);
+		// } else if (width == 1425 && mLayoutMode != mFullMode) {
+		// Log.d(TAG, "mFullMode");
+		// mLayoutMode = mFullMode;
+		// mMusicLayoutAdd.setVisibility(View.GONE);
+		// mAddLayout.setVisibility(View.VISIBLE);
+		// mMusicRightFragment.openAudioMode();
+		// if (getFragmentManager().findFragmentById(R.id.id_fragment_content)
+		// == mMusicFragment) {
+		// setDefaultFragment();
+		// }
+		// }
+		// }
+		// }
+		// });
 
 		Intent intent = new Intent(this, SyncService.class);
 		startService(intent);
@@ -511,7 +514,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						if (SyncService.isTopMyself(getBaseContext())) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
-							}							
+							}
 							// if (mMusicRightFragment.isVisible()) {
 							// mMusicRightFragment.openMusicFragment();
 							// }
@@ -742,6 +745,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// if (mVoiceReceiver != null) {
 		// unregisterReceiver(mVoiceReceiver);
 		// }
+		try {
+
+			mVto.removeGlobalOnLayoutListener(this);
+		} catch (Exception e) {
+			e.printStackTrace(); 
+		}
 	}
 
 	@Override
@@ -1080,11 +1089,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 							mLog("Receiver mMusicFragment 11111111");
 							mMusicFragment.openAudioMode();
 						}
-						mLog("Receiver mMusicRightFragment isVisible =="+mMusicRightFragment.isVisible()+
-								"; getVisibility =="+mMusicRightFragment.getView().getVisibility() + 
-								"; mAddLayout =="+mAddLayout.getVisibility()+View.GONE);
+						mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
+								+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
+								+ "; mAddLayout ==" + mAddLayout.getVisibility() + View.GONE);
 						if (getFragmentManager().findFragmentById(R.id.add_bluetooth_music) == mMusicRightFragment
-								&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {						
+								&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
 							mMusicRightFragment.openAudioMode();
 						}
 					}
@@ -1105,10 +1114,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if (binder != null) {
 					updateContacts(binder.getPhoneBookInfo_new().size());
 				}
+			} else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
+				if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+					mMusicFragment.setPlayTitle(intent);
+					mMusicRightFragment.setPlayTitle(intent);
+				}
+
 			}
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub]
@@ -1127,6 +1142,47 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			mContectText.setVisibility(View.VISIBLE);
 		} else {
 			mContectText.setVisibility(View.GONE);
+		}
+	}
+
+	@Override
+	public void onGlobalLayout() {
+		// TODO Auto-generated method stub
+		mLog("onGlobalLayout phoneCall ==" + phoneCall);
+		if (!phoneCall) {
+			int width = main.getWidth();
+			Log.d(TAG, "width ==" + width);
+			WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+			int mWidth = wm.getDefaultDisplay().getWidth();
+			int mHeight = wm.getDefaultDisplay().getHeight();
+			Log.d("WindowManager", mWidth + "");
+			Log.d("WindowManager", mHeight + "");
+			if (width == 625 && mLayoutMode != mRightMode) {
+				Log.d(TAG, "mRightMode");
+				isOrso = true;
+				mLayoutMode = mRightMode;
+				mFragmetContext.setVisibility(View.GONE);
+				mAddLayout.setVisibility(View.VISIBLE);
+				mLeftMenu.setVisibility(View.GONE);
+				mMusicRightFragment.openAudioMode();
+			} else if (width == 800 && mLayoutMode != mLeftMode) {
+				Log.d(TAG, "mLeftMode");
+				isOrso = false;
+				mLayoutMode = mLeftMode;
+				mMusicLayoutAdd.setVisibility(View.VISIBLE);
+				mAddLayout.setVisibility(View.GONE);
+				mFragmetContext.setVisibility(View.VISIBLE);
+				mLeftMenu.setVisibility(View.VISIBLE);
+			} else if (width == 1425 && mLayoutMode != mFullMode) {
+				Log.d(TAG, "mFullMode");
+				mLayoutMode = mFullMode;
+				mMusicLayoutAdd.setVisibility(View.GONE);
+				mAddLayout.setVisibility(View.VISIBLE);
+				mMusicRightFragment.openAudioMode();
+				if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
+					setDefaultFragment();
+				}
+			}
 		}
 	}
 }

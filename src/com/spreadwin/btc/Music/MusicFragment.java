@@ -105,6 +105,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
+		
 		getActivity().registerReceiver(mReceiver, intentFilter);
 		return mRootView;
 	}
@@ -234,6 +235,19 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		getActivity().unregisterReceiver(mReceiver);
+//		getActivity().unregisterReceiver(mReceiver);
+	}
+	
+	public void setPlayTitle(Intent intent){
+		isPlaySong = true;
+		PlayTitle = intent.getStringExtra("mTitle");
+		PlayArtist = intent.getStringExtra("mArtist");
+		PlayAlbum = intent.getStringExtra("mAlbum");
+		mPlayTitle.setVisibility(View.VISIBLE);
+		mPlayArtist.setVisibility(View.VISIBLE);
+		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
+		if (PlayTitle != null) {
+			mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
+		}
 	}
 }
