@@ -1105,6 +1105,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
+					
+					/**
+					 * 音乐界面
+					 */
+					mMusicFragment.setPlayTitle(intent);
+					mMusicRightFragment.setPlayTitle(intent);
 					handler.sendEmptyMessage(mMessageNotifyData);
 					mDismissDialog(DIALOG1);
 				}
@@ -1119,14 +1125,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mMusicFragment.setPlayTitle(intent);
 					mMusicRightFragment.setPlayTitle(intent);
 				}
-
 			}
 		}
 	}
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub]
 		super.onBackPressed();
 	}
 
