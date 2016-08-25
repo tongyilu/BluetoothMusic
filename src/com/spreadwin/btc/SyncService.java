@@ -707,6 +707,9 @@ public class SyncService extends Service {
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
 			mLog("clear phonebook data");
+			mTitle = null;
+			mArtist = null;
+			mAlbum = null;
 			mPhoneBook.clear();
 			mContactsInfo.clear();
 			mHandler.removeCallbacks(mRunnble);

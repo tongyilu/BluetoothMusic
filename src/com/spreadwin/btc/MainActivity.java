@@ -7,7 +7,7 @@ import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
 import com.spreadwin.btc.view.CustomDialog;
-
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -47,6 +48,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class MainActivity extends FragmentActivity implements OnClickListener, OnGlobalLayoutListener {
 	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
@@ -956,6 +958,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				isOrso = true;
 				updateContacts(0);
 				mLayoutMode = mRightMode;
+				mContectText.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.GONE);
@@ -964,6 +967,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				isOrso = false;
 				isShow = false;
 				mLayoutMode = mLeftMode;
+				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.VISIBLE);
 				mAddLayout.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.VISIBLE);
@@ -972,6 +976,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mFullMode");
 				mLayoutMode = mFullMode;
 				isShow = false;
+				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mFragmetContext.setVisibility(View.VISIBLE);
