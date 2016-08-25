@@ -313,7 +313,7 @@ public class SyncService extends Service {
 				if (isPlayTitleChange()) {
 					mLog("isPlayTitleChange getPlayTitle.isEmpty =="+TextUtils.isEmpty(BtcNative.getPlayTitle())+
 							"; mTitle.isEmpty =="+TextUtils.isEmpty(mTitle)+"; equals =="+BtcNative.getPlayTitle().equals(mTitle));
-					onPlayTitleChange();
+					onPlayTitleChange(true);
 				}
 
 				// 更新A2dp状态
@@ -406,16 +406,22 @@ public class SyncService extends Service {
 		// }
 	}
 
-	protected void onPlayTitleChange() {
+	protected void onPlayTitleChange(boolean isConnet) {
 		mLog("onPlayTitleChange");
-		mTitle = BtcNative.getPlayTitle();
-		mArtist = BtcNative.getPlayArtist();
-		mAlbum = BtcNative.getPlayAlbum();
+		if (isConnet) {
+			mTitle = BtcNative.getPlayTitle();
+			mArtist = BtcNative.getPlayArtist();
+			mAlbum = BtcNative.getPlayAlbum();
+		}else{
+			mTitle = null;
+			mArtist = null;
+			mAlbum = null;
+		}
 		Intent mA2dpIntent = new Intent();
 		mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
-		mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
-		mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
-		mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
+		mA2dpIntent.putExtra("mTitle", mTitle);
+		mA2dpIntent.putExtra("mArtist", mArtist);
+		mA2dpIntent.putExtra("mAlbum", mAlbum);
 		sendObjMessage(1,mA2dpIntent);
 	}
 
@@ -707,9 +713,11 @@ public class SyncService extends Service {
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
 			mLog("clear phonebook data");
-			mTitle = null;
-			mArtist = null;
-			mAlbum = null;
+			
+			//清空歌曲信息
+
+			onPlayTitleChange(false);
+			
 			mPhoneBook.clear();
 			mContactsInfo.clear();
 			mHandler.removeCallbacks(mRunnble);

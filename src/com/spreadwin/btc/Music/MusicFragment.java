@@ -116,7 +116,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		return mRootView;
 	}
 
-
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -234,16 +233,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			onUpdateSongInfo();
 		}
 	}
-	
-	public void onUpdateSongInfo(){
+
+	public void onUpdateSongInfo() {
 		if (mPlayTitle == null) {
 			return;
 		}
 		mPlayTitle.setVisibility(View.VISIBLE);
 		mPlayArtist.setVisibility(View.VISIBLE);
 		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-		if (PlayTitle != null) {
-			mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-		}
+		mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
 	}
 }

@@ -564,7 +564,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
 		}
 		try {
-			mVto.removeOnGlobalLayoutListener(this);			
+			mVto.removeOnGlobalLayoutListener(this);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		}
@@ -902,15 +902,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				if (binder != null) {
 					updateContacts(binder.getPhoneBookInfo_new().size());
 				}
-			}else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
-				if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-					mMusicFragment.setPlayTitle(intent);
-					mMusicRightFragment.setPlayTitle(intent);
-				}
+			} else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
+				mMusicFragment.setPlayTitle(intent);
+				mMusicRightFragment.setPlayTitle(intent);
 			}
 		}
 	}
-	
 
 	@Override
 	public void onBackPressed() {
@@ -927,7 +924,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	protected void onActivityMove(boolean isToLeft) {
 		super.onActivityMove(isToLeft);
-		if (isToLeft&&binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
+		if (isToLeft && binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
 			mContectText.setVisibility(View.VISIBLE);
 		}
 	}
@@ -967,7 +964,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				isOrso = false;
 				isShow = false;
 				mLayoutMode = mLeftMode;
-				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.VISIBLE);
 				mAddLayout.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.VISIBLE);
@@ -976,7 +972,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mFullMode");
 				mLayoutMode = mFullMode;
 				isShow = false;
-				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mFragmetContext.setVisibility(View.VISIBLE);
@@ -986,6 +981,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					setDefaultFragment();
 				}
 			}
-		}	
+		}
 	}
+
 }

@@ -35,7 +35,6 @@
             android:visibility="gone"
             android:src="@drawable/icon" />
 
-
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
