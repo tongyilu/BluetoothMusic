@@ -116,29 +116,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		return mRootView;
 	}
 
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			mLog("onReceive 111111111111");
-			if (intent.getAction() == mActionInfoBfp) {
-				isPlaySong = true;
-				PlayTitle = intent.getStringExtra("mTitle");
-				PlayArtist = intent.getStringExtra("mArtist");
-				PlayAlbum = intent.getStringExtra("mAlbum");
-				onUpdateSongInfo();
-
-			}
-		}
-	};
-
-	public void onUpdateSongInfo() {
-		mPlayTitle.setVisibility(View.VISIBLE);
-		mPlayArtist.setVisibility(View.VISIBLE);
-		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-		if (PlayTitle != null) {
-			mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-		}
-	}
 
 	@Override
 	public void onResume() {
@@ -254,12 +231,19 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			PlayTitle = intent.getStringExtra("mTitle");
 			PlayArtist = intent.getStringExtra("mArtist");
 			PlayAlbum = intent.getStringExtra("mAlbum");
-			mPlayTitle.setVisibility(View.VISIBLE);
-			mPlayArtist.setVisibility(View.VISIBLE);
-			mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-			if (PlayTitle != null) {
-				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-			}
+			onUpdateSongInfo();
+		}
+	}
+	
+	public void onUpdateSongInfo(){
+		if (mPlayTitle == null) {
+			return;
+		}
+		mPlayTitle.setVisibility(View.VISIBLE);
+		mPlayArtist.setVisibility(View.VISIBLE);
+		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
+		if (PlayTitle != null) {
+			mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
 		}
 	}
 }
