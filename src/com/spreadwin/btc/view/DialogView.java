@@ -338,13 +338,14 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				if (BtcNative.getAudioPath() == 0) {
 					mSwitch.setImageResource(R.drawable.switching_02);
 					isOnClike = false;
-				} else {
+				} else if(BtcNative.getAudioPath() == 1){
 					mSwitch.setImageResource(R.drawable.switching_01);
 					mMute.setImageResource(R.drawable.mute_d);
 					isOnClike = true;
 				}
+				Log.d(TAG, "DialogView==="+BtcNative.getAudioPath());
 			}
-		}, 1000);
+		}, 2000);
 	}
 
 	private void removeNumber() {
