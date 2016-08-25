@@ -20,10 +20,10 @@ public class SideBar extends View {
 	// 26个字母
 	public static String[] b = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
 			"J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-			"W", "X", "Y", "Z", "#" };
+			"W", "X", "Y", "Z","  ", "#" };
 	public static String[] c = { "A", ".", ".", ".", ".", "F", ".", ".", ".",
 		".", "K", ".", ".", ".", ".", "P", ".", ".", ".", ".", "U", ".",
-		".", ".", ".", "Z", "#" };
+		".", ".", ".", "Z","  ", "#" };
 	private int choose = -1;// 选中
 	private Paint paint = new Paint();
 
