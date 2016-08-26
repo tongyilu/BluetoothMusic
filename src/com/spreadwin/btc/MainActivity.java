@@ -143,7 +143,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
 	public final Messenger mMessenger = new Messenger(mIncomingHandler);
-	
+
 	private ServiceConnection conn = new ServiceConnection() {
 
 		@Override
@@ -749,7 +749,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 			mVto.removeGlobalOnLayoutListener(this);
 		} catch (Exception e) {
-			e.printStackTrace(); 
+			e.printStackTrace();
 		}
 	}
 
@@ -1105,7 +1105,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mBluetoothLayout.setBackgroundResource(R.drawable.duankailanya_d);
 					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
-					
+
 					/**
 					 * 音乐界面
 					 */
@@ -1121,10 +1121,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					updateContacts(binder.getPhoneBookInfo_new().size());
 				}
 			} else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
-				if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-					mMusicFragment.setPlayTitle(intent);
-					mMusicRightFragment.setPlayTitle(intent);
-				}
+				mMusicFragment.setPlayTitle(intent);
+				mMusicRightFragment.setPlayTitle(intent);
 			}
 		}
 	}
@@ -1174,7 +1172,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mLeftMode");
 				isOrso = false;
 				mLayoutMode = mLeftMode;
-				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.VISIBLE);
 				mAddLayout.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.VISIBLE);
@@ -1182,7 +1179,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			} else if (width == 1425 && mLayoutMode != mFullMode) {
 				Log.d(TAG, "mFullMode");
 				mLayoutMode = mFullMode;
-				mContectText.setVisibility(View.VISIBLE);
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mMusicRightFragment.openAudioMode();
@@ -1192,4 +1188,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			}
 		}
 	}
+
+	@Override
+	protected void onActivityMove(boolean isToLeft) {
+		if (isToLeft && BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+			mContectText.setVisibility(View.VISIBLE);
+		}
+		super.onActivityMove(isToLeft);
+	}
+
 }

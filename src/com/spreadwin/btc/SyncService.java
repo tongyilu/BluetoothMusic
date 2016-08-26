@@ -20,6 +20,7 @@ import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.view.DialogView;
 
+import android.R.bool;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Notification;
@@ -312,7 +313,7 @@ public class SyncService extends Service {
 				// 更新歌曲
 				if (isPlayTileChenger()) {
 					mLog("isPlayTileChenger" + isPlayTileChenger());
-					onPlayTitleChenger();
+					onPlayTitleChenger(true);
 				}
 				// if (mTitle != BtcNative.getPlayTitle()) {
 				// mTitle = BtcNative.getPlayTitle();
@@ -377,16 +378,22 @@ public class SyncService extends Service {
 		}
 	});
 
-	public void onPlayTitleChenger() {
+	public void onPlayTitleChenger(boolean isCommen) {
 		mLog("onPlayTitleChenger");
-		mTitle = BtcNative.getPlayTitle();
-		mArtist = BtcNative.getPlayArtist();
-		mAlbum = BtcNative.getPlayAlbum();
+		if (isCommen) {
+			mTitle = BtcNative.getPlayTitle();
+			mArtist = BtcNative.getPlayArtist();
+			mAlbum = BtcNative.getPlayAlbum();
+		} else {
+			mTitle = null;
+			mArtist = null;
+			mAlbum = null;
+		}
 		Intent mA2dpIntent = new Intent();
 		mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
-		mA2dpIntent.putExtra("mTitle", BtcNative.getPlayTitle());
-		mA2dpIntent.putExtra("mArtist", BtcNative.getPlayArtist());
-		mA2dpIntent.putExtra("mAlbum", BtcNative.getPlayAlbum());
+		mA2dpIntent.putExtra("mTitle", mTitle);
+		mA2dpIntent.putExtra("mArtist", mArtist);
+		mA2dpIntent.putExtra("mAlbum", mAlbum);
 		sendObjMessage(1, mA2dpIntent);
 	}
 
@@ -716,6 +723,8 @@ public class SyncService extends Service {
 			mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
 			m_DBAdapter.close();
 			isConnect = false;
+			//清空歌曲信息
+			onPlayTitleChenger(false);
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
