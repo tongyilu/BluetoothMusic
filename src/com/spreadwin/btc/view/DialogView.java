@@ -204,11 +204,11 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						mDismissDialog();
 						isScreen = true;
 						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+						params.type = WindowManager.LayoutParams.TYPE_DISPLAY_OVERLAY;
 						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
 								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 						params.x = 800;
-						params.width = 625;
+						params.width = 818;
 						params.y = 0;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);
@@ -262,14 +262,16 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			denyCall();
 			break;
 		case R.id.mute:
-			if (isMuteState) {
-				BtcNative.muteCall(0);
-				setMuteImageView(true);
-				isMuteState = false;
-			} else {
-				BtcNative.muteCall(1);
-				setMuteImageView(false);
-				isMuteState = true;
+			if (!isClickAudio) {
+				if (isMuteState) {
+					BtcNative.muteCall(0);
+					setMuteImageView(true);
+					isMuteState = false;
+				} else {
+					BtcNative.muteCall(1);
+					setMuteImageView(false);
+					isMuteState = true;
+				}
 			}
 			break;
 		case R.id.image_switch:
@@ -323,6 +325,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			addNumber("*");
 		}
 	}
+	
+	boolean isClickAudio;
 
 	public void setChckoutAudio() {
 		mHandler.postDelayed(new Runnable() {
@@ -330,11 +334,14 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			public void run() {
 				if (BtcNative.getAudioPath() == 0) {
 					mSwitch.setImageResource(R.drawable.switching_02);
+					isClickAudio = false;
 				} else {
 					mSwitch.setImageResource(R.drawable.switching_01);
+					mMute.setImageResource(R.drawable.mute_d);
+					isClickAudio = true;
 				}
 			}
-		}, 1000);
+		}, 2000);
 	}
 
 	private void removeNumber() {

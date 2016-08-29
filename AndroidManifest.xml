@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spreadwin.btc"
-    android:versionCode="16081000"
-    android:versionName="16081000" >
+    android:sharedUserId="android.uid.system"
+    android:versionCode="16082700"
+    android:versionName="16082700" >
+
 
     <uses-sdk android:minSdkVersion="14" />
 
