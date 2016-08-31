@@ -147,20 +147,25 @@ public class ECarOnline {
 	 * @param number
 	 */
 	private void onECarCall(String name, String number) {
-		Intent mCustomerIntent = new Intent();
-		mCustomerIntent.setAction(mSyncService.ACTION_BTC_CALL);
 		
-		if (number != null) {
-			mLog("onECarCall number=="+number);
-			mCustomerIntent.putExtra("call_number", number);				
+		mLog("dialCall ==" + number);
+		if (number.length() > 0) {
+			BtcNative.dialCall(number);
 		}
-		if (name != null) {
-			mLog("onECarCall name=="+name);
-			mCustomerIntent.putExtra("call_name", name);
-		}
-		mECarCall = true;
-		mCustomerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		mSyncService.startActivity(mCustomerIntent);			
+//		Intent mCustomerIntent = new Intent();
+//		mCustomerIntent.setAction(mSyncService.ACTION_BTC_CALL);
+//		
+//		if (number != null) {
+//			mLog("onECarCall number=="+number);
+//			mCustomerIntent.putExtra("call_number", number);				
+//		}
+//		if (name != null) {
+//			mLog("onECarCall name=="+name);
+//			mCustomerIntent.putExtra("call_name", name);
+//		}
+//		mECarCall = true;
+//		mCustomerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		mSyncService.startActivity(mCustomerIntent);			
 	}
 
 	/**
