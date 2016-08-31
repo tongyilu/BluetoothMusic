@@ -134,10 +134,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	boolean isOrso;
 	boolean isCall;
 
-	private int mLeftMode = 1;
-	private int mRightMode = 2;
-	private int mFullMode = 3;
-	private int mLayoutMode = 0;
+//	private final int mLeftMode = 1;
+//	private final int mRightMode = 2;
+//	private final int mFullMode = 3;
+//	private int mLayoutMode = 0;
 
 	private CustomDialog.Builder builder;
 
@@ -1117,27 +1117,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			int mHeight = wm.getDefaultDisplay().getHeight();
 			Log.d("WindowManager", mWidth + "");
 			Log.d("WindowManager", mHeight + "");
-			if (width == 818 && mLayoutMode != mRightMode) {
+			if (width == 818 ) {
 				Log.d(TAG, "mRightMode");
 				isOrso = true;
-				mLayoutMode = mRightMode;
 				mFragmetContext.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.GONE);
 				mMusicRightFragment.openAudioMode();
 				onRightLayout();
-			} else if (width == 854 && mLayoutMode != mLeftMode) {
+			} else if (width == 854 ) {
 				Log.d(TAG, "mLeftMode");
 				isOrso = false;
-				mLayoutMode = mLeftMode;
 				mMusicLayoutAdd.setVisibility(View.VISIBLE);
 				mAddLayout.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.VISIBLE);
 				onLeftLayout();
-			} else if (width == 1424 && mLayoutMode != mFullMode) {
+			} else if (width == 1424 ) {
 				Log.d(TAG, "mFullMode");
-				mLayoutMode = mFullMode;
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mMusicRightFragment.openAudioMode();
@@ -1155,18 +1152,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private void onLeftLayout() {
 		layoutParams.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
+		mContectText.setVisibility(View.VISIBLE);
+		Log.d(TAG, "显示联系人");
 	}
 
 	private void onRightLayout() {
-		mContectText.setVisibility(View.GONE);
 		layoutParams.setMargins(0, 0, 220, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
+		mContectText.setVisibility(View.GONE);
+		Log.d(TAG, "隐藏联系人");
 	}
 
 	@Override
 	protected void onActivityMove(boolean isToLeft) {
 		if (isToLeft && BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-			mContectText.setVisibility(View.VISIBLE);
+			onLeftLayout();
+			Log.d(TAG, "从副屏切换到主屏显示更新联系人");
 		}
 		super.onActivityMove(isToLeft);
 	}
