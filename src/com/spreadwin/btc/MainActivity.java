@@ -136,7 +136,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	boolean isShow;
 
-	private CustomDialog.Builder builder;
+	private CustomDialog.Builder builder = null;
+
+	private Dialog dialog = null;
 
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
@@ -230,6 +232,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		dialog.dismiss();
 	}
 
 	@Override
@@ -264,7 +267,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 		mVto = main.getViewTreeObserver();
 
-		builder = new com.spreadwin.btc.view.CustomDialog.Builder(this);
+		builder = new CustomDialog.Builder(this);
 		builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				handler.sendEmptyMessageDelayed(mMessageShowBluetoothName, mShowNameDelayed);
@@ -276,7 +279,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				dialog.dismiss();
 			}
 		});
-
+		dialog = builder.crater();
 		mCallLogsLayout.setOnClickListener(this);
 		mContactsLayout.setOnClickListener(this);
 		mMusicLayout.setOnClickListener(this);
@@ -655,7 +658,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			mLog("onClick mdroppedbutton");
 			denyCall();
 		} else if (v == mBluetoothName) {
-			builder.crater().show();
+			dialog.show();
 		} else {
 			FragmentManager fm = getFragmentManager();
 			FragmentTransaction transaction = fm.beginTransaction();

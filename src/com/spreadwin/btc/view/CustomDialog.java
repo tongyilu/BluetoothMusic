@@ -1,6 +1,5 @@
 package com.spreadwin.btc.view;
 
-import org.w3c.dom.Text;
 
 import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.R;
@@ -15,7 +14,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class CustomDialog extends Dialog {
@@ -134,6 +132,7 @@ public class CustomDialog extends Dialog {
 				((LinearLayout) layout.findViewById(R.id.content)).addView(contentView,
 						new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			}
+			
 			dialog.setContentView(layout);
 			dialog.setCancelable(false);
 			return dialog;
