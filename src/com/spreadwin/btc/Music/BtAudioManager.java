@@ -84,11 +84,17 @@ public class BtAudioManager {
 		if (mAudioFocusGain == enable && mTempAudioFocus == mTempFocusNormal) {
 			return;
 		}
-		if (enable || mTempAudioFocus == mTempFocusGain) {
+		if (enable) {
 			mAudioFocusGain = true;
+			mLog(mAudioFocus+"");
+			if (mAudioFocus) {
+				audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+			}else{
+				audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+			}
 			mLog("setBtAudioToggle requestAudioFocus");
-			audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
-					AudioManager.AUDIOFOCUS_GAIN);
+//			audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
+//					AudioManager.AUDIOFOCUS_GAIN);
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
@@ -262,7 +268,5 @@ public class BtAudioManager {
 			Log.d(TAG, string);
 		}
 	}
-
-
 
 }
