@@ -8,6 +8,7 @@ import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
 import com.spreadwin.btc.view.CustomDialog;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -28,6 +29,7 @@ import android.os.Messenger;
 import android.os.PowerManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -63,6 +65,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public static final String mAcitonFinish = "com.spreadwin.btc.finish";
 
 	public static final String mActionBookInfoOver = "com.spreadwin.btc.over";
+
+	public static final String mActionFull = "android.intent.action.SPLIT_WINDOW_HAS_CHANGED";
 
 	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
@@ -128,16 +132,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private ViewTreeObserver mVto;
 
 	boolean tempApp = false; // 为true时，活动结束后退到后台
-
+    
+	private String isFull = null;
 	// private BtAudioManager mBtAudioManager;
 	boolean phoneCall;
 	boolean isOrso;
 	boolean isCall;
 
-//	private final int mLeftMode = 1;
-//	private final int mRightMode = 2;
-//	private final int mFullMode = 3;
-//	private int mLayoutMode = 0;
+	// private final int mLeftMode = 1;
+	// private final int mRightMode = 2;
+	// private final int mFullMode = 3;
+	// private int mLayoutMode = 0;
 
 	private CustomDialog.Builder builder;
 
@@ -198,59 +203,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// if (binder != null
-		// && binder.getBfpStatuss() == BtcGlobalData.BFP_CONNECTED) {
-		// mBluetoothStatus.setText(getResources().getString(
-		// R.string.connect_title));
-		// handler.sendEmptyMessageDelayed(mMessageShowDeviceName,
-		// mShowDeviceNameDelayed);
-		// }
-		// IntentFilter intent = new
-		// IntentFilter("android.intent.action.SPLIT_WINDOW_HAS_CHANGED");
-		// registerReceiver(mScreenSizeChangeReceiver, intent);
-		// Log.d(TAG, "onresume for MainWindows");
-
-		// mFragmetContext.setVisibility(View.VISIBLE);
-		// mLeftMenu.setVisibility(View.VISIBLE);
-		// if (ScreenUtils.setBluetoothStatus(this) == 0) {
-		// mAddLayout.setVisibility(View.GONE);
-		// mMusicLayoutAdd.setVisibility(View.VISIBLE);
-		// } else if (ScreenUtils.setBluetoothStatus(this) == 1) {
-		// mAddLayout.setVisibility(View.VISIBLE);
-		// mMusicLayoutAdd.setVisibility(View.GONE);
-		// }
-
-		// tempApp = false;
-		//
-		// String action = getIntent().getAction();
-		// mLog("MainActivity onResume action ==" + action);
-		// if (action != null) {
-		// if (action.equals("MYACTION.BTC.CALL")) {
-		// callNumber = getIntent().getStringExtra("call_number");
-		// callName = getIntent().getStringExtra("call_name");
-		// tempApp = true;
-		// if (callNumber != null || callName != null) {
-		// // FragmentManager fm = getFragmentManager();
-		// // FragmentTransaction transaction = fm.beginTransaction();
-		// // if (mBluetoothFragment == null) {
-		// // mBluetoothFragment = new BluetoothFragment();
-		// // }
-		// // transaction.replace(R.id.id_fragment_content,
-		// // mBluetoothFragment);
-		// // transaction.commit();
-		// setDefaultFragment();
-		// handler.sendEmptyMessage(mMessageCall);
-		// }
-		// } else if (action.equals(mActionCall)) {
-		// tempApp = true;
-		// mLog("MainActivity onResume action222222222 ==" + mActionCall);
-		// handler.sendEmptyMessageDelayed(mMessageActionCall, 100);
-		// }
-		// }
 		mLog("MainActivity onResume");
-		// isAppRunning = true;
 		parserIntent();
-
+		Intent intent = getIntent();
+		isFull = intent.getStringExtra("isFull");
+		if (isFull != null) {
+			setFullScreen();
+			onRightLayout();
+			onFullScreen();
+		}
 	}
 
 	@Override
@@ -369,7 +330,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mAddFragment.commitAllowingStateLoss();
 		mVto.addOnGlobalLayoutListener(this);
 
-
 		Intent intent = new Intent(this, SyncService.class);
 		startService(intent);
 		bindService(intent, conn, Context.BIND_AUTO_CREATE);
@@ -379,8 +339,38 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		// audioManager = (AudioManager)
 		// getSystemService(Context.AUDIO_SERVICE);
 		// VoiceReceiver();
-
+		
+		IntentFilter filter = new IntentFilter(mActionFull);
+		registerReceiver(receiver, filter);
 	}
+	
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			 if (intent.getAction().equals(mActionFull)) {
+					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+					int leftStackId = am.getLeftStackId();
+					int rightStackId = am.getRightStackId();
+					if (rightStackId > 0 && am.getWindowSizeStatus(rightStackId) == 0) {
+	                    //半屏
+						setScreen();
+						onLeftLayout();
+					} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 1) {
+						//全屏
+						setFullScreen();
+						onLeftLayout();
+						mContectText.setVisibility(View.VISIBLE);
+					} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 3) {
+						//满屏
+						setFullScreen();
+						onRightLayout();
+						onFullScreen();
+					}
+				}
+		}
+	};
 
 	// private void VoiceReceiver() {
 	// mVoiceReceiver = new BroadcastReceiver() {
@@ -501,6 +491,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		intentFilter.addAction(mActionBfp);
 		intentFilter.addAction(mAcitonFinish);
 		intentFilter.addAction(mActionBookInfoOver);
+		intentFilter.addAction(mActionFull);
 
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		mBroadcast = true;
@@ -1081,7 +1072,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			} else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
 				mMusicFragment.setPlayTitle(intent);
 				mMusicRightFragment.setPlayTitle(intent);
-			}
+			} 
 		}
 	}
 
@@ -1117,7 +1108,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			int mHeight = wm.getDefaultDisplay().getHeight();
 			Log.d("WindowManager", mWidth + "");
 			Log.d("WindowManager", mHeight + "");
-			if (width == 818 ) {
+			if (width == 818) {
 				Log.d(TAG, "mRightMode");
 				isOrso = true;
 				mFragmetContext.setVisibility(View.GONE);
@@ -1125,34 +1116,72 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				mLeftMenu.setVisibility(View.GONE);
 				mMusicRightFragment.openAudioMode();
 				onRightLayout();
-			} else if (width == 854 ) {
-				Log.d(TAG, "mLeftMode");
-				isOrso = false;
-				mMusicLayoutAdd.setVisibility(View.VISIBLE);
-				mAddLayout.setVisibility(View.GONE);
-				mFragmetContext.setVisibility(View.VISIBLE);
-				mLeftMenu.setVisibility(View.VISIBLE);
-				onLeftLayout();
-			} else if (width == 1424 ) {
-				Log.d(TAG, "mFullMode");
-				mMusicLayoutAdd.setVisibility(View.GONE);
-				mAddLayout.setVisibility(View.VISIBLE);
-				mMusicRightFragment.openAudioMode();
-				onLeftLayout();
-				if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
-					setDefaultFragment();
-				}
-			}
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.WRAP_CONTENT,1);
+				params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
+				mBluetoothStatus.setLayoutParams(params);
+			} 
+			
+//			else if (width == 854) {
+//				Log.d(TAG, "mLeftMode");
+//				isOrso = false;
+//				mMusicLayoutAdd.setVisibility(View.VISIBLE);
+//				mAddLayout.setVisibility(View.GONE);
+//				mFragmetContext.setVisibility(View.VISIBLE);
+//				mLeftMenu.setVisibility(View.VISIBLE);
+//				onLeftLayout();
+//			} else if (width == 1424) {
+//				Log.d(TAG, "mFullMode");
+//				mMusicLayoutAdd.setVisibility(View.GONE);
+//				mAddLayout.setVisibility(View.VISIBLE);
+//				mMusicRightFragment.openAudioMode();
+//				onLeftLayout();
+//				if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
+//					setDefaultFragment();
+//				}
+//			}
+		}
+	}
+	
+	/**
+	 * 半屏
+	 */
+	public void setScreen(){
+		isOrso = false;
+		mMusicLayoutAdd.setVisibility(View.VISIBLE);
+		mAddLayout.setVisibility(View.GONE);
+		mFragmetContext.setVisibility(View.VISIBLE);
+		mLeftMenu.setVisibility(View.VISIBLE);
+	}
+	
+	/**
+	 * 全屏
+	 */
+	public void setFullScreen(){
+		Log.d(TAG, "mFullMode");
+		mMusicLayoutAdd.setVisibility(View.GONE);
+		mAddLayout.setVisibility(View.VISIBLE);
+		mMusicRightFragment.openAudioMode();
+		if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
+			setDefaultFragment();
 		}
 	}
 
 	LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 			ViewGroup.LayoutParams.WRAP_CONTENT);
-
+	
+	LinearLayout.LayoutParams mLeftBottomParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+			ViewGroup.LayoutParams.MATCH_PARENT);
+	
+	LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+			ViewGroup.LayoutParams.WRAP_CONTENT,1);
+	
 	private void onLeftLayout() {
 		layoutParams.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
 		mContectText.setVisibility(View.VISIBLE);
+		params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
+		mBluetoothStatus.setLayoutParams(params);
 		Log.d(TAG, "显示联系人");
 	}
 
@@ -1163,6 +1192,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		Log.d(TAG, "隐藏联系人");
 	}
 
+	private void onFullScreen(){
+		mContectText.setVisibility(View.VISIBLE);
+		params.setMargins(170, 0, 0, 0);// 4个参数按顺序分别是左上右下
+		mBluetoothStatus.setLayoutParams(params);
+		//mLeftBottombar
+	}
+	
 	@Override
 	protected void onActivityMove(boolean isToLeft) {
 		if (isToLeft && BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
