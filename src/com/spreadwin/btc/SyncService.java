@@ -84,6 +84,9 @@ public class SyncService extends Service {
 
 	public static final String LOCAL_MUSIC_ACTION = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC";
 	public static final String PUSH_MUSIC_PLAY_STATE = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC_STATUS";
+	
+	public static final String ACTION_MEDIAKILLED = "com.spreadwin.service.mediakilled";
+	
 	public boolean mOnlyMusic = false;
 
 	/**
@@ -261,6 +264,7 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_ACC_OFF);
 		filter.addAction(ACTION_ACC_ON);
 		filter.addAction(LOCAL_MUSIC_ACTION);
+		filter.addAction(ACTION_MEDIAKILLED);
 		registerReceiver(mBatInfoReceiver, filter);
 	}
 
@@ -1554,6 +1558,9 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
 				dialCall(intent.getStringExtra("call_number"));
+			}else if (intent.getAction().equals(ACTION_MEDIAKILLED)) {
+				mLog("接受到媒体库挂断广播");
+				BtAudioManager.getInstance(getApplicationContext()).setMediaKillMode();
 			}
 		}
 	};

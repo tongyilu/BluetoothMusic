@@ -122,6 +122,15 @@ public class BtAudioManager {
 			BtcNative.setVolume(VolumeMute);
 		}
 	}
+	
+	/**
+	 * 音频kill掉后重启
+	 */
+	public void setMediaKillMode(){
+		audioManager.setParameters("cdr_mode=" + AUDIO_MODE_NORMAL);
+		audioManager.setParameters("cdr_mode=" + mMode);
+	}
+	
 
 	/**
 	 * 设置音频通路
