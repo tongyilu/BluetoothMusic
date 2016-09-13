@@ -81,6 +81,8 @@ public class SyncService extends Service {
 	public static final String MUSIC_MUTE_SET_OTHER_ACTION = "android.media.MUSIC_MUTE_SET_OTHER_ACTION";
 	public static final String MUSIC_MUTE_RESTORE_ACTION = "android.media.MUSIC_MUTE_RESTORE_ACTION";
 
+	public static final String ACTION_MEDIAKILLED = "com.spreadwin.service.mediakilled";
+
 	public static final String LOCAL_MUSIC_ACTION = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC";
 	public static final String PUSH_MUSIC_PLAY_STATE = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC_STATUS";
 	public boolean mOnlyMusic = false;
@@ -260,6 +262,7 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_ACC_OFF);
 		filter.addAction(ACTION_ACC_ON);
 		filter.addAction(LOCAL_MUSIC_ACTION);
+		filter.addAction(ACTION_MEDIAKILLED);
 		registerReceiver(mBatInfoReceiver, filter);
 	}
 
@@ -311,8 +314,9 @@ public class SyncService extends Service {
 
 				// 更新歌曲
 				if (isPlayTitleChange()) {
-					mLog("isPlayTitleChange getPlayTitle.isEmpty =="+TextUtils.isEmpty(BtcNative.getPlayTitle())+
-							"; mTitle.isEmpty =="+TextUtils.isEmpty(mTitle)+"; equals =="+BtcNative.getPlayTitle().equals(mTitle));
+					mLog("isPlayTitleChange getPlayTitle.isEmpty ==" + TextUtils.isEmpty(BtcNative.getPlayTitle())
+							+ "; mTitle.isEmpty ==" + TextUtils.isEmpty(mTitle) + "; equals =="
+							+ BtcNative.getPlayTitle().equals(mTitle));
 					onPlayTitleChange(true);
 				}
 
@@ -412,7 +416,7 @@ public class SyncService extends Service {
 			mTitle = BtcNative.getPlayTitle();
 			mArtist = BtcNative.getPlayArtist();
 			mAlbum = BtcNative.getPlayAlbum();
-		}else{
+		} else {
 			mTitle = null;
 			mArtist = null;
 			mAlbum = null;
@@ -422,17 +426,18 @@ public class SyncService extends Service {
 		mA2dpIntent.putExtra("mTitle", mTitle);
 		mA2dpIntent.putExtra("mArtist", mArtist);
 		mA2dpIntent.putExtra("mAlbum", mAlbum);
-		sendObjMessage(1,mA2dpIntent);
+		sendObjMessage(1, mA2dpIntent);
 	}
 
 	/**
 	 * 歌曲名字变化状态
+	 * 
 	 * @return
 	 */
 	protected boolean isPlayTitleChange() {
 		if (TextUtils.isEmpty(BtcNative.getPlayTitle()) && !TextUtils.isEmpty(mTitle)) {
-			return true;			
-		}else if (!TextUtils.isEmpty(BtcNative.getPlayTitle()) && !BtcNative.getPlayTitle().equals(mTitle)) {
+			return true;
+		} else if (!TextUtils.isEmpty(BtcNative.getPlayTitle()) && !BtcNative.getPlayTitle().equals(mTitle)) {
 			return true;
 		}
 		return false;
@@ -713,11 +718,11 @@ public class SyncService extends Service {
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
 			mLog("clear phonebook data");
-			
-			//清空歌曲信息
+
+			// 清空歌曲信息
 
 			onPlayTitleChange(false);
-			
+
 			mPhoneBook.clear();
 			mContactsInfo.clear();
 			mHandler.removeCallbacks(mRunnble);
@@ -1080,7 +1085,7 @@ public class SyncService extends Service {
 		}
 		if (!isConnect) {
 			mPhoneBook.clear();
-			mContactsInfo.clear(); 
+			mContactsInfo.clear();
 			return;
 		}
 		mContactsInfo.add(sortModel);
@@ -1534,6 +1539,9 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
 				dialCall(intent.getStringExtra("call_number"));
+			} else if (intent.getAction().equals(ACTION_MEDIAKILLED)) {
+				mLog("ACTION_MEDIAKILLED");
+				BtAudioManager.getInstance(getApplicationContext()).setMediaKillMode();
 			}
 		}
 	};
@@ -1547,7 +1555,7 @@ public class SyncService extends Service {
 	}
 
 	public void saySomething(String something) {
-		mLog("播报======"+something);
+		mLog("播报======" + something);
 		Intent i = new Intent("ACTION_SAY_SOMETHING");
 		i.putExtra("EXTRA_SAY_SOMETHING", something);
 		sendBroadcast(i);

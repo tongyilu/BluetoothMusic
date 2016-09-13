@@ -130,6 +130,15 @@ public class BtAudioManager {
 	}
 
 	/**
+	 * 设置mediokill掉后重新设置
+	 */
+	public void setMediaKillMode(){
+		audioManager.setParameters("cdr_mode=" + AUDIO_MODE_NORMAL);
+		audioManager.setParameters("cdr_mode=" + mMode);
+	}
+	
+	
+	/**
 	 * 设置音频通路
 	 * 
 	 * @param mode
