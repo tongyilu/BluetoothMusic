@@ -16,7 +16,8 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="20dp"
-        android:visibility="gone" >
+        android:visibility="gone"
+         >
 
         <RelativeLayout
             android:id="@+id/input_layout"
@@ -32,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="30dip"
+                android:layout_marginRight="100dp"
                 android:background="@drawable/bluetooth_delete" />
 
             <TextView
@@ -41,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="30dip"
+                android:layout_marginLeft="20dip"
                 android:textSize="25sp"
                 android:visibility="gone" />
 
@@ -59,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="left"
                     android:singleLine="true"
                     android:textColor="@color/white"

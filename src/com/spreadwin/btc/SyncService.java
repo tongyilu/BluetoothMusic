@@ -723,7 +723,7 @@ public class SyncService extends Service {
 			mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
 			m_DBAdapter.close();
 			isConnect = false;
-			//清空歌曲信息
+			// 清空歌曲信息
 			onPlayTitleChenger(false);
 			handler.sendEmptyMessageDelayed(mCancelNotification, 1000);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
@@ -890,7 +890,8 @@ public class SyncService extends Service {
 					+ mNumber + "; length ==" + mNumber.length());
 			isNew = true;
 			for (int j = 0; j < tempSize; j++) {
-//				mLog("isNewContacts addContactsInfo setName==" + mName + ";mNumber==" + mNumber);
+				// mLog("isNewContacts addContactsInfo setName==" + mName +
+				// ";mNumber==" + mNumber);
 				if (mName.length() == 0) {
 					if (mContactsInfo.get(j).getNumber().indexOf(mNumber) != -1) {
 						isNew = false;
@@ -1152,15 +1153,17 @@ public class SyncService extends Service {
 		}
 	};
 
-	protected boolean isFull() {
+	protected int isFull() {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		int leftStackId = am.getRightStackId();
 		if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0) {
 			mLog("full");
-			return true;
-		} else {
+			return 1;
+		} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 3) {
 			mLog("notfull" + leftStackId + am.getWindowSizeStatus(leftStackId));
-			return false;
+			return 2;
+		} else {
+			return 3;
 		}
 	}
 
@@ -1255,10 +1258,12 @@ public class SyncService extends Service {
 
 	private void addCallView() {
 		Message msg1 = new Message();
-		if (isFull()) {
+		if (isFull() == 1) {
 			msg1.what = 1; // 消息(一个整型值)
-		} else {
+		} else if (isFull() == 3) {
 			msg1.what = 0;
+		} else {
+			msg1.what = 2;
 		}
 		HandlerCallin.sendMessage(msg1);
 	}
@@ -1303,6 +1308,10 @@ public class SyncService extends Service {
 		} else if (full == 0) {
 			params.x = 0;
 			params.width = 1424;
+			isScreen = false;
+		}else {
+			params.x = 0;
+			params.width = WindowManager.LayoutParams.MATCH_PARENT;
 			isScreen = false;
 		}
 		params.y = 0;
