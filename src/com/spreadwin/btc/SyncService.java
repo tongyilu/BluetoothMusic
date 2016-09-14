@@ -1159,16 +1159,20 @@ public class SyncService extends Service {
 
 	protected int isFull() {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		int leftStackId = am.getRightStackId();
-		if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0) {
+		int leftStackId = am.getLeftStackId();
+		if (leftStackId == -1) {
+			leftStackId = 0 ;
+		}
+		if (am.getWindowSizeStatus(leftStackId) == 0) {
 			mLog("full");
 			return 1;
-		} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 3) {
+		} else if(am.getWindowSizeStatus(leftStackId) == 1) {
 			mLog("notfull" + leftStackId + am.getWindowSizeStatus(leftStackId));
 			return 2;
-		} else {
+		} else{
 			return 3;
 		}
+		
 	}
 
 	protected void onCallStatusChange() {
@@ -1264,10 +1268,10 @@ public class SyncService extends Service {
 		Message msg1 = new Message();
 		if (isFull() == 1) {
 			msg1.what = 1; // 消息(一个整型值)
-		} else if (isFull() == 3) {
-			msg1.what = 0;
-		} else {
+		} else if (isFull() == 2) {
 			msg1.what = 2;
+		} else {
+			msg1.what = 3;
 		}
 		HandlerCallin.sendMessage(msg1);
 	}
@@ -1309,11 +1313,11 @@ public class SyncService extends Service {
 			params.x = 800;
 			params.width = 818;
 			isScreen = true;
-		} else if (full == 0) {
+		} else if (full == 2) {
 			params.x = 0;
 			params.width = 1424;
 			isScreen = false;
-		}else {
+		}else if(full == 3){
 			params.x = 0;
 			params.width = WindowManager.LayoutParams.MATCH_PARENT;
 			isScreen = false;

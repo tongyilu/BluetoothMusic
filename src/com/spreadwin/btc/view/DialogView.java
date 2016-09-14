@@ -65,11 +65,12 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	public static final String ANSWER_UP = "ANSWER_UP";
 
-	private ImageButton mDeleteButton, mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
+	private ImageButton  mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
 			mNumberEight, mNumberNine, mNumberZero, mNumberJin, mNumberXing;
 	private TextView mInputText;
 
 	private RippleBackground rippleBackground;
+	private ImageView mDeleteButton;
 
 	private StringBuilder mDisplayNumber = new StringBuilder();
 	private Gson msgGson = new Gson();
@@ -99,7 +100,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mMute = (ImageView) view.findViewById(R.id.mute);
 		mChronometer = (Chronometer) view.findViewById(R.id.chronometer);
 
-		mDeleteButton = (ImageButton) view.findViewById(R.id.delete_button);
+		mDeleteButton = (ImageView) view.findViewById(R.id.delete_button);
 		mNumberOne = (ImageButton) view.findViewById(R.id.number_1);
 		mNumberTwo = (ImageButton) view.findViewById(R.id.number_2);
 		mNumberThree = (ImageButton) view.findViewById(R.id.number_3);

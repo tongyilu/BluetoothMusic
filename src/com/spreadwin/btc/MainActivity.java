@@ -673,12 +673,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		// if (mVoiceReceiver != null) {
 		// unregisterReceiver(mVoiceReceiver);
 		// }
-		try {
-
-			mVto.removeGlobalOnLayoutListener(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//
+//			mVto.removeGlobalOnLayoutListener(this);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -1129,7 +1129,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mMusicLayoutAdd.setVisibility(View.GONE);
 		mAddLayout.setVisibility(View.VISIBLE);
 		mFragmetContext.setVisibility(View.VISIBLE);
-		mMusicFragment.openAudioMode();
+		mLeftMenu.setVisibility(View.VISIBLE);
+		if (SyncService.isTopMyself(getBaseContext())) {
+			if (mMusicRightFragment.isVisible()) {
+				mMusicRightFragment.openAudioMode();
+			}
+			// if (mMusicRightFragment.isVisible()) {
+			// mMusicRightFragment.openMusicFragment();
+			// }
+		}
 		if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
 			setDefaultFragment();
 		}
@@ -1143,6 +1151,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 			ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+	
+	LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+			ViewGroup.LayoutParams.MATCH_PARENT);
 
 	private void onLeftLayout() {
 		layoutParams.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
@@ -1150,6 +1161,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mContectText.setVisibility(View.VISIBLE);
 		params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
+		
+		leftParams.setMargins(29, 0, 0, 0);
+		mLeftMenu.setLayoutParams(leftParams);
 		Log.d(TAG, "显示联系人");
 	}
 
@@ -1165,6 +1179,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		params.setMargins(170, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
 		// mLeftBottombar
+		leftParams.setMargins(120, 20, 0, 0);
+		mLeftMenu.setLayoutParams(leftParams);
+		
 	}
 
 	@Override

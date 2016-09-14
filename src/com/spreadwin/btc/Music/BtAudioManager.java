@@ -26,7 +26,7 @@ public class BtAudioManager {
 	private Context mContext;
 
 	public static BtAudioManager mBtAudioManager;
-	private AudioManager audioManager;
+	private AudioManager audioManager = null;
 
 	public boolean mAudioCall = false;// 通话状态
 	private boolean mAudioFocus = false;// audio焦点状态
