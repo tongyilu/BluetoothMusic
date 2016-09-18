@@ -1,7 +1,6 @@
 package com.spreadwin.btc;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +14,7 @@ import com.spreadwin.btc.utils.DBAdapter;
 import com.spreadwin.btc.utils.ECarOnline;
 import com.spreadwin.btc.utils.HttpAssist;
 import com.spreadwin.btc.utils.HttpUtil;
+
 import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
@@ -191,7 +191,7 @@ public class SyncService extends Service {
 
 	// private OpenUtils openUtils;
 	boolean mdatabase; // 是否从数据库读取电话本信息标识位
-	private Handler mHandler = new Handler();
+//	private Handler mHandler = new Handler();
 
 	/************ 数据库和网络获取电话本线程 **************/
 	private Runnable mRunnble = new Runnable() {
@@ -520,8 +520,9 @@ public class SyncService extends Service {
 				+ "mUpdateCalllog====" + mUpdateCalllog);
 		// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
 		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
-			addContacts();
 			// handler.sendEmptyMessage(mAddDatabase);
+          
+			addContacts();
 
 			Thread mDataThread = new Thread(new Runnable() {
 				@Override
@@ -725,11 +726,10 @@ public class SyncService extends Service {
 
 			mPhoneBook.clear();
 			mContactsInfo.clear();
-			mHandler.removeCallbacks(mRunnble);
+//			mHandler.removeCallbacks(mRunnble);
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
-
 		}
 		sendObjMessage(1, mBfpIntent);
 		// lbm.sendBroadcast(mBfpIntent);
@@ -747,7 +747,9 @@ public class SyncService extends Service {
 				m_DBAdapter.open();
 				showNotification();
 				// mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-				mHandler.post(mRunnble); // 执行从数据库读取电话本
+//				mHandler.post(mRunnble); // 执行从数据库读取电话本
+				Thread thread = new Thread(mRunnble);
+				thread.start();
 				break;
 			case mCancelNotification:
 				// 关闭数据库
@@ -926,7 +928,6 @@ public class SyncService extends Service {
 		RecordNum = BtcNative.getPhoneBookRecordNum(BtcGlobalData.PB_PHONE);
 		mLog("mContactsInfo ==" + mContactsInfo.size() + "; RecordNum ==" + RecordNum);
 		for (int i = 0; i < RecordNum; i++) {
-
 			String mName = BtcNative.getPhoneBookRecordNameByIndex(BtcGlobalData.PB_PHONE, i);
 			String mNumber = BtcNative.getPhoneBookRecordNumberByIndex(BtcGlobalData.PB_PHONE, i);
 			mLog("syncT mContactsInfo mName==" + mName + "; mNumber ==" + mNumber);
@@ -943,13 +944,19 @@ public class SyncService extends Service {
 			try {
 				m_DBAdapter.DeleteTable();
 				mLog("addDatabase mPhoneBook.size()==" + mPhoneBook.size());
-				for (int i = 0; i < mPhoneBook.size(); i++) {
-					String[] temp = mPhoneBook.get(i).trim().split(":");
-					// mLog("addData ["+i+"] =="+temp[0]+":"+temp[1]);
-					if (temp.length >= 2) {
-						m_DBAdapter.insert(i, temp[0], temp[1], 1);
+				Thread thread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						for (int i = 0; i < mPhoneBook.size(); i++) {
+							String[] temp = mPhoneBook.get(i).trim().split(":");
+							mLog("addData [" + i + "] ==" + temp[0] + ":" + temp[1]);
+							if (temp.length >= 2) {
+								m_DBAdapter.insert(i, temp[0], temp[1], 1);
+							}
+						}
 					}
-				}
+				});
+				thread.start();
 				saveConnectMac();
 			} catch (Exception e) {
 				mLog("addDatabase e==" + e);
@@ -1052,11 +1059,9 @@ public class SyncService extends Service {
 				return;
 			}
 		}
-
 		PhoneBookInfo_new sortModel = new PhoneBookInfo_new(mName, mNumber);
 		// 汉字转换成拼音
 		if (mName.length() != 0)
-
 		{
 			String pinyin = characterParser.getSelling(mName);
 			mLog("addContactsInfo ==" + mName + "; pinyin ==" + pinyin);
@@ -1227,8 +1232,8 @@ public class SyncService extends Service {
 					mUpdateCalllog = BtcGlobalData.PB_MISS;
 				}
 			}
-			removeCallView(false);
 			mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
+			removeCallView(false);
 			// 凯立德一键通的返回结果
 			if (mCLDCall) {
 				onCLDCallConnect();

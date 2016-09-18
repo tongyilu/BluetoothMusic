@@ -376,7 +376,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private void mDismissDialog() {
 		BtcNative.muteCall(0);
-		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
 		Log.d(TAG, "mDismissDialog " + ACTION_BT_CALL_IN);
