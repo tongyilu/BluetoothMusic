@@ -358,7 +358,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					// 全屏
 					setFullScreen();
 					onLeftLayout();
-					mContectText.setVisibility(View.VISIBLE);
+//					mContectText.setVisibility(View.VISIBLE);
 				} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 3) {
 					// 满屏
 					setFullScreen();
@@ -1158,12 +1158,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private void onLeftLayout() {
 		layoutParams.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
-		mContectText.setVisibility(View.VISIBLE);
+//		mContectText.setVisibility(View.VISIBLE);
 		params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
 		
 		leftParams.setMargins(29, 0, 0, 0);
 		mLeftMenu.setLayoutParams(leftParams);
+		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+			mContectText.setVisibility(View.VISIBLE);
+		}
 		Log.d(TAG, "显示联系人");
 	}
 
@@ -1175,7 +1178,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	private void onFullScreen() {
-		mContectText.setVisibility(View.VISIBLE);
+//		mContectText.setVisibility(View.VISIBLE);
 		params.setMargins(170, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
 		// mLeftBottombar

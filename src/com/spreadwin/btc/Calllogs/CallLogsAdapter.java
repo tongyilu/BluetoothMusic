@@ -34,6 +34,7 @@ public class CallLogsAdapter extends BaseAdapter {
 		mContext = context;
 		mCallLogsInfo = callLogsInfo;
 		mInflater = _Inflater;
+		notifyDataSetChanged();
 	}
 
 	@Override

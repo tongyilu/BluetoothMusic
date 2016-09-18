@@ -451,9 +451,9 @@ public class SyncService extends Service {
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
-		// if (!isFlage) {
-		// updatePbPhone();
-		// }
+//		 if (!isFlage) {
+//		 updatePbPhone();
+//		 }
 	}
 
 	private void updatePbIn() {
