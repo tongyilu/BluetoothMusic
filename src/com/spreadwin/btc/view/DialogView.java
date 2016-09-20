@@ -225,8 +225,9 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	boolean isFlasg;
 
-	public View getVideoPlayView() {
+	public View getDialogView() {
 		isFlasg = true;
+		Log.d("show", "show getDialogView");
 		return mView;
 	}
 

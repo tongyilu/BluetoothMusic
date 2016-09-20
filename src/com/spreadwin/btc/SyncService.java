@@ -291,6 +291,7 @@ public class SyncService extends Service {
 				// 监听CallStatus
 				mTempStatus = BtcNative.getCallStatus();
 				if (mTempStatus != mCallStatus) {
+					Log.d("show", "mCallStatus");
 					onCallStatusChange();
 				}
 
@@ -1155,9 +1156,11 @@ public class SyncService extends Service {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		int leftStackId = am.getRightStackId();
 		if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 0) {
+			Log.d("show", "full");
 			mLog("full");
 			return true;
 		} else {
+			Log.d("show", "notfull");
 			mLog("notfull" + leftStackId + am.getWindowSizeStatus(leftStackId));
 			return false;
 		}
@@ -1165,6 +1168,8 @@ public class SyncService extends Service {
 
 	protected void onCallStatusChange() {
 		mLog("setMute onCallStatusChange ==" + mTempStatus);
+		
+		Log.d("show","setMute onCallStatusChange ==" + mTempStatus);
 		int lastCallStatus = mCallStatus;
 		mLog("mCallStatus onCallStatusChange ==" + mCallStatus);
 		mCallStatus = mTempStatus;
@@ -1195,6 +1200,8 @@ public class SyncService extends Service {
 			removeCallView(true);
 			break;
 		case BtcGlobalData.CALL_OUT:
+			mLog("show BtcGlobalData.CALL_OUT addCallView()");
+			addCallView();
 			// BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {
@@ -1203,7 +1210,6 @@ public class SyncService extends Service {
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
 			mLog("add_window" + BtcGlobalData.CALL_IN);
 			isState = false;
-			addCallView();
 			break;
 		case BtcGlobalData.NO_CALL:
 			isState = false;
@@ -1284,16 +1290,14 @@ public class SyncService extends Service {
 
 	private void showCallDisplay(int full) {
 
-		mLog("showCallDisplay" + full);
+		mLog("show showCallDisplay" + full);
 
 		wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-
 		// 背景透明
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
 			params.x = 715;
@@ -1311,7 +1315,8 @@ public class SyncService extends Service {
 		} else {
 			mCallView.setStatus(isState, isScreen, binder.getCallName(BtcNative.getCallNumber()));
 		}
-		view = mCallView.getVideoPlayView();
+		mLog("show showCallDisplay" + full);
+		view = mCallView.getDialogView();
 		wm.addView(view, params);
 	}
 

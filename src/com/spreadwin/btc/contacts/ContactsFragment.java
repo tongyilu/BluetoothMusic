@@ -390,7 +390,9 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 				menu.add(i, 1, 0, "拨打:" + ((PhoneBookInfo_new) adapter.getItem(index)).getNumber().get(i));
 			}
 		} else {
+//			MainActivity.mBluetoothFragment.dialCall(((PhoneBookInfo_new) adapter.getItem(index)).getNumber().get(0));
 			BtcNative.dialCall(((PhoneBookInfo_new) adapter.getItem(index)).getNumber().get(0));
+			mLog("BtcNative.dialCall====="+((PhoneBookInfo_new) adapter.getItem(index)).getNumber().get(0));
 		}
 	}
 

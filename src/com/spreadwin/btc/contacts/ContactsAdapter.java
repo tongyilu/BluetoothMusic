@@ -116,7 +116,6 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 				return i;
 			}
 		}
-
 		return -1;
 	}
 
