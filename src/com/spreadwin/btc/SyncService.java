@@ -1292,6 +1292,7 @@ public class SyncService extends Service {
 
 		mLog("show showCallDisplay" + full);
 
+		full = isFull()?1:0;
 		wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 		// 背景透明
@@ -1315,7 +1316,6 @@ public class SyncService extends Service {
 		} else {
 			mCallView.setStatus(isState, isScreen, binder.getCallName(BtcNative.getCallNumber()));
 		}
-		mLog("show showCallDisplay" + full);
 		view = mCallView.getDialogView();
 		wm.addView(view, params);
 	}
