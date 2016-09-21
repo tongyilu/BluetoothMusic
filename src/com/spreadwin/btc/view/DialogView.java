@@ -350,7 +350,9 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
 			mInputText.setText(mDisplayNumber.toString());
 		} else if (mDisplayNumber.length() == 1) {
-			mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
+//			mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
+			mDisplayNumber.delete(0, mDisplayNumber.length());
+			mInputText.setText("");
 		}
 	}
 
