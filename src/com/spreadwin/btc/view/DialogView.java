@@ -1,6 +1,5 @@
 package com.spreadwin.btc.view;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,6 +11,7 @@ import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.MobileLocation;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +50,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
 
+	public static final String SPLIT_WINDOW_HAS_CHANGED = "android.intent.action.SPLIT_WINDOW_HAS_CHANGED";
+
 	/**
 	 * 来电状态还是呼出状态
 	 */
@@ -65,7 +67,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	public static final String ANSWER_UP = "ANSWER_UP";
 
-	private ImageButton  mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
+	private ImageButton mNumberOne, mNumberTwo, mNumberThree, mNumberFour, mNumberFive, mNumberSix, mNumberSeven,
 			mNumberEight, mNumberNine, mNumberZero, mNumberJin, mNumberXing;
 	private TextView mInputText;
 
@@ -74,10 +76,11 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private StringBuilder mDisplayNumber = new StringBuilder();
 	private Gson msgGson = new Gson();
-	
+
 	private String getCallNumber;
 	private String getPhoneName;
-	public DialogView(Context context, boolean isFlags, boolean isScreen,String getPhoneName) {
+
+	public DialogView(Context context, boolean isFlags, boolean isScreen, String getPhoneName) {
 		this.mContext = context;
 		this.isStart = isFlags;
 		this.isScreen = isScreen;
@@ -85,7 +88,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mView = LayoutInflater.from(context).inflate(R.layout.display_call, null);
 		initView(mView);
 	}
-	
 
 	private void initView(View view) {
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -120,10 +122,10 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		rippleBackground.startRippleAnimation();
 		getCallNumber = BtcNative.getCallNumber();
 		callUrlByGet(getCallNumber);
-//		getPhoneName = getCallName(getCallNumber);
+		// getPhoneName = getCallName(getCallNumber);
 		Log.d("电话号码：===========", getCallNumber);
 		Log.d("名称：===========", getPhoneName);
-//		getPhoneName = getCallName(mContactsInfo,BtcNative.getCallNumber());
+		// getPhoneName = getCallName(mContactsInfo,BtcNative.getCallNumber());
 
 		if (TextUtils.isEmpty(getPhoneName)) {
 			mNameText.setText(getCallNumber);
@@ -161,7 +163,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mCallText.setText("来电");
 			mMute.setVisibility(View.VISIBLE);
 			mDialButton.setVisibility(View.VISIBLE);
-			onSendBTCall(ACTION_BT_CALL_IN,getPhoneName,getCallNumber);
+			onSendBTCall(ACTION_BT_CALL_IN, getPhoneName, getCallNumber);
 		}
 		setChckoutAudio();
 		IntentFilter intentFilter = new IntentFilter();
@@ -173,20 +175,21 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	/**
 	 * 发送广播：ACTION_BT_CALL_IN
+	 * 
 	 * @param actionBtCallIn
 	 * @param phoneName
 	 * @param callNumber
 	 */
-	private void onSendBTCall(String action, String phoneName,
-			String callNumber) {
+	private void onSendBTCall(String action, String phoneName, String callNumber) {
 		Intent mCallIntent = new Intent(action);
 		if (phoneName != null) {
-			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, phoneName);			
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NAME, phoneName);
 		}
 		if (callNumber != null) {
-			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, callNumber);			
+			mCallIntent.putExtra(EXTRA_BT_CALL_IN_NUMBER, callNumber);
 		}
-		Log.d(TAG, "send broadcast == ACTION_BT_CALL_IN"+"; phoneName =="+phoneName+"; callNumber =="+callNumber);
+		Log.d(TAG,
+				"send broadcast == ACTION_BT_CALL_IN" + "; phoneName ==" + phoneName + "; callNumber ==" + callNumber);
 		mContext.sendBroadcast(mCallIntent);
 	}
 
@@ -292,12 +295,13 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			break;
 		}
 	}
-	
+
 	/**
 	 * 键盘按钮点击事件
+	 * 
 	 * @param v
 	 */
-	public void onNumClick(View v){
+	public void onNumClick(View v) {
 		if (v == mDeleteButton) {
 			removeNumber();
 		} else if (v == mNumberOne) {
@@ -326,7 +330,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			addNumber("*");
 		}
 	}
-	
+
 	boolean isClickAudio;
 
 	public void setChckoutAudio() {
@@ -350,7 +354,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
 			mInputText.setText(mDisplayNumber.toString());
 		} else if (mDisplayNumber.length() == 1) {
-//			mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
+			// mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
 			mDisplayNumber.delete(0, mDisplayNumber.length());
 			mInputText.setText("");
 		}
@@ -431,6 +435,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						e.printStackTrace();
 					}
 				}
+
 				@Override
 				public void onFailure(Throwable error, String content) {
 					Log.d(TAG, "请求报错：" + error + "");
@@ -450,10 +455,11 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	/**
 	 * 设置isStart的状态，true为来电，false为拨出
+	 * 
 	 * @param isState
 	 */
-	public void setStatus(boolean isFlags ,boolean screen,String getPhoneName) {
-		this.isStart = isFlags;	
+	public void setStatus(boolean isFlags, boolean screen, String getPhoneName) {
+		this.isStart = isFlags;
 		this.isScreen = screen;
 		this.getPhoneName = getPhoneName;
 		mView = LayoutInflater.from(mContext).inflate(R.layout.display_call, null);

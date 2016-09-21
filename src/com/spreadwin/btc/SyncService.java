@@ -193,7 +193,7 @@ public class SyncService extends Service {
 
 	// private OpenUtils openUtils;
 	boolean mdatabase; // 是否从数据库读取电话本信息标识位
-	private Handler mHandler = new Handler();
+//	private Handler mHandler = new Handler();
 
 	/************ 数据库和网络获取电话本线程 **************/
 	private Runnable mRunnble = new Runnable() {
@@ -735,7 +735,7 @@ public class SyncService extends Service {
 			mLog("clear phonebook data");
 			mPhoneBook.clear();
 			mContactsInfo.clear();
-			mHandler.removeCallbacks(mRunnble);
+//			mHandler.removeCallbacks(mRunnble);
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
@@ -757,7 +757,9 @@ public class SyncService extends Service {
 				m_DBAdapter.open();
 				showNotification();
 				// mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-				mHandler.post(mRunnble); // 执行从数据库读取电话本
+				Thread thread = new Thread(mRunnble);
+				thread.start();
+//				mHandler.post(mRunnble); // 执行从数据库读取电话本
 				break;
 			case mCancelNotification:
 				// 关闭数据库
