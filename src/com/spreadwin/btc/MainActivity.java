@@ -8,6 +8,7 @@ import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
 import com.spreadwin.btc.view.CustomDialog;
 
+import android.R.bool;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -209,7 +210,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		isFull = intent.getStringExtra("isFull");
 		if (isFull != null) {
 			setFullScreen();
-			onRightLayout();
+			onRightLayout(true);
 			onFullScreen();
 		}
 	}
@@ -362,7 +363,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 3) {
 					// 满屏
 					setFullScreen();
-					onRightLayout();
+					onRightLayout(true);
 					onFullScreen();
 				}
 			}
@@ -1093,7 +1094,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				mAddLayout.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.GONE);
 				mMusicRightFragment.openAudioMode();
-				onRightLayout();
+				onRightLayout(false);
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 						ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 				params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
@@ -1170,16 +1171,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		Log.d(TAG, "显示联系人");
 	}
 
-	private void onRightLayout() {
+	private void onRightLayout(boolean isTrue) {
 		layoutParams.setMargins(0, 0, 220, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
-		mContectText.setVisibility(View.GONE);
+		if (!isTrue) {
+			mContectText.setVisibility(View.GONE);
+		}
 		Log.d(TAG, "隐藏联系人");
 	}
 
 	private void onFullScreen() {
 //		mContectText.setVisibility(View.VISIBLE);
-		params.setMargins(170, 0, 0, 0);// 4个参数按顺序分别是左上右下
+		params.setMargins(190, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
 		// mLeftBottombar
 		leftParams.setMargins(120, 20, 0, 0);
