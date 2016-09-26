@@ -385,7 +385,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			onSendBTCall(ACTION_BT_CALL_IN, null, null);
 		}
 		try {
-			wm.removeView(mView);
+			wm.removeViewImmediate(mView);
 			isFlasg = false;
 		} catch (Exception e) {
 			e.printStackTrace();

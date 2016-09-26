@@ -544,10 +544,12 @@ public class SyncService extends Service {
 			return;
 		}
 		// }
-		message.arg1 = BtcGlobalData.NEW_SYNC;
-		handler.sendMessageDelayed(message, 100);
+	   if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) { 
+		   message.arg1 = BtcGlobalData.NEW_SYNC;
+		   handler.sendMessageDelayed(message, 100);
+		}
 		mSyncStatus = mTempStatus;
-		// isFlage = true;
+		
 	}
 
 	/********* service外部接口 ***********/
@@ -1028,7 +1030,7 @@ public class SyncService extends Service {
 			// message.arg2联系人是否更新给语音助手
 			message.arg2 = BtcGlobalData.NEW_SYNC;
 			handler.removeMessages(mPhoneBookSyncBroadcast);
-			handler.sendMessageDelayed(message, 100);
+				handler.sendMessageDelayed(message, 100);
 			return false;
 		} catch (Exception e) {
 			mLog("getDatabase e ==" + e);
@@ -1075,15 +1077,20 @@ public class SyncService extends Service {
 			} else {
 				sortModel.setSortLetters("#");
 			}
-			if (mName.length() >= 2) {
-				String seSecondString = characterParser.getSelling(mName.substring(1, 2)).substring(0, 1).toUpperCase();
-				if (seSecondString.matches("[A-Z]")) {
-					sortModel.setSecondLetters(seSecondString.toUpperCase());
+			try {
+				if (mName.length() >= 2) {
+					String seSecondString = characterParser.getSelling(mName.substring(1, 2)).substring(0, 1).toUpperCase();
+					if (seSecondString.matches("[A-Z]")) {
+						sortModel.setSecondLetters(seSecondString.toUpperCase());
+					} else {
+						sortModel.setSecondLetters("#");
+					}
 				} else {
 					sortModel.setSecondLetters("#");
 				}
-			} else {
-				sortModel.setSecondLetters("#");
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
 			}
 		} else {
 			sortModel.setSortLetters("#");
@@ -1404,7 +1411,7 @@ public class SyncService extends Service {
 					// message.arg2联系人是否更新给语音助手
 					message.arg2 = BtcGlobalData.NEW_SYNC;
 					handler.removeMessages(mPhoneBookSyncBroadcast);
-					handler.sendMessageDelayed(message, 100);
+						handler.sendMessageDelayed(message, 100);
 				} catch (Exception e) {
 					e.printStackTrace();
 					mLog("PullContacts e ==" + e);

@@ -193,6 +193,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
+				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
 				mPlayer = 1;
 			} else {
 				openAudioMode();
