@@ -1540,7 +1540,6 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(LOCAL_MUSIC_ACTION)) {
 				String state = intent.getStringExtra("state");
-
 				if (state.equals("music_last")) {
 					mLog("BtcNative.lastSong()");
 					BtcNative.lastSong();
@@ -1552,6 +1551,7 @@ public class SyncService extends Service {
 					BtcNative.pauseMusic();
 				} else if (state.equals("music_play")) {
 					mLog("BtcNative.playMusic()");
+					BtAudioManager.getInstance(getApplicationContext()).onBtAudioFocusChange(true);
 					BtcNative.playMusic();
 				}
 			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
