@@ -165,7 +165,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mDialButton.setVisibility(View.VISIBLE);
 			onSendBTCall(ACTION_BT_CALL_IN, getPhoneName, getCallNumber);
 		}
-		setChckoutAudio();
+		
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(FINISH_ACTIVITY);
 		intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
@@ -201,6 +201,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			if (action == FINISH_ACTIVITY) {
 				mDismissDialog();
 			} else if (action == ANSWER_UP) {
+				setChckoutAudio();
 				setCaller();
 			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
 				if (!isScreen && isFlasg) {
@@ -388,7 +389,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			onSendBTCall(ACTION_BT_CALL_IN, null, null);
 		}
 		try {
-			wm.removeView(mView);
+			wm.removeViewImmediate(mView);
 			isFlasg = false;
 		} catch (Exception e) {
 			e.printStackTrace();

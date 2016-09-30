@@ -1561,6 +1561,7 @@ public class SyncService extends Service {
 				} else if (state.equals("music_play")) {
 					mLog("BtcNative.playMusic()");
 					BtcNative.playMusic();
+					BtAudioManager.getInstance(getApplicationContext()).onBtAudioFocusChange(true);
 				}
 			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
 				dialCall(intent.getStringExtra("call_number"));

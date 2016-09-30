@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spreadwin.btc"
     android:sharedUserId="android.uid.system"
-    android:versionCode="16092300"
-    android:versionName="16092300" >
+    android:versionCode="16092900"
+    android:versionName="16092900" >
 
 
     <uses-sdk android:minSdkVersion="14" />
