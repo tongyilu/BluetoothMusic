@@ -163,7 +163,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mDialButton.setVisibility(View.VISIBLE);
 			onSendBTCall(ACTION_BT_CALL_IN, getPhoneName, getCallNumber);
 		}
-	
+	    mContext.sendBroadcast(new Intent("ACTION_SCREENSAVER_CLOSE"));
+		
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(FINISH_ACTIVITY);
 		intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
