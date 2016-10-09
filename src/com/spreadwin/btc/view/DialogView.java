@@ -165,7 +165,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mDialButton.setVisibility(View.VISIBLE);
 			onSendBTCall(ACTION_BT_CALL_IN, getPhoneName, getCallNumber);
 		}
-		
+		mContext.sendBroadcast(new Intent("ACTION_SCREENSAVER_CLOSE"));
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(FINISH_ACTIVITY);
 		intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
@@ -209,7 +209,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						mDismissDialog();
 						isScreen = true;
 						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-						params.type = WindowManager.LayoutParams.TYPE_DISPLAY_OVERLAY;
+						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
 								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 						params.x = 800;

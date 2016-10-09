@@ -1306,7 +1306,7 @@ public class SyncService extends Service {
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 
 		// 背景透明
-		params.type = WindowManager.LayoutParams.TYPE_DISPLAY_OVERLAY;
+		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
