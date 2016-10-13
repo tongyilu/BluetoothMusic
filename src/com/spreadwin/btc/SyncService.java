@@ -47,6 +47,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -1309,7 +1310,7 @@ public class SyncService extends Service {
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-
+        
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
 			params.x = 800;
@@ -1319,6 +1320,7 @@ public class SyncService extends Service {
 			params.x = 0;
 			params.width = 1424;
 			isScreen = false;
+			params.gravity = Gravity.LEFT;
 		}else if(full == 3){
 			params.x = 0;
 			params.width = WindowManager.LayoutParams.MATCH_PARENT;

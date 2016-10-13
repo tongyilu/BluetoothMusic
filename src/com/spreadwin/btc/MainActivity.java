@@ -207,13 +207,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		super.onResume();
 		mLog("MainActivity onResume");
 		parserIntent();
-		Intent intent = getIntent();
-		isFull = intent.getStringExtra("isFull");
-		if (isFull != null) {
-			setFullScreen();
-			onRightLayout(true);
-			onFullScreen();
-		}
+
 	}
 
 	@Override
@@ -353,16 +347,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 				int leftStackId = am.getLeftStackId();
 				int rightStackId = am.getRightStackId();
-				if (rightStackId > 0 && am.getWindowSizeStatus(rightStackId) == 0) {
-					// 半屏
-					setScreen();
-					onLeftLayout();
-				} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 1) {
-					// 全屏
-					setFullScreen();
-					onLeftLayout();
-					// mContectText.setVisibility(View.VISIBLE);
-				} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 3) {
+//			    if (rightStackId > 0 && am.getWindowSizeStatus(rightStackId) == 0) {
+//					// 半屏
+//					setScreen();
+//					onLeftLayout();
+//				} else if (leftStackId > 0 && am.getWindowSizeStatus(leftStackId) == 1) {
+//					// 全屏
+//					setFullScreen();
+//					onLeftLayout();
+//					// mContectText.setVisibility(View.VISIBLE);
+//				} else
+					if (am.getWindowSizeStatus(leftStackId) == 3) {
 					// 满屏
 					setFullScreen();
 					onRightLayout(true);
@@ -1071,7 +1066,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public void updateContacts(int i) {
 		if (i != 0) {
 			mContectText.setText("已更新" + i + "位联系人");
-			mContectText.setVisibility(View.VISIBLE);
+			if (!isOrso) {
+				mContectText.setVisibility(View.VISIBLE);
+			} else {
+				mContectText.setVisibility(View.GONE);
+			}
 		} else {
 			mContectText.setVisibility(View.GONE);
 		}
@@ -1194,7 +1193,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		} else if (width == 1424) {
 			setFullScreen();
 			onLeftLayout();
-		}else if (width == 1920) {
+		} else if (width == 1920) {
 			// 满屏
 			setFullScreen();
 			onRightLayout(true);

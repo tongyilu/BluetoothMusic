@@ -217,6 +217,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						params.y = 0;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);
+						mDial.setVisibility(View.GONE);
 						wm.addView(mView, params);
 					} catch (Exception e) {
 						e.printStackTrace();
