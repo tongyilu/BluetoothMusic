@@ -1208,7 +1208,9 @@ public class SyncService extends Service {
 			break;
 		case BtcGlobalData.CALL_OUT:
 			mLog("show BtcGlobalData.CALL_OUT addCallView()");
-			addCallView();
+			if (!mECarOnline.mECarCall) {
+				addCallView();
+			}
 			// BtAudioManager.getInstance(this).mAudioFocusGain = true;
 			BtAudioManager.getInstance(this).onCallChange(true);
 			if (mCLDCall) {

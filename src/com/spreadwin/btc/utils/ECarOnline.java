@@ -61,7 +61,7 @@ public class ECarOnline {
 	/**
 	 * true为一键通的一键通功能
 	 */
-	private boolean mECarCall = false;
+	public static boolean mECarCall = false;
 	
 	private static final int BT_OFF = 0; //关闭
 	
@@ -152,6 +152,7 @@ public class ECarOnline {
 		if (number.length() > 0) {
 			BtcNative.dialCall(number);
 		}
+		mECarCall = true;
 //		Intent mCustomerIntent = new Intent();
 //		mCustomerIntent.setAction(mSyncService.ACTION_BTC_CALL);
 //		

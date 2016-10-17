@@ -832,6 +832,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 				}
 				// mMusicFragment.openAudioMode();
+				
 				mMusicFragment.checkA2dpStatus();
 				mMusicRightFragment.checkA2dpStatus();
 			} else if (intent.getAction().equals(mActionCall)) {
@@ -883,8 +884,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
 								+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
 								+ "; mAddLayout ==" + mAddLayout.getVisibility() + View.GONE);
-						if (getFragmentManager().findFragmentById(R.id.add_bluetooth_music) == mMusicRightFragment
-								&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
+						if (mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
 							mMusicRightFragment.openAudioMode();
 						}
 					}

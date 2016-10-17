@@ -75,8 +75,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public void openAudioMode() {
 		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus() + "; mRight ==" + mRight);
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-			// BtAudioManager.getInstance(getActivity()).mAudioFocusGain =
-			// false;
 			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
@@ -134,6 +132,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	};
 
 	public void checkA2dpStatus() {
+		try {
+			openAudioMode();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		mLog("checkA2dpStatus MainActivity.binder.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
 			setA2dpStatus(A2DP_PLAYING);
@@ -160,7 +163,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		mLog("onClick 111111111111");
-		openAudioMode();
 		if (v == mMusicPrevious) {
 			mLog("onClick mMusicPrevious");
 			mMusicPrevious();
