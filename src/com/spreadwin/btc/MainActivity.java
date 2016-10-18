@@ -193,7 +193,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		setIntent(intent);
 		if (getIntent().getAction() != null && binder != null) {
 			mMusicFragment.setCallStatus(binder.getCallStatus());
-			mMusicRightFragment.setCallStatus(binder.getCallStatus());
+			if (mMusicRightFragment!=null) {
+				mMusicRightFragment.setCallStatus(binder.getCallStatus());
+			}
 		}
 	}
 
@@ -292,12 +294,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mBluetoothFragment = new BluetoothFragment();
 		mMusicFragment = new MusicFragment();
 		mDialogFragment = new DialogFragment();
-		mMusicRightFragment = new MusicFragment(true);
-		if (mMusicRightFragment != null) {
-			mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
-		}
-
-		mAddFragment.commitAllowingStateLoss();
 		mVto.addOnGlobalLayoutListener(this);
 
 		Intent intent = new Intent(this, SyncService.class);
@@ -337,7 +333,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 					}
-					mMusicRightFragment.checkA2dpStatus();
+					if (mMusicRightFragment!=null) {
+						mMusicRightFragment.checkA2dpStatus();
+					}
 					mMusicFragment.checkA2dpStatus();
 				} else if (intent.getAction().equals(mActionCall)) {
 					int mStatus = intent.getIntExtra("call_status", BtcGlobalData.NO_CALL);
@@ -834,7 +832,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				// mMusicFragment.openAudioMode();
 				
 				mMusicFragment.checkA2dpStatus();
-				mMusicRightFragment.checkA2dpStatus();
+				if (mMusicRightFragment!=null) {
+					mMusicRightFragment.checkA2dpStatus();
+				}
 			} else if (intent.getAction().equals(mActionCall)) {
 				int mStatus = intent.getIntExtra("call_status", BtcGlobalData.NO_CALL);
 				mLog("Receiver mActionCall mStatus ==" + mStatus);
@@ -881,11 +881,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 							mLog("Receiver mMusicFragment 11111111");
 							mMusicFragment.openAudioMode();
 						}
-						mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
-								+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
-								+ "; mAddLayout ==" + mAddLayout.getVisibility() + View.GONE);
-						if (mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
-							mMusicRightFragment.openAudioMode();
+//						mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
+//								+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
+//								+ "; mAddLayout ==" + mAddLayout.getVisibility() + View.GONE);
+						if (mMusicRightFragment!=null) {
+							if (getFragmentManager().findFragmentById(R.id.add_bluetooth_music) == mMusicRightFragment
+									&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
+								mMusicRightFragment.openAudioMode();
+							}
 						}
 					}
 					// LockScreen();
@@ -907,7 +910,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				}
 			} else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
 				mMusicFragment.setPlayTitle(intent);
-				mMusicRightFragment.setPlayTitle(intent);
+				if (mMusicRightFragment!=null) {
+					mMusicRightFragment.setPlayTitle(intent);
+				}
 			}
 		}
 	}
@@ -957,6 +962,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mRightMode");
 				isOrso = true;
 				updateContacts(0);
+				if (mMusicRightFragment == null) {
+					mMusicRightFragment = new MusicFragment(true);
+					mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
+					mAddFragment.commitAllowingStateLoss();
+				}
 				mLayoutMode = mRightMode;
 				mContectText.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.GONE);
@@ -979,7 +989,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				mAddLayout.setVisibility(View.VISIBLE);
 				mFragmetContext.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.VISIBLE);
-				mMusicRightFragment.openAudioMode();
+				if (mMusicRightFragment!=null) {
+					mMusicRightFragment.openAudioMode();
+				}
 				if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
 					setDefaultFragment();
 				}

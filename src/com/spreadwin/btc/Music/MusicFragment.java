@@ -69,6 +69,8 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			} else {
 				mCallStatus = BtcGlobalData.NO_CALL;
 			}
+		}else{
+			openAudioMode();
 		}
 	}
 
@@ -105,8 +107,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
-		// getActivity().registerReceiver(mReceiver, intentFilter);
-		// getActivity().registerReceiver(mReceiver, intentFilter);
 		mLog("onCreateView isPlaySong ==" + isPlaySong);
 		if (isPlaySong) {
 			onUpdateSongInfo();
@@ -132,11 +132,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	};
 
 	public void checkA2dpStatus() {
-		try {
-			openAudioMode();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		mLog("checkA2dpStatus MainActivity.binder.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
 			setA2dpStatus(A2DP_PLAYING);
@@ -191,8 +186,15 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
+		mPlayer = BtcNative.getA2dpStatus();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (mPlayer == 2) {
-			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
+			if (!(BtAudioManager.mLastMode == 6 && BtAudioManager.mMode == 0)) {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
 				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
