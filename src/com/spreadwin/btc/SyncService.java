@@ -1550,7 +1550,7 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(LOCAL_MUSIC_ACTION)) {
 				String state = intent.getStringExtra("state");
-
+                  mLog(state);
 				if (state.equals("music_last")) {
 					mLog("BtcNative.lastSong()");
 					BtcNative.lastSong();

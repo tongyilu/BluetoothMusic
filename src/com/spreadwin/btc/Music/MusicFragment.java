@@ -105,7 +105,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mMusicPrevious.setOnClickListener(this);
 		mMusicPlay.setOnClickListener(this);
 		mMusicNext.setOnClickListener(this);
-		checkA2dpStatus();
+//		checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
 		
