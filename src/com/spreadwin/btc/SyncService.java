@@ -85,9 +85,9 @@ public class SyncService extends Service {
 
 	public static final String LOCAL_MUSIC_ACTION = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC";
 	public static final String PUSH_MUSIC_PLAY_STATE = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC_STATUS";
-	
+
 	public static final String ACTION_MEDIAKILLED = "com.spreadwin.service.mediakilled";
-	
+
 	public boolean mOnlyMusic = false;
 
 	/**
@@ -194,7 +194,7 @@ public class SyncService extends Service {
 
 	// private OpenUtils openUtils;
 	boolean mdatabase; // 是否从数据库读取电话本信息标识位
-//	private Handler mHandler = new Handler();
+	// private Handler mHandler = new Handler();
 
 	/************ 数据库和网络获取电话本线程 **************/
 	private Runnable mRunnble = new Runnable() {
@@ -452,9 +452,9 @@ public class SyncService extends Service {
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
-//		 if (!isFlage) {
-//		 updatePbPhone();
-//		 }
+		// if (!isFlage) {
+		// updatePbPhone();
+		// }
 	}
 
 	private void updatePbIn() {
@@ -736,7 +736,7 @@ public class SyncService extends Service {
 			mLog("clear phonebook data");
 			mPhoneBook.clear();
 			mContactsInfo.clear();
-//			mHandler.removeCallbacks(mRunnble);
+			// mHandler.removeCallbacks(mRunnble);
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
@@ -760,7 +760,7 @@ public class SyncService extends Service {
 				// mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
 				Thread thread = new Thread(mRunnble);
 				thread.start();
-//				mHandler.post(mRunnble); // 执行从数据库读取电话本
+				// mHandler.post(mRunnble); // 执行从数据库读取电话本
 				break;
 			case mCancelNotification:
 				// 关闭数据库
@@ -1164,18 +1164,18 @@ public class SyncService extends Service {
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		int leftStackId = am.getLeftStackId();
 		if (leftStackId == -1) {
-			leftStackId = 0 ;
+			leftStackId = 0;
 		}
 		if (am.getWindowSizeStatus(leftStackId) == 0) {
 			mLog("full");
 			return 1;
-		} else if(am.getWindowSizeStatus(leftStackId) == 1) {
+		} else if (am.getWindowSizeStatus(leftStackId) == 1) {
 			mLog("notfull" + leftStackId + am.getWindowSizeStatus(leftStackId));
 			return 2;
-		} else{
+		} else {
 			return 3;
 		}
-		
+
 	}
 
 	protected void onCallStatusChange() {
@@ -1218,7 +1218,9 @@ public class SyncService extends Service {
 			mCallIntent.putExtra("call_status", BtcGlobalData.CALL_OUT);
 			mLog("add_window" + BtcGlobalData.CALL_IN);
 			isState = false;
-			addCallView();
+			if (!mECarOnline.mECarCall) {
+				addCallView();
+			}
 			break;
 		case BtcGlobalData.NO_CALL:
 			isState = false;
@@ -1310,7 +1312,7 @@ public class SyncService extends Service {
 		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        
+
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
 			params.x = 800;
@@ -1321,7 +1323,7 @@ public class SyncService extends Service {
 			params.width = 1424;
 			isScreen = false;
 			params.gravity = Gravity.LEFT;
-		}else if(full == 3){
+		} else if (full == 3) {
 			params.x = 0;
 			params.width = WindowManager.LayoutParams.MATCH_PARENT;
 			isScreen = false;
@@ -1550,7 +1552,7 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(LOCAL_MUSIC_ACTION)) {
 				String state = intent.getStringExtra("state");
-                  mLog(state);
+				mLog(state);
 				if (state.equals("music_last")) {
 					mLog("BtcNative.lastSong()");
 					BtcNative.lastSong();
@@ -1567,7 +1569,7 @@ public class SyncService extends Service {
 				}
 			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
 				dialCall(intent.getStringExtra("call_number"));
-			}else if (intent.getAction().equals(ACTION_MEDIAKILLED)) {
+			} else if (intent.getAction().equals(ACTION_MEDIAKILLED)) {
 				mLog("接受到媒体库挂断广播");
 				BtAudioManager.getInstance(getApplicationContext()).setMediaKillMode();
 			}

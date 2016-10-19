@@ -61,7 +61,7 @@ public class ECarOnline {
 	/**
 	 * true为一键通的一键通功能
 	 */
-	private boolean mECarCall = false;
+	public static boolean mECarCall = false;
 	
 	private static final int BT_OFF = 0; //关闭
 	
@@ -147,20 +147,26 @@ public class ECarOnline {
 	 * @param number
 	 */
 	private void onECarCall(String name, String number) {
-		Intent mCustomerIntent = new Intent();
-		mCustomerIntent.setAction(mSyncService.ACTION_BTC_CALL);
-		
-		if (number != null) {
-			mLog("onECarCall number=="+number);
-			mCustomerIntent.putExtra("call_number", number);				
-		}
-		if (name != null) {
-			mLog("onECarCall name=="+name);
-			mCustomerIntent.putExtra("call_name", name);
+		mLog("diacall== "+number);
+		if (number.length() > 0) {
+			BtcNative.dialCall(number);
 		}
 		mECarCall = true;
-		mCustomerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		mSyncService.startActivity(mCustomerIntent);			
+		
+//		Intent mCustomerIntent = new Intent();
+//		mCustomerIntent.setAction(mSyncService.ACTION_BTC_CALL);
+//		
+//		if (number != null) {
+//			mLog("onECarCall number=="+number);
+//			mCustomerIntent.putExtra("call_number", number);				
+//		}
+//		if (name != null) {
+//			mLog("onECarCall name=="+name);
+//			mCustomerIntent.putExtra("call_name", name);
+//		}
+//		mECarCall = true;
+//		mCustomerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		mSyncService.startActivity(mCustomerIntent);			
 	}
 
 	/**
