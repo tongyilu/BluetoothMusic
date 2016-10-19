@@ -66,9 +66,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		if (!mRight) {
 			if (mCallStatus == BtcGlobalData.NO_CALL) {
 				openAudioMode();
-			} else {
-				mCallStatus = BtcGlobalData.NO_CALL;
-			}
+			} 
 		}else{
 			openAudioMode();
 		}
@@ -134,6 +132,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public void checkA2dpStatus() {
 		mLog("checkA2dpStatus MainActivity.binder.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
+			if (mRight) {
+				openAudioMode();
+			}
 			setA2dpStatus(A2DP_PLAYING);
 		} else if (BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			setA2dpStatus(A2DP_CONNECTED);
