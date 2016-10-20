@@ -985,13 +985,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mFullMode");
 				mLayoutMode = mFullMode;
 				isShow = false;
+				if (mMusicRightFragment == null) {
+					mMusicRightFragment = new MusicFragment(true);
+					mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
+					mAddFragment.commitAllowingStateLoss();
+//					mMusicRightFragment.openAudioMode();
+				}
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mFragmetContext.setVisibility(View.VISIBLE);
 				mLeftMenu.setVisibility(View.VISIBLE);
-				if (mMusicRightFragment!=null) {
-					mMusicRightFragment.openAudioMode();
-				}
 				if (getFragmentManager().findFragmentById(R.id.id_fragment_content) == mMusicFragment) {
 					setDefaultFragment();
 				}
