@@ -343,7 +343,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					if (mStatus == BtcGlobalData.CALL_IN) {
 						mShowDialog(DIALOG1);
 					} else if (mStatus == BtcGlobalData.CALL_OUT) {
-						setDefaultFragment();
+//						setDefaultFragment();
 						mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 					} else if (mStatus == BtcGlobalData.IN_CALL) {
 						mDismissDialog(DIALOG1);
@@ -769,7 +769,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	private void answerCall() {
 		BtcNative.answerCall();
-		setDefaultFragment();
+//		setDefaultFragment();
 		mDismissDialog(DIALOG1);
 	}
 
@@ -841,7 +841,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				if (mStatus == BtcGlobalData.CALL_IN) {
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
-					setDefaultFragment();
+//					setDefaultFragment();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
 					// 来电时
