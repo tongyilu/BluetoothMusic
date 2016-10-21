@@ -67,8 +67,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			if (mCallStatus == BtcGlobalData.NO_CALL) {
 				openAudioMode();
 			} 
-		}else{
-			openAudioMode();
 		}
 	}
 
