@@ -8,7 +8,6 @@ import android.net.rtp.AudioStream;
 import android.util.Log;
 
 import com.spreadwin.btc.BtcNative;
-import com.spreadwin.btc.SyncService;
 
 /**
  * 蓝牙声音管理
