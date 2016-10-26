@@ -42,8 +42,8 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private String PlayTitle = null;
 	private String PlayArtist = null;
 	private String PlayAlbum = null;
-	
-	private boolean isPlaySong = false;//歌曲信息
+
+	private boolean isPlaySong = false;// 歌曲信息
 
 	public MusicFragment() {
 		this(false);
@@ -64,28 +64,28 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		super.onStart();
 		mPlayer = BtcNative.getA2dpStatus();
 		mLog("MusicFragment onStart mCallStatus ==" + mCallStatus + "; mRight ==" + mRight);
-		if (!mRight) {
-			if (mCallStatus == BtcGlobalData.NO_CALL) {
-				openAudioMode();
-			} else {
-				mCallStatus = BtcGlobalData.NO_CALL;
-			}
+		// if (!mRight) {
+		if (mCallStatus == BtcGlobalData.NO_CALL) {
+			// openAudioMode();
+		} else {
+			mCallStatus = BtcGlobalData.NO_CALL;
 		}
+		// }
 	}
 
 	public void openAudioMode() {
 		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus() + "; mRight ==" + mRight);
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-			// BtAudioManager.getInstance(getActivity()).mAudioFocusGain =
-			// false;
-			BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
+			if (getActivity()!=null) {
+				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
+			}
 			if (mPlayArtist != null && mPlayTitle != null) {
 				if (isPlaySong) {
 					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
-					if (PlayTitle != null) {
-						mPlayArtist.setText(
-								SyncService.mArtist == null ? "" : SyncService.mArtist + " " + SyncService.mAlbum);
-					}
+					// if (PlayTitle != null) {
+					mPlayArtist
+							.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + " " + SyncService.mAlbum);
+					// }
 				} else {
 					mPlayTitle.setText("");
 					mPlayArtist.setText("");
@@ -105,12 +105,12 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mMusicPrevious.setOnClickListener(this);
 		mMusicPlay.setOnClickListener(this);
 		mMusicNext.setOnClickListener(this);
-//		checkA2dpStatus();
+		// checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
-		
-//		getActivity().registerReceiver(mReceiver, intentFilter);
-		mLog("onCreateView isPlaySong =="+isPlaySong);
+
+		// getActivity().registerReceiver(mReceiver, intentFilter);
+		mLog("onCreateView isPlaySong ==" + isPlaySong);
 		if (isPlaySong) {
 			onUpdateSongInfo();
 		}
@@ -128,9 +128,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				mPlayTitle.setVisibility(View.VISIBLE);
 				mPlayArtist.setVisibility(View.VISIBLE);
 				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-				if (PlayTitle != null) {
-					mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-				}
+				// if (PlayTitle != null) {
+				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
+				// }
 			}
 		}
 	};
@@ -155,6 +155,14 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public void checkA2dpStatus() {
 		mLog("checkA2dpStatus MainActivity.binder.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
+			// if (mRight) {
+			try {
+				openAudioMode();
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			// }
 			setA2dpStatus(A2DP_PLAYING);
 		} else if (BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			setA2dpStatus(A2DP_CONNECTED);
@@ -209,18 +217,17 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (mPlayer == 2) {
-			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
+			if (!(BtAudioManager.mLastMode == 6 && BtAudioManager.mMode == 0)) {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
 				mPlayer = 1;
 				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
-			}else{
+			} else {
 				openAudioMode();
 				mLog("change focus playMusic");
 				BtcNative.playMusic();
 			}
-		} else if (mPlayer == 1 || mPlayer == 0)
-		{
+		} else if (mPlayer == 1 || mPlayer == 0) {
 			openAudioMode();
 			mLog("onClick playMusic");
 			BtcNative.playMusic();
@@ -242,10 +249,10 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-//		getActivity().unregisterReceiver(mReceiver);
+		// getActivity().unregisterReceiver(mReceiver);
 	}
-	
-	public void setPlayTitle(Intent intent){
+
+	public void setPlayTitle(Intent intent) {
 		isPlaySong = true;
 		PlayTitle = intent.getStringExtra("mTitle");
 		PlayArtist = intent.getStringExtra("mArtist");
@@ -260,8 +267,8 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mPlayTitle.setVisibility(View.VISIBLE);
 		mPlayArtist.setVisibility(View.VISIBLE);
 		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-		if (PlayTitle != null) {
-			mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-		}
+		// if (PlayTitle != null) {
+		mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
+		// }
 	}
 }
