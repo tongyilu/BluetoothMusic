@@ -64,19 +64,19 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		super.onStart();
 		mPlayer = BtcNative.getA2dpStatus();
 		mLog("MusicFragment onStart mCallStatus ==" + mCallStatus + "; mRight ==" + mRight);
-		// if (!mRight) {
-		if (mCallStatus == BtcGlobalData.NO_CALL) {
-			// openAudioMode();
-		} else {
-			mCallStatus = BtcGlobalData.NO_CALL;
+		if (!mRight) {
+			if (mCallStatus == BtcGlobalData.NO_CALL) {
+				openAudioMode();
+			} else {
+				mCallStatus = BtcGlobalData.NO_CALL;
+			}
 		}
-		// }
 	}
 
 	public void openAudioMode() {
 		mLog("MusicFragment openAudioMode BfpStatus ==" + BtcNative.getBfpStatus() + "; mRight ==" + mRight);
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
-			if (getActivity()!=null) {
+			if (getActivity() != null) {
 				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			}
 			if (mPlayArtist != null && mPlayTitle != null) {
@@ -155,14 +155,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	public void checkA2dpStatus() {
 		mLog("checkA2dpStatus MainActivity.binder.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (BtcNative.getA2dpStatus() == A2DP_PLAYING) {
-			// if (mRight) {
-			try {
-				openAudioMode();
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
-			// }
 			setA2dpStatus(A2DP_PLAYING);
 		} else if (BtcNative.getA2dpStatus() == A2DP_CONNECTED) {
 			setA2dpStatus(A2DP_CONNECTED);
@@ -217,7 +209,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
 		if (mPlayer == 2) {
-			if (!(BtAudioManager.mLastMode == 6 && BtAudioManager.mMode == 0)) {
+			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
 				mPlayer = 1;
@@ -233,7 +225,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			BtcNative.playMusic();
 			mPlayer = 2;
 		}
-
 	}
 
 	public static void mLog(String string) {

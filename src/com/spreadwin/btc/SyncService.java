@@ -334,8 +334,7 @@ public class SyncService extends Service {
 
 				// 更新A2dp状态
 				mTempStatus = BtcNative.getA2dpStatus();
-				// mLog("mTempStatus ==" + mTempStatus + "; getA2dpStatus =="
-				// + mA2dpStatus);
+				 mLog("mTempStatus ==" + mTempStatus + "; getA2dpStatus =="+ mA2dpStatus);
 				if (mA2dpStatus != mTempStatus) {
 					mLog("sendBroadcast getA2dpStatus");
 					onA2dpStatusChange();

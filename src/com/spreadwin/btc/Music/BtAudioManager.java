@@ -87,8 +87,13 @@ public class BtAudioManager {
 		if (enable || mTempAudioFocus == mTempFocusGain) {
 			mAudioFocusGain = true;
 			mLog("setBtAudioToggle requestAudioFocus");
-			audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
-					AudioManager.AUDIOFOCUS_GAIN);
+			if (mAudioFocus) {
+				audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
+						AudioManager.AUDIOFOCUS_GAIN);
+			}else{
+				audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
+						AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+			}
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
