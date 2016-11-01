@@ -967,6 +967,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 					mAddFragment.commitAllowingStateLoss();
 				}
+				if (mMusicRightFragment!=null) {
+					mMusicRightFragment.openAudioMode();
+				}
 				mLayoutMode = mRightMode;
 				mContectText.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.GONE);
@@ -989,7 +992,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mMusicRightFragment = new MusicFragment(true);
 					mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
 					mAddFragment.commitAllowingStateLoss();
-//					mMusicRightFragment.openAudioMode();
+				}
+				if (mMusicRightFragment!=null) {
+					mMusicRightFragment.openAudioMode();
 				}
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
