@@ -38,7 +38,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private AlwaysMarqueeTextView mPlayTitle, mPlayArtist;
 
 	private boolean mRight = false;// true:为右边
-	private int mPlayer = 0;
+	private int mPlayer = 0; 
 	private String PlayTitle = null;
 	private String PlayArtist = null;
 	private String PlayAlbum = null;

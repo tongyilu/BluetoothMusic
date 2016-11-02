@@ -775,17 +775,21 @@ public class SyncService extends Service {
 				sendObjMessage(1, mSyncIntent);
 				// NEW_SYNC状态，更新联系人给语音助手
 				if (msg.arg2 == BtcGlobalData.NEW_SYNC) {
+					//更新联系人给语音助手
 					mSendSyncBroadcast();
 					mLog("isNetworkConnected ==" + isNetworkConnected());
 					if (isNetworkConnected() && upload_toggle) {
+						//push到远程服务器上
 						PushContacts();
 					}
 				}
 				break;
 			case mAddDatabase:
+				//将联系人添加到数据库
 				addDatabase();
 				break;
 			case mUpdateBookInfoOver:
+				//通知头部更新联系人
 				Intent mCallIntent = new Intent();
 				mCallIntent.setAction(MainActivity.mActionBookInfoOver);
 				sendObjMessage(1, mCallIntent);
