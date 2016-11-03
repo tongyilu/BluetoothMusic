@@ -18,6 +18,7 @@ import com.spreadwin.btc.utils.HttpUtil;
 import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
+import com.spreadwin.btc.utils.PreferencesUtils;
 import com.spreadwin.btc.view.DialogView;
 
 import android.R.bool;

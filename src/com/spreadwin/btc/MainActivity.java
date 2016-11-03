@@ -98,7 +98,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public static BluetoothFragment mBluetoothFragment;
 	CallLogsFragment mCallLogsFragment;
 	ContactsFragment mContactsFragment;
-	DialogFragment mDialogFragment;
 
 	LinearLayout mCallLogsLayout, mContactsLayout, mMusicLayout, mLeftMenu, mRedialLayout, mBluetoothLayout,
 			mMusicLayoutAdd, main, mDescription;
@@ -320,7 +319,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mContactsFragment = new ContactsFragment();
 		mBluetoothFragment = new BluetoothFragment();
 		mMusicFragment = new MusicFragment();
-		mDialogFragment = new DialogFragment();
 
 		// mVto.addOnGlobalLayoutListener(this);
 
@@ -1223,6 +1221,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			onRightLayout(true);
 			onFullScreen();
 		}
+		
 	}
 
 	public void addRightBluetoothMusic() {

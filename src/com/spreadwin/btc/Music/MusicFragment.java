@@ -5,6 +5,7 @@ import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.SyncService;
 import com.spreadwin.btc.utils.BtcGlobalData;
+import com.spreadwin.btc.utils.PreferencesUtils;
 import com.spreadwin.btc.view.AlwaysMarqueeTextView;
 
 import android.app.Fragment;
@@ -15,6 +16,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +40,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private AlwaysMarqueeTextView mPlayTitle, mPlayArtist;
 
 	private boolean mRight = false;// true:为右边
-	private int mPlayer = 0; 
-	private String PlayTitle = null;
-	private String PlayArtist = null;
-	private String PlayAlbum = null;
+	private int mPlayer = 0;
+	private static String PlayTitle = null;
+	private static String PlayArtist = null;
+	private static String PlayAlbum = null;
+	private int state;
 
 	private boolean isPlaySong = false;// 歌曲信息
 
@@ -79,18 +82,16 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			if (getActivity() != null) {
 				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			}
-			if (mPlayArtist != null && mPlayTitle != null) {
-				if (isPlaySong) {
-					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
-					// if (PlayTitle != null) {
-					mPlayArtist
-							.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + " " + SyncService.mAlbum);
-					// }
-				} else {
-					mPlayTitle.setText("");
-					mPlayArtist.setText("");
-				}
-			}
+//			if (mPlayArtist != null && mPlayTitle != null) {
+//				if (isPlaySong) {
+//					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
+//					mPlayArtist
+//							.setText(SyncService.mArtist == null ? "" : SyncService.mArtist + " " + SyncService.mAlbum);
+//				} else {
+//					mPlayTitle.setText("");
+//					mPlayArtist.setText("");
+//				}
+//			}
 		}
 	}
 
@@ -108,8 +109,8 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		// checkA2dpStatus();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(mActionInfoBfp);
-
 		// getActivity().registerReceiver(mReceiver, intentFilter);
+
 		mLog("onCreateView isPlaySong ==" + isPlaySong);
 		if (isPlaySong) {
 			onUpdateSongInfo();
@@ -117,26 +118,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		return mRootView;
 	}
 
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction() == mActionInfoBfp) {
-				isPlaySong = true;
-				PlayTitle = intent.getStringExtra("mTitle");
-				PlayArtist = intent.getStringExtra("mArtist");
-				PlayAlbum = intent.getStringExtra("mAlbum");
-				mPlayTitle.setVisibility(View.VISIBLE);
-				mPlayArtist.setVisibility(View.VISIBLE);
-				mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-				// if (PlayTitle != null) {
-				mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-				// }
-			}
-		}
-	};
-
 	@Override
 	public void onResume() {
+		onUpdateSongInfo();
 		super.onResume();
 	}
 
@@ -164,6 +148,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	}
 
 	public void setA2dpStatus(int status) {
+		state = status;
 		if (mMusicPlay == null && getActivity() == null) {
 			return;
 		}
@@ -213,11 +198,12 @@ public class MusicFragment extends Fragment implements OnClickListener {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
 				mPlayer = 1;
-				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
 			} else {
 				openAudioMode();
 				mLog("change focus playMusic");
-				BtcNative.playMusic();
+//				if (state != A2DP_PLAYING) {
+//					BtcNative.playMusic();
+//				}
 			}
 		} else if (mPlayer == 1 || mPlayer == 0) {
 			openAudioMode();
@@ -240,7 +226,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		// getActivity().unregisterReceiver(mReceiver);
 	}
 
 	public void setPlayTitle(Intent intent) {
@@ -258,8 +243,6 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		mPlayTitle.setVisibility(View.VISIBLE);
 		mPlayArtist.setVisibility(View.VISIBLE);
 		mPlayTitle.setText(PlayTitle == null ? "" : PlayTitle);
-		// if (PlayTitle != null) {
 		mPlayArtist.setText(PlayArtist == null ? "" : PlayArtist + " " + PlayAlbum);
-		// }
 	}
 }

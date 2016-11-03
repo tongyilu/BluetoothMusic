@@ -105,7 +105,7 @@ public class BtcNative {
  	 */
     public static native int playMusic();
     /**
-     * @return 播放蓝牙音乐
+     * @return 暂停蓝牙音乐
      */
 	public static native int pauseMusic();
 	/**

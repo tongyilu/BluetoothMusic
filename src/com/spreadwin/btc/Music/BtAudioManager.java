@@ -31,20 +31,20 @@ public class BtAudioManager {
 	public boolean mAudioCall = false;// 通话状态
 	private boolean mAudioFocus = false;// audio焦点状态
 	private boolean mAudioMute = false;// 静音状态
-	
+
 	/**
 	 * 临时焦点正常模式
 	 */
-	private static final int mTempFocusNormal = 1;//临时焦点正常模式
+	private static final int mTempFocusNormal = 1;// 临时焦点正常模式
 	/**
 	 * 临时焦点获取模式
 	 */
-	public static final int mTempFocusGain = 2;//临时焦点获取模式
+	public static final int mTempFocusGain = 2;// 临时焦点获取模式
 	/**
 	 * 临时焦点丢失模式
 	 */
-	public static final int mTempFocusLoss = 3;//临时焦点丢失模式
-	public int mTempAudioFocus = mTempFocusNormal;//临时audio焦点
+	public static final int mTempFocusLoss = 3;// 临时焦点丢失模式
+	public int mTempAudioFocus = mTempFocusNormal;// 临时audio焦点
 
 	public boolean mAudioFocusGain = false;
 
@@ -54,8 +54,8 @@ public class BtAudioManager {
 	public static int AUDIO_MODE_NORMAL = AudioStream.MODE_NORMAL;// 正常模式
 	public static int AUDIO_MODE_BT = 6; // 蓝牙的通路模式
 	public static int AUDIO_MODE_CALL = 7;// 蓝牙通话的音频通路
-	
-	public static int mMode,mLastMode;//当前通路,上一次通路
+
+	public static int mMode, mLastMode;// 当前通路,上一次通路
 
 	public final String ACTION_SCREENSAVER_CLOSE = "ACTION_SCREENSAVER_CLOSE";
 
@@ -80,7 +80,7 @@ public class BtAudioManager {
 	 */
 	private void setBtAudioEnable(boolean enable) {
 		mLog("setBtAudioEnable mAudioFocusGain ==" + mAudioFocusGain + "; enable==" + enable
-					+"; setTempBtAudioFocus =="+mTempAudioFocus);
+				+ "; setTempBtAudioFocus ==" + mTempAudioFocus);
 		if (mAudioFocusGain == enable && mTempAudioFocus == mTempFocusNormal) {
 			return;
 		}
@@ -90,7 +90,7 @@ public class BtAudioManager {
 			if (mAudioFocus) {
 				audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
 						AudioManager.AUDIOFOCUS_GAIN);
-			}else{
+			} else {
 				audioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
 						AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 			}
@@ -127,30 +127,28 @@ public class BtAudioManager {
 			BtcNative.setVolume(VolumeMute);
 		}
 	}
-	
+
 	/**
 	 * 音频kill掉后重启
 	 */
-	public void setMediaKillMode(){
+	public void setMediaKillMode() {
 		audioManager.setParameters("cdr_mode=" + AUDIO_MODE_NORMAL);
 		audioManager.setParameters("cdr_mode=" + mMode);
 	}
-	
 
 	/**
 	 * 设置音频通路
 	 * 
-	 * @param mode
-	 * @throws 
+	 * @param mode @throws
 	 */
 	private void setAudioMode(int mode) {
-		mLog("setAudioMode mode ==" + mode+"; mTempAudioFocus =="+mTempAudioFocus);
-		 if (mode == AudioStream.MODE_NORMAL && mTempAudioFocus != mTempFocusGain) {
-			 mTempAudioFocus = mTempFocusNormal;
-			 audioManager.abandonAudioFocus(mAudioFocusListener);
-		 }
+		mLog("setAudioMode mode ==" + mode + "; mTempAudioFocus ==" + mTempAudioFocus);
+		if (mode == AudioStream.MODE_NORMAL && mTempAudioFocus != mTempFocusGain) {
+			mTempAudioFocus = mTempFocusNormal;
+			audioManager.abandonAudioFocus(mAudioFocusListener);
+		}
 		audioManager.setParameters("cdr_mode=" + mode);
-		
+
 		mLastMode = mMode;
 		mMode = mode;
 	}
@@ -160,6 +158,7 @@ public class BtAudioManager {
 	 * 
 	 * @param status
 	 */
+
 	public void onCallChange(boolean status) {
 		mLog("onCallChange status ==" + status);
 		mAudioCall = status;
@@ -194,30 +193,33 @@ public class BtAudioManager {
 		mAudioFocus = status;
 		setBtAudioChange();
 	}
-	
+
 	/**
 	 * 获取音频焦点状态
+	 * 
 	 * @return
-	 */	
+	 */
 	public boolean isBtAudioFocus() {
 		return mAudioFocus;
 	}
-	
+
 	/**
 	 * 判断临时焦点是否为获取模式
+	 * 
 	 * @return
-	 */	
+	 */
 	public boolean isTempBtAudioFocusGain() {
 		return mTempAudioFocus == mTempFocusGain;
 	}
-	
+
 	/**
 	 * 设置临时音频焦点，为true时，要主动释放
+	 * 
 	 * @param status
 	 */
 	public void setTempBtAudioFocus(int status) {
 		mLog("setTempBtAudioFocus status ==" + status);
-		mTempAudioFocus	= status;
+		mTempAudioFocus = status;
 	}
 
 	/**
@@ -258,14 +260,14 @@ public class BtAudioManager {
 			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
 				mLog("mAudioFocusListener AUDIOFOCUS_LOSS_TRANSIENT focusChange ==" + focusChange);
 				BtcNative.setVolume(VolumeMute);
-//				onBtAudioFocusChange(false);
+				// onBtAudioFocusChange(false);
 				break;
 			case AudioManager.AUDIOFOCUS_GAIN:
 			case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
 			case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
 				mLog("mAudioFocusListener AUDIOFOCUS_GAIN mAudioCall ==" + mAudioCall);
-				if (!mAudioCall)
-					onBtAudioFocusChange(true);
+//				if (!mAudioCall)
+//					onBtAudioFocusChange(true);
 				break;
 			}
 		}
@@ -276,7 +278,5 @@ public class BtAudioManager {
 			Log.d(TAG, string);
 		}
 	}
-
-
 
 }
