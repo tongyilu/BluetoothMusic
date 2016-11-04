@@ -43,6 +43,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	private String PlayArtist = null;
 	private String PlayAlbum = null;
 	private boolean isPlaySong = false;// 歌曲信息
+	private int state;
 
 	public MusicFragment() {
 		this(false);
@@ -76,18 +77,20 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			if (getActivity() != null) {
 				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(true);
 			}
-			if (mPlayArtist != null && mPlayTitle != null) {
-				if (isPlaySong) {
-					mPlayTitle.setText(SyncService.mTitle == null ? "" : SyncService.mTitle);
-					if (PlayTitle != null) {
-						mPlayArtist.setText(
-								SyncService.mArtist == null ? "" : SyncService.mArtist + " " + SyncService.mAlbum);
-					}
-				} else {
-					mPlayTitle.setText("");
-					mPlayArtist.setText("");
-				}
-			}
+			// if (mPlayArtist != null && mPlayTitle != null) {
+			// if (isPlaySong) {
+			// mPlayTitle.setText(SyncService.mTitle == null ? "" :
+			// SyncService.mTitle);
+			// if (PlayTitle != null) {
+			// mPlayArtist.setText(
+			// SyncService.mArtist == null ? "" : SyncService.mArtist + " " +
+			// SyncService.mAlbum);
+			// }
+			// } else {
+			// mPlayTitle.setText("");
+			// mPlayArtist.setText("");
+			// }
+			// }
 		}
 	}
 
@@ -114,6 +117,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onResume() {
+		if (isPlaySong) {
+			onUpdateSongInfo();
+		}
 		super.onResume();
 	}
 
@@ -141,6 +147,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	}
 
 	public void setA2dpStatus(int status) {
+		state = status;
 		if (mMusicPlay == null && getActivity() == null) {
 			return;
 		}
@@ -200,7 +207,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			} else {
 				openAudioMode();
 				mLog("change focus playMusic");
-				BtcNative.playMusic();
+				if (state != A2DP_PLAYING) {
+					BtcNative.playMusic();
+				}
 			}
 		} else if (mPlayer == 1 || mPlayer == 0) {
 			openAudioMode();

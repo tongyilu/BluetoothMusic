@@ -264,8 +264,8 @@ public class BtAudioManager {
 			case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
 			case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
 				mLog("mAudioFocusListener AUDIOFOCUS_GAIN mAudioCall ==" + mAudioCall);
-				if (!mAudioCall)
-					onBtAudioFocusChange(true);
+//				if (!mAudioCall)
+//					onBtAudioFocusChange(true);
 				break;
 			}
 		}
