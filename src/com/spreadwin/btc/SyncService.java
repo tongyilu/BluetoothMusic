@@ -1238,14 +1238,19 @@ public class SyncService extends Service {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
 				if (lastCallStatus == BtcGlobalData.CALL_IN) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");
+					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
+					mUpdateCalllog = BtcGlobalData.PB_IN;
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_MISS);
 					mUpdateCalllog = BtcGlobalData.PB_MISS;
-				} else if (lastCallStatus == BtcGlobalData.IN_CALL) {
+				} else if (lastCallStatus == BtcGlobalData.CALL_OUT
+						|| (lastCallStatus == BtcGlobalData.IN_CALL && mCallStatusOld == BtcGlobalData.CALL_OUT)) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_OUT");
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_OUT);
 					mUpdateCalllog = BtcGlobalData.PB_OUT;
-				} else if (lastCallStatus == BtcGlobalData.CALL_OUT) {
-					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");
+				} else {
+					mLog("startSyncPhoneBook ==BtcGlobalData.PB_MISS");
+//					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_MISS);
+//					mUpdateCalllog = BtcGlobalData.PB_MISS;
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
 					mUpdateCalllog = BtcGlobalData.PB_IN;
 				}
