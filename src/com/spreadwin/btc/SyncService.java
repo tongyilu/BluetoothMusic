@@ -18,9 +18,11 @@ import com.spreadwin.btc.utils.HttpUtil;
 import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
+import com.spreadwin.btc.utils.SplitUtil;
 import com.spreadwin.btc.view.DialogView;
-
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RecentTaskInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,6 +34,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -49,6 +53,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+@SuppressLint("ServiceCast")
 public class SyncService extends Service {
 	public static final String TAG = "SyncService";
 	public static final boolean DEBUG = true;
@@ -191,7 +196,7 @@ public class SyncService extends Service {
 
 	// private OpenUtils openUtils;
 	boolean mdatabase; // 是否从数据库读取电话本信息标识位
-//	private Handler mHandler = new Handler();
+	// private Handler mHandler = new Handler();
 
 	/************ 数据库和网络获取电话本线程 **************/
 	private Runnable mRunnble = new Runnable() {
@@ -522,7 +527,7 @@ public class SyncService extends Service {
 		// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
 		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
 			// handler.sendEmptyMessage(mAddDatabase);
-          
+
 			addContacts();
 
 			Thread mDataThread = new Thread(new Runnable() {
@@ -544,12 +549,12 @@ public class SyncService extends Service {
 			return;
 		}
 		// }
-	   if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) { 
-		   message.arg1 = BtcGlobalData.NEW_SYNC;
-		   handler.sendMessageDelayed(message, 100);
+		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+			message.arg1 = BtcGlobalData.NEW_SYNC;
+			handler.sendMessageDelayed(message, 100);
 		}
 		mSyncStatus = mTempStatus;
-		
+
 	}
 
 	/********* service外部接口 ***********/
@@ -729,7 +734,7 @@ public class SyncService extends Service {
 
 			mPhoneBook.clear();
 			mContactsInfo.clear();
-//			mHandler.removeCallbacks(mRunnble);
+			// mHandler.removeCallbacks(mRunnble);
 			for (int i = 0; i < mPhoneBookInfo.size(); i++) {
 				mPhoneBookInfo.get(i).clear();
 			}
@@ -750,7 +755,7 @@ public class SyncService extends Service {
 				m_DBAdapter.open();
 				showNotification();
 				// mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
-//				mHandler.post(mRunnble); // 执行从数据库读取电话本
+				// mHandler.post(mRunnble); // 执行从数据库读取电话本
 				Thread thread = new Thread(mRunnble);
 				thread.start();
 				break;
@@ -1030,7 +1035,7 @@ public class SyncService extends Service {
 			// message.arg2联系人是否更新给语音助手
 			message.arg2 = BtcGlobalData.NEW_SYNC;
 			handler.removeMessages(mPhoneBookSyncBroadcast);
-				handler.sendMessageDelayed(message, 100);
+			handler.sendMessageDelayed(message, 100);
 			return false;
 		} catch (Exception e) {
 			mLog("getDatabase e ==" + e);
@@ -1064,8 +1069,7 @@ public class SyncService extends Service {
 		}
 		PhoneBookInfo_new sortModel = new PhoneBookInfo_new(mName, mNumber);
 		// 汉字转换成拼音
-		if (mName.length() != 0)
-		{
+		if (mName.length() != 0) {
 			String pinyin = characterParser.getSelling(mName);
 			mLog("addContactsInfo ==" + mName + "; pinyin ==" + pinyin);
 			String sortString = pinyin.substring(0, 1).toUpperCase();
@@ -1079,7 +1083,8 @@ public class SyncService extends Service {
 			}
 			try {
 				if (mName.length() >= 2) {
-					String seSecondString = characterParser.getSelling(mName.substring(1, 2)).substring(0, 1).toUpperCase();
+					String seSecondString = characterParser.getSelling(mName.substring(1, 2)).substring(0, 1)
+							.toUpperCase();
 					if (seSecondString.matches("[A-Z]")) {
 						sortModel.setSecondLetters(seSecondString.toUpperCase());
 					} else {
@@ -1175,8 +1180,8 @@ public class SyncService extends Service {
 
 	protected void onCallStatusChange() {
 		mLog("setMute onCallStatusChange ==" + mTempStatus);
-		
-		Log.d("show","setMute onCallStatusChange ==" + mTempStatus);
+
+		Log.d("show", "setMute onCallStatusChange ==" + mTempStatus);
 		int lastCallStatus = mCallStatus;
 		mLog("mCallStatus onCallStatusChange ==" + mCallStatus);
 		mCallStatus = mTempStatus;
@@ -1243,8 +1248,8 @@ public class SyncService extends Service {
 					mUpdateCalllog = BtcGlobalData.PB_OUT;
 				} else {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_MISS");
-					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_MISS);
-					mUpdateCalllog = BtcGlobalData.PB_MISS;
+					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
+					mUpdateCalllog = BtcGlobalData.PB_IN;
 				}
 			}
 			mCallIntent.putExtra("call_status", BtcGlobalData.NO_CALL);
@@ -1301,7 +1306,7 @@ public class SyncService extends Service {
 
 		mLog("show showCallDisplay" + full);
 
-		full = isFull()?1:0;
+		full = isFull() ? 1 : 0;
 		wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 		// 背景透明
@@ -1338,7 +1343,8 @@ public class SyncService extends Service {
 			if (mTempStatus != BtcGlobalData.NO_CALL) {
 				for (int i = 0; i < 3; i++) {
 					mLog("ainActivity.mBroadcast isTopMyself");
-					if (isTopMyself(this)) {
+					ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+					if (isTopMyself(this,am.getLeftStackId())) {
 						mLog("ainActivity.mBroadcast isTopMyself==" + true);
 						break;
 					}
@@ -1355,13 +1361,16 @@ public class SyncService extends Service {
 	 * 
 	 * @return
 	 */
-	public static boolean isTopMyself(Context context) {
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<RunningTaskInfo> runningTasks = am.getRunningTasks(1);
-		RunningTaskInfo rti = runningTasks.get(0);
-		ComponentName component = rti.topActivity;
-		if (component.getPackageName().equals("com.spreadwin.btc")) {
-			return true;
+	public static boolean isTopMyself(Context context,int leftStack) {
+//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//		PackageManager pm = (PackageManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		RecentTaskInfo ti = SplitUtil.getTopTaskOfStack(context, leftStack);
+		if (ti != null) {
+			Intent it = ti.baseIntent;
+//			ResolveInfo resolveInfo = pm.resolveActivity(it, 0);
+			if ((it.getComponent().getPackageName()).equals("com.spreadwin.btc")) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -1413,7 +1422,7 @@ public class SyncService extends Service {
 					// message.arg2联系人是否更新给语音助手
 					message.arg2 = BtcGlobalData.NEW_SYNC;
 					handler.removeMessages(mPhoneBookSyncBroadcast);
-						handler.sendMessageDelayed(message, 100);
+					handler.sendMessageDelayed(message, 100);
 				} catch (Exception e) {
 					e.printStackTrace();
 					mLog("PullContacts e ==" + e);

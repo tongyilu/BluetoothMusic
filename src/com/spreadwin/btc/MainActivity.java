@@ -2,12 +2,16 @@ package com.spreadwin.btc;
 
 import com.spreadwin.btc.Bluetooth.BluetoothFragment;
 import com.spreadwin.btc.Calllogs.CallLogsFragment;
+import com.spreadwin.btc.Music.BtAudioManager;
 import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
 import com.spreadwin.btc.view.CustomDialog;
+import com.spreadwin.btc.view.CustomDialogText;
+
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -193,7 +197,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		setIntent(intent);
 		if (getIntent().getAction() != null && binder != null) {
 			mMusicFragment.setCallStatus(binder.getCallStatus());
-			if (mMusicRightFragment!=null) {
+			if (mMusicRightFragment != null) {
 				mMusicRightFragment.setCallStatus(binder.getCallStatus());
 			}
 		}
@@ -333,7 +337,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 					}
-					if (mMusicRightFragment!=null) {
+					if (mMusicRightFragment != null) {
 						mMusicRightFragment.checkA2dpStatus();
 					}
 					mMusicFragment.checkA2dpStatus();
@@ -343,7 +347,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					if (mStatus == BtcGlobalData.CALL_IN) {
 						mShowDialog(DIALOG1);
 					} else if (mStatus == BtcGlobalData.CALL_OUT) {
-//						setDefaultFragment();
+						// setDefaultFragment();
 						mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 					} else if (mStatus == BtcGlobalData.IN_CALL) {
 						mDismissDialog(DIALOG1);
@@ -376,14 +380,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment222 isVisible ==" + mMusicFragment.isVisible());
-						if (SyncService.isTopMyself(getBaseContext())) {
-							if (mMusicFragment.isVisible()) {
-								mMusicFragment.openAudioMode();
-							}
-							// if (mMusicRightFragment.isVisible()) {
-							// mMusicRightFragment.openMusicFragment();
-							// }
-						}
+//						if (SyncService.isTopMyself(getBaseContext())) {
+//							if (mMusicFragment.isVisible()) {
+//								mMusicFragment.openAudioMode();
+//							}
+//							// if (mMusicRightFragment.isVisible()) {
+//							// mMusicRightFragment.openMusicFragment();
+//							// }
+//						}
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
 						// UnLockScreen();
@@ -513,35 +517,45 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	protected void mShowDialog(int id) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		// AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		if (id == DIALOG1) {
 			if (mCallDialog != null && mCallDialog.isShowing()) {
 				return;
 			}
 		} else if (id == DIALOG2) {
-			builder.setTitle("提示");
-			builder.setMessage("确定断开连接吗");
+			CustomDialogText.Builder builder = new CustomDialogText.Builder(this);
+			builder.setTitle("温馨提示");
+			builder.setMessage("确定断开蓝牙连接吗?");
 			builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					BtcNative.disconnectPhone();
+					dialog.dismiss();
 					mLog("BtcNative.disconnectPhone()" + "已断开");
 				}
 			});
-			builder.setNegativeButton("取消", null);
-			builder.create().show();
+			builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.crater().show();
 
 		} else if (id == DIALOG3) {
-			ListView lv = new ListView(this);
-			final String[] number = new String[binder.getCallNumberList(callName).size()];
-			for (int i = 0; i < number.length; i++) {
-				number[i] = "拨打 :" + binder.getCallNumberList(callName).get(i);
-			}
-			lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, number));
-			builder.setView(lv);
-			builder.setTitle(callName);
-			mCallDialog = builder.create();
-			// mCallDialog.setCanceledOnTouchOutside(false);
-			mCallDialog.show();
+			// ListView lv = new ListView(this);
+			// final String[] number = new
+			// String[binder.getCallNumberList(callName).size()];
+			// for (int i = 0; i < number.length; i++) {
+			// number[i] = "拨打 :" + binder.getCallNumberList(callName).get(i);
+			// }
+			// lv.setAdapter(new ArrayAdapter<String>(this,
+			// android.R.layout.simple_expandable_list_item_1, number));
+			// builder.setView(lv);
+			// builder.setTitle(callName);
+			// mCallDialog = builder.create();
+			// // mCallDialog.setCanceledOnTouchOutside(false);
+			// mCallDialog.show();
 		}
 	}
 
@@ -769,7 +783,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	private void answerCall() {
 		BtcNative.answerCall();
-//		setDefaultFragment();
+		// setDefaultFragment();
 		mDismissDialog(DIALOG1);
 	}
 
@@ -830,9 +844,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 				}
 				// mMusicFragment.openAudioMode();
-				
+
 				mMusicFragment.checkA2dpStatus();
-				if (mMusicRightFragment!=null) {
+				if (mMusicRightFragment != null) {
 					mMusicRightFragment.checkA2dpStatus();
 				}
 			} else if (intent.getAction().equals(mActionCall)) {
@@ -841,7 +855,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				if (mStatus == BtcGlobalData.CALL_IN) {
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
-//					setDefaultFragment();
+					// setDefaultFragment();
 					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
 					// 来电时
@@ -876,18 +890,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 					mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
-					if (SyncService.isTopMyself(getBaseContext())) {
+					ActivityManager am = (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
+					if (SyncService.isTopMyself(MainActivity.this,am.getLeftStackId())||SyncService.isTopMyself(MainActivity.this,am.getRightStackId())) {
 						if (mMusicFragment.isVisible()) {
 							mLog("Receiver mMusicFragment 11111111");
-							mMusicFragment.openAudioMode();
+							if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
+								BtAudioManager.getInstance(getApplicationContext()).onBtAudioFocusChange(true);
+							}
 						}
-//						mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
-//								+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
-//								+ "; mAddLayout ==" + mAddLayout.getVisibility() + View.GONE);
-						if (mMusicRightFragment!=null) {
-							if (getFragmentManager().findFragmentById(R.id.add_bluetooth_music) == mMusicRightFragment
-									&& mMusicRightFragment.isVisible() && mAddLayout.getVisibility() == View.VISIBLE) {
-								mMusicRightFragment.openAudioMode();
+						if (mMusicRightFragment != null) {
+							if (mMusicRightFragment.isVisible()) {
+								BtAudioManager.getInstance(getApplicationContext()).onBtAudioFocusChange(true);
 							}
 						}
 					}
@@ -910,7 +923,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				}
 			} else if (intent.getAction().equals(MusicFragment.mActionInfoBfp)) {
 				mMusicFragment.setPlayTitle(intent);
-				if (mMusicRightFragment!=null) {
+				if (mMusicRightFragment != null) {
 					mMusicRightFragment.setPlayTitle(intent);
 				}
 			}
@@ -962,14 +975,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mRightMode");
 				isOrso = true;
 				updateContacts(0);
-				if (mMusicRightFragment == null) {
-					mMusicRightFragment = new MusicFragment(true);
-					mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
-					mAddFragment.commitAllowingStateLoss();
-				}
-				if (mMusicRightFragment!=null) {
-					mMusicRightFragment.openAudioMode();
-				}
+				addRightMusic();
 				mLayoutMode = mRightMode;
 				mContectText.setVisibility(View.GONE);
 				mFragmetContext.setVisibility(View.GONE);
@@ -988,14 +994,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				Log.d(TAG, "mFullMode");
 				mLayoutMode = mFullMode;
 				isShow = false;
-				if (mMusicRightFragment == null) {
-					mMusicRightFragment = new MusicFragment(true);
-					mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
-					mAddFragment.commitAllowingStateLoss();
-				}
-				if (mMusicRightFragment!=null) {
-					mMusicRightFragment.openAudioMode();
-				}
+				addRightMusic();
 				mMusicLayoutAdd.setVisibility(View.GONE);
 				mAddLayout.setVisibility(View.VISIBLE);
 				mFragmetContext.setVisibility(View.VISIBLE);
@@ -1004,6 +1003,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					setDefaultFragment();
 				}
 			}
+		}
+	}
+
+	/**
+	 * 设置右边窗口蓝牙音乐界面
+	 */
+	public void addRightMusic() {
+		if (mMusicRightFragment == null) {
+			mMusicRightFragment = new MusicFragment(true);
+			mAddFragment.replace(R.id.add_bluetooth_music, mMusicRightFragment);
+			mAddFragment.commitAllowingStateLoss();
+		}
+		if (mMusicRightFragment != null) {
+			mMusicRightFragment.openAudioMode();
 		}
 	}
 

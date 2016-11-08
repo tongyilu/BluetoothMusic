@@ -83,7 +83,7 @@ public class BtAudioManager {
 		if (mAudioFocusGain == enable && mTempAudioFocus == mTempFocusNormal) {
 			return;
 		}
-		if (enable) {
+		if (enable || mTempAudioFocus == mTempFocusGain) {
 			mAudioFocusGain = true;
 			mLog(mAudioFocus+"");
 			if (mAudioFocus) {

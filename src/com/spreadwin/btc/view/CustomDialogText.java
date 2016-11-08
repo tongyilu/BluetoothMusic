@@ -1,35 +1,31 @@
 package com.spreadwin.btc.view;
 
 
-import com.spreadwin.btc.BtcNative;
 import com.spreadwin.btc.R;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
-public class CustomDialog extends Dialog {
+public class CustomDialogText extends Dialog {
 
-	public CustomDialog(Context context) {
+	public CustomDialogText(Context context) {
 		super(context);
 	}
 
-	public CustomDialog(Context context, int theme) {
+	public CustomDialogText(Context context, int theme) {
 		super(context, theme);
 	}
 
 	public static class Builder {
 		private Context context;
+		private String title;
 		private String message;
 		private String positiveButtonText;
 		private String negativeButtonText;
@@ -41,6 +37,10 @@ public class CustomDialog extends Dialog {
 			this.context = context;
 		}
 
+		public void setMessage(int msg) {
+			setMessage(context.getResources().getString(msg));
+		}
+
 		public Builder setMessage(String message) {
 			this.message = message;
 			return this;
@@ -50,6 +50,17 @@ public class CustomDialog extends Dialog {
 			this.contentView = v;
 			return this;
 		}
+		
+		public void setTtitle(int msg) {
+			setMessage(context.getResources().getString(msg));
+		}
+		
+		public Builder setTitle(String message) {
+			this.title = message;
+			return this;
+		}
+
+	
 
 		/**
 		 * Set the positive button resource and it's listener
@@ -81,29 +92,19 @@ public class CustomDialog extends Dialog {
 			return this;
 		}
 
-		public CustomDialog crater() {
+		public CustomDialogText crater() {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			// instantiate the dialog with the custom Theme
-			final CustomDialog dialog = new CustomDialog(context, R.style.Dialog);
-			final View layout = inflater.inflate(R.layout.dialog_normal_layout, null);
+			final CustomDialogText dialog = new CustomDialogText(context, R.style.Dialog);
+			View layout = inflater.inflate(R.layout.dialog_custom_layout, null);
 			dialog.addContentView(layout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
 			// set the confirm button
-			WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-			params.gravity = Gravity.TOP;
-			params.y = 30;
 			if (positiveButtonText != null) {
 				((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);
 				if (positiveButtonClickListener != null) {
 					((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener() {
 						public void onClick(View v) {
-							EditText msg = (EditText) layout.findViewById(R.id.message);
-							String message = String.valueOf(msg.getText());
-							if (!TextUtils.isEmpty(message) && message.getBytes().length < 16) {
-								BtcNative.setDeviceName("V66-" + message);
-							}else{
-								Toast.makeText(context, "总长度不超过16个英文字符!", Toast.LENGTH_SHORT).show();
-							}
 							positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
 						}
 					});
@@ -123,18 +124,22 @@ public class CustomDialog extends Dialog {
 					});
 				}
 			} else {
+				// if no confirm button just set the visibility to GONE
 				layout.findViewById(R.id.negativeButton).setVisibility(View.GONE);
 			}
+			// set the content message
+			if (title != null) {
+				((TextView) layout.findViewById(R.id.title)).setText(title);
+			}
 			if (message != null) {
-
-			}
-			if (contentView != null) {
+				((TextView) layout.findViewById(R.id.message)).setText(message);
+			} else if (contentView != null) {
+				// if no message set
+				// add the contentView to the dialog body
 				((LinearLayout) layout.findViewById(R.id.content)).removeAllViews();
-				LinearLayout mContent = ((LinearLayout) layout.findViewById(R.id.content));
-				mContent.addView(contentView,new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				mContent.setGravity(Gravity.TOP|Gravity.CENTER);
+				((LinearLayout) layout.findViewById(R.id.content)).addView(contentView,
+						new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			}
-			
 			dialog.setContentView(layout);
 			dialog.setCancelable(false);
 			return dialog;

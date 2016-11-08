@@ -60,7 +60,25 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private LinearLayout mDial;
 	private boolean isAnswer;
 	private WindowManager wm = null;
+	
+	boolean isOnClike;
 	private Handler mHandler = new Handler();
+	private Runnable mRunnable = new Runnable() {
+		
+		@Override
+		public void run() {
+			if (BtcNative.getAudioPath() == 0) {
+				mSwitch.setImageResource(R.drawable.switching_02);
+				isOnClike = false;
+			} else if(BtcNative.getAudioPath() == 1){
+				mSwitch.setImageResource(R.drawable.switching_01);
+				mMute.setImageResource(R.drawable.mute_d);
+				isOnClike = true;
+			}
+			mHandler.postDelayed(mRunnable, 2000);
+			Log.d(TAG, "DialogView==="+BtcNative.getAudioPath());
+		}
+	};
 
 	public static final String FINISH_ACTIVITY = "FINISH_ACTIVITY";
 
@@ -200,7 +218,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			if (action == FINISH_ACTIVITY) {
 				mDismissDialog();
 			} else if (action == ANSWER_UP) {
-				setChckoutAudio();
+//				setChckoutAudio();
+				mHandler.postDelayed(mRunnable, 2000);  
 				setCaller();
 			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
 				if (!isScreen && isFlasg) {
@@ -216,6 +235,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						params.y = 0;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);
+						mDial.setVisibility(View.GONE);
 						wm.addView(mView, params);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -266,6 +286,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		case R.id.mdropped_button:
 			denyCall();
 			break;
+			//点击切换静音
 		case R.id.mute:
 			if (!isOnClike) {
 				if (isMuteState) {
@@ -279,10 +300,11 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				}
 			}
 			break;
+			//点击切换接听
 		case R.id.image_switch:
 			BtcNative.changeAudioPath();
-			setChckoutAudio();
 			break;
+		   // 点击键盘是否显示
 		case R.id.checkout:
 			if (isCheckout) {
 				isCheckout = false;
@@ -332,24 +354,16 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		}
 	}
 
-	boolean isOnClike;
 
-	public void setChckoutAudio() {
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (BtcNative.getAudioPath() == 0) {
-					mSwitch.setImageResource(R.drawable.switching_02);
-					isOnClike = false;
-				} else if(BtcNative.getAudioPath() == 1){
-					mSwitch.setImageResource(R.drawable.switching_01);
-					mMute.setImageResource(R.drawable.mute_d);
-					isOnClike = true;
-				}
-				Log.d(TAG, "DialogView==="+BtcNative.getAudioPath());
-			}
-		}, 2000);
-	}
+
+//	public void setChckoutAudio() {
+//		mHandler.post(new Runnable() {
+//			@Override
+//			public void run() {
+//				
+//			}
+//		});
+//	}
 
 	private void removeNumber() {
 		if (mDisplayNumber.length() > 1) {
@@ -381,6 +395,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		BtcNative.muteCall(0);
 		((SyncService) mContext).finishMainActivity();
 		rippleBackground.stopRippleAnimation();
+		mHandler.removeCallbacks(mRunnable);
 		Log.d(TAG, "mDismissDialog " + ACTION_BT_CALL_IN);
 		if (isStart) {
 			Log.d(TAG, "send broadcast " + ACTION_BT_CALL_IN);

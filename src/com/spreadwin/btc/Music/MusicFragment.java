@@ -39,9 +39,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private boolean mRight = false;// true:为右边
 	private int mPlayer = 0;
-	private String PlayTitle = null;
-	private String PlayArtist = null;
-	private String PlayAlbum = null;
+	private static String PlayTitle = null;
+	private static String PlayArtist = null;
+	private static String PlayAlbum = null;
 	private boolean isPlaySong = false;// 歌曲信息
 	private int state;
 
@@ -67,7 +67,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 		if (!mRight) {
 			if (mCallStatus == BtcGlobalData.NO_CALL) {
 				openAudioMode();
+			} else {
+				mCallStatus = BtcGlobalData.NO_CALL;
 			}
+		}else{
+			openAudioMode();
 		}
 	}
 
@@ -117,9 +121,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onResume() {
-		if (isPlaySong) {
-			onUpdateSongInfo();
-		}
+		onUpdateSongInfo();
 		super.onResume();
 	}
 
@@ -163,6 +165,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		mLog("onClick 111111111111");
+		openAudioMode();
 		if (v == mMusicPrevious) {
 			mLog("onClick mMusicPrevious");
 			mMusicPrevious();
@@ -199,7 +202,7 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			e.printStackTrace();
 		}
 		if (mPlayer == 2) {
-			if (!(BtAudioManager.mLastMode == 6 && BtAudioManager.mMode == 0)) {
+			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
 				BtAudioManager.getInstance(getActivity()).onBtAudioFocusChange(false);
@@ -207,9 +210,9 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			} else {
 				openAudioMode();
 				mLog("change focus playMusic");
-				if (state != A2DP_PLAYING) {
-					BtcNative.playMusic();
-				}
+				// if (state != A2DP_PLAYING) {
+				// BtcNative.playMusic();
+				// }
 			}
 		} else if (mPlayer == 1 || mPlayer == 0) {
 			openAudioMode();
