@@ -61,7 +61,24 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private LinearLayout mDial;
 	private boolean isAnswer;
 	private WindowManager wm = null;
+	private	boolean isClickAudio;
 	private Handler mHandler = new Handler();
+	private Runnable mRunnable = new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			if (BtcNative.getAudioPath() == 0) {
+				mSwitch.setImageResource(R.drawable.switching_02);
+				isClickAudio = false;
+			} else {
+				mSwitch.setImageResource(R.drawable.switching_01);
+				mMute.setImageResource(R.drawable.mute_d);
+				isClickAudio = true;
+			}
+			mHandler.postDelayed(mRunnable, 1500);
+		}
+	};
 
 	public static final String FINISH_ACTIVITY = "FINISH_ACTIVITY";
 
@@ -201,7 +218,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			if (action == FINISH_ACTIVITY) {
 				mDismissDialog();
 			} else if (action == ANSWER_UP) {
-				setChckoutAudio();
+//				setChckoutAudio();
+				mHandler.post(mRunnable);
 				setCaller();
 			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
 				if (!isScreen && isFlasg) {
@@ -282,7 +300,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			break;
 		case R.id.image_switch:
 			BtcNative.changeAudioPath();
-			setChckoutAudio();
+//			setChckoutAudio();
 			break;
 		case R.id.checkout:
 			if (isCheckout) {
@@ -333,24 +351,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		}
 	}
 
-	boolean isClickAudio;
-
-	public void setChckoutAudio() {
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (BtcNative.getAudioPath() == 0) {
-					mSwitch.setImageResource(R.drawable.switching_02);
-					isClickAudio = false;
-				} else {
-					mSwitch.setImageResource(R.drawable.switching_01);
-					mMute.setImageResource(R.drawable.mute_d);
-					isClickAudio = true;
-				}
-			}
-		}, 2000);
-	}
-
 	private void removeNumber() {
 		if (mDisplayNumber.length() > 1) {
 			mDisplayNumber.deleteCharAt(mDisplayNumber.length() - 1);
@@ -383,6 +383,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		BtcNative.muteCall(0);
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		((SyncService) mContext).finishMainActivity();
+		mHandler.removeCallbacks(mRunnable);
 		rippleBackground.stopRippleAnimation();
 		Log.d(TAG, "mDismissDialog " + ACTION_BT_CALL_IN);
 		if (isStart) {
