@@ -19,10 +19,12 @@ import com.spreadwin.btc.utils.LruJsonCache;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 import com.spreadwin.btc.utils.PreferencesUtils;
+import com.spreadwin.btc.utils.SplitUtil;
 import com.spreadwin.btc.view.DialogView;
 
 import android.R.bool;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RecentTaskInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -487,6 +489,7 @@ public class SyncService extends Service {
 				mCallinInfo.add(mName, mNumber, time);
 			}
 		}
+		mLog("mCalloutInfo ==" + mCallinInfo.getSize());
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
@@ -520,6 +523,7 @@ public class SyncService extends Service {
 				mCallmissInfo.add(mName, mNumber, time);
 			}
 		}
+		mLog("mCalloutInfo ==" + mCallmissInfo.getSize());
 		message.arg1 = BtcGlobalData.NEW_SYNC;
 		handler.sendMessageDelayed(message, 100);
 		mSyncStatus = mTempStatus;
@@ -1238,8 +1242,8 @@ public class SyncService extends Service {
 				mLog("startSyncPhoneBook mCallStatusOld ==" + mCallStatusOld + "; lastCallStatus ==" + lastCallStatus);
 				if (lastCallStatus == BtcGlobalData.CALL_IN) {
 					mLog("startSyncPhoneBook ==BtcGlobalData.PB_IN");
-					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
-					mUpdateCalllog = BtcGlobalData.PB_IN;
+//					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_IN);
+//					mUpdateCalllog = BtcGlobalData.PB_IN;
 					BtcNative.startSyncPhoneBook(BtcGlobalData.PB_MISS);
 					mUpdateCalllog = BtcGlobalData.PB_MISS;
 				} else if (lastCallStatus == BtcGlobalData.CALL_OUT
@@ -1354,7 +1358,8 @@ public class SyncService extends Service {
 			if (mTempStatus != BtcGlobalData.NO_CALL) {
 				for (int i = 0; i < 3; i++) {
 					mLog("ainActivity.mBroadcast isTopMyself");
-					if (isTopMyself(this)) {
+					ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+					if (isTopMyself(this,am.getLeftStackId())) {
 						mLog("ainActivity.mBroadcast isTopMyself==" + true);
 						break;
 					}
@@ -1366,21 +1371,42 @@ public class SyncService extends Service {
 		sendBroadcast(mCallIntent);
 	}
 
+//	/**
+//	 * 判断自己是不是在显示
+//	 * 
+//	 * @return
+//	 */
+//	public static boolean isTopMyself(Context context) {
+//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//		List<RunningTaskInfo> runningTasks = am.getRunningTasks(1);
+//		RunningTaskInfo rti = runningTasks.get(0);
+//		ComponentName component = rti.topActivity;
+//		if (component.getPackageName().equals("com.spreadwin.btc")) {
+//			return true;
+//		}
+//		return false;
+//	}
+	
 	/**
 	 * 判断自己是不是在显示
 	 * 
 	 * @return
 	 */
-	public static boolean isTopMyself(Context context) {
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<RunningTaskInfo> runningTasks = am.getRunningTasks(1);
-		RunningTaskInfo rti = runningTasks.get(0);
-		ComponentName component = rti.topActivity;
-		if (component.getPackageName().equals("com.spreadwin.btc")) {
-			return true;
+	public static boolean isTopMyself(Context context,int leftStack) {
+//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//		PackageManager pm = (PackageManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		RecentTaskInfo ti = SplitUtil.getTopTaskOfStack(context, leftStack);
+		if (ti != null) {
+			Intent it = ti.baseIntent;
+//			ResolveInfo resolveInfo = pm.resolveActivity(it, 0);
+			if ((it.getComponent().getPackageName()).equals("com.spreadwin.btc")) {
+				return true;
+			}
 		}
 		return false;
 	}
+
+	
 
 	/**
 	 * 判断移动网络是否连接

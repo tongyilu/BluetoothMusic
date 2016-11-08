@@ -151,6 +151,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	final IncomingHandler mIncomingHandler = new IncomingHandler();
 
 	public final Messenger mMessenger = new Messenger(mIncomingHandler);
+	
+	
+	//获取左右边stackID
+	int stackLeftId;
+	int stackRegihtId;
 
 	private ServiceConnection conn = new ServiceConnection() {
 
@@ -295,6 +300,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		// mVto = main.getViewTreeObserver();
 		main.addOnLayoutChangeListener(this);
 
+		ActivityManager am = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
+		stackLeftId = am.getLeftStackId();
+		stackRegihtId = am.getRightStackId();
+		
 		builder = new com.spreadwin.btc.view.CustomDialog.Builder(this);
 		builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
@@ -440,7 +449,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment222 isVisible ==" + mMusicFragment.isVisible());
-						if (SyncService.isTopMyself(getBaseContext())) {
+						if (SyncService.isTopMyself(getBaseContext(),stackLeftId) || SyncService.isTopMyself(getBaseContext(), stackRegihtId)) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
 							}
@@ -1020,7 +1029,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 					mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
-					if (SyncService.isTopMyself(getBaseContext())) {
+					
+					if (SyncService.isTopMyself(getBaseContext(), stackLeftId)
+							|| SyncService.isTopMyself(getBaseContext(), stackRegihtId)) {
 						if (mMusicFragment.isVisible()) {
 							mLog("Receiver mMusicFragment 11111111");
 							mMusicFragment.openAudioMode();
@@ -1116,7 +1127,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		if (BtcNative.getBfpStatus() == BtcGlobalData.BFP_CONNECTED) {
 			mContectText.setVisibility(View.VISIBLE);
 		}
-		// if (mMusicRightFragment.isVisible()) {
+//		 if (mMusicRightFragment.isVisible()) {
 		addRightBluetoothMusic();
 		// }
 		// if (mMusicRightFragment.isVisible()) {
@@ -1221,7 +1232,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			onRightLayout(true);
 			onFullScreen();
 		}
-		
+
 	}
 
 	public void addRightBluetoothMusic() {
@@ -1232,11 +1243,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		}
 
 		if (mMusicRightFragment != null) {
-			if (SyncService.isTopMyself(getBaseContext())) {
-				if (mMusicRightFragment.isVisible()) {
-					mMusicRightFragment.openAudioMode();
-				}
-			}
+			mMusicRightFragment.openAudioMode();
 		}
 	}
 
