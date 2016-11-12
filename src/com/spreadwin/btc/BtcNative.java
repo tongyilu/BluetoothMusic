@@ -36,7 +36,7 @@ public class BtcNative {
 	 */
 	public static native int getCallStatus();
 	/**
-	 * @return 获取接通状态
+	 * @return 切换接通状态
 	 */
 	public static native int changeAudioPath();
 	/**

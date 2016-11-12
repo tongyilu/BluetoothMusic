@@ -67,7 +67,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			if (BtcNative.getAudioPath() == 0) {
 				mSwitch.setImageResource(R.drawable.switching_02);
 				isClickAudio = false;
@@ -76,7 +75,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				mMute.setImageResource(R.drawable.mute_d);
 				isClickAudio = true;
 			}
-			mHandler.postDelayed(mRunnable, 1500);
+			mHandler.postDelayed(mRunnable, 500);
 		}
 	};
 
@@ -300,7 +299,6 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			break;
 		case R.id.image_switch:
 			BtcNative.changeAudioPath();
-//			setChckoutAudio();
 			break;
 		case R.id.checkout:
 			if (isCheckout) {

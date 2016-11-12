@@ -1078,7 +1078,6 @@ public class SyncService extends Service {
 		PhoneBookInfo_new sortModel = new PhoneBookInfo_new(mName, mNumber);
 		// 汉字转换成拼音
 		if (mName.length() != 0)
-
 		{
 			String pinyin = characterParser.getSelling(mName);
 			mLog("addContactsInfo ==" + mName + "; pinyin ==" + pinyin);
