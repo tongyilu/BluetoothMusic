@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spreadwin.btc"
-    android:versionCode="16111000"
-    android:versionName="16111000" >
-    android:sharedUserId="android.uid.system"
-
-
+    android:versionCode="16112200"
+    android:versionName="16112200" >
+    android:sharedUserId="android.uid.system"
     <uses-sdk android:minSdkVersion="14" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -33,7 +31,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-           <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="MYACTION.BTC.CALL" />
 
@@ -46,7 +44,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-       
         <activity
             android:name=".DialogFragment"
             android:launchMode="singleTask"
@@ -59,8 +56,6 @@
         <receiver android:name="com.spreadwin.btc.AutoStartReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-<!--                 <action android:name="PHONE_BOOK_SYNC" /> -->
             </intent-filter>
         </receiver>
     </application>

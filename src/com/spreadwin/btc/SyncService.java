@@ -805,7 +805,7 @@ public class SyncService extends Service {
 
 	public void showNotification() {
 		long when = System.currentTimeMillis();
-		Notification notification = new Notification(R.drawable.ic_launcher, "蓝牙", when);
+		Notification notification = new Notification(R.drawable.ico, "蓝牙", when);
 		notification.flags |= Notification.FLAG_NO_CLEAR;
 		// define the notification's expand message and intent
 		CharSequence contentTitle = "车载蓝牙";
