@@ -24,7 +24,7 @@
                 android:singleLine="true"
                 android:text="@string/disconnect_title"
                 android:textColor="@color/blue_00"
-                android:textSize="22sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/contect_text"
@@ -36,7 +36,7 @@
                 android:visibility="gone"
                 android:singleLine="true"
                 android:textColor="@color/blue_00"
-                android:textSize="22sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/bluetoot_name"
@@ -52,7 +52,7 @@
                 android:singleLine="true"
                 android:text="@string/device_name"
                 android:textColor="@color/blue_00"
-                android:textSize="22sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <View
@@ -71,7 +71,7 @@
                 android:id="@+id/left_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="29dip"
+                android:layout_marginLeft="10dip"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 

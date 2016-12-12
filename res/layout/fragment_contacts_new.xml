@@ -7,33 +7,33 @@
     <com.spreadwin.btc.contacts.ClearEditText
         android:id="@+id/filter_edit"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:layout_marginLeft="20dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/search_bar"
         android:drawableLeft="@drawable/search_bar_icon_normal"
         android:hint="请输入关键字"
         android:imeOptions="flagNoExtractUi"
-        android:paddingLeft="20dp"
+        android:paddingLeft="10dp"
         android:singleLine="true"
         android:textColor="@color/white"
-        android:textSize="22.0dip" />
+        android:textSize="16.0sp" />
 
     <TextView
         android:id="@+id/mContactsNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dip"
+        android:layout_marginLeft="20dip"
         android:text="联系人数量：0"
-        android:textSize="22sp"
+        android:textSize="16sp"
         android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dip" >
+        android:layout_marginLeft="10dip" >
 
         <ListView
             android:id="@+id/country_lvcountry"
@@ -52,7 +52,7 @@
             android:background="@drawable/show_head_toast_bg"
             android:gravity="center"
             android:textColor="#ffffffff"
-            android:textSize="30.0dip"
+            android:textSize="20sp"
             android:visibility="invisible" />
 
         <com.spreadwin.btc.contacts.SideBar
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="正在同步中。。。"
-                android:textSize="30sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </FrameLayout>
 

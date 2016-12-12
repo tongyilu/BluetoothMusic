@@ -1166,7 +1166,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	private void onRightLayout(boolean isTrue) {
-		layoutParams.setMargins(0, 0, 220, 0);// 4个参数按顺序分别是左上右下
+		layoutParams.setMargins(0, 0, 130, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
 		if (!isTrue) {
 			mContectText.setVisibility(View.GONE);
@@ -1202,7 +1202,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			return;
 		}
 		int width = right - left;
-		if (width == 818) {
+		Log.d(TAG, "mRightMode"+ width);
+		if (width == 540) {
 			Log.d(TAG, "mRightMode");
 			isOrso = true;
 			mFragmetContext.setVisibility(View.GONE);
@@ -1214,17 +1215,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 			params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
 			mBluetoothStatus.setLayoutParams(params);
-		} else if (width == 854) {
+		} else if (width ==600) {
 			Log.d(TAG, "mLeftMode");
 			isOrso = false;
 			// 半屏
 			setScreen();
 			onLeftLayout();
-		} else if (width == 1424) {
+		} else if (width == 1000) {
 			isOrso = false;
 			setFullScreen();
 			onLeftLayout();
-		} else if (width == 1920) {
+		} else if (width == 1280) {
 			// 满屏
 			addRightBluetoothMusic();
 			isOrso = false;

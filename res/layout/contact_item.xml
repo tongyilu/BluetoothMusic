@@ -14,9 +14,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="14dp"
+            android:layout_marginLeft="8dp"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="14dp"
+            android:layout_marginLeft="8dp"
             android:src="@drawable/icon"
             android:visibility="gone" />
 
@@ -39,16 +39,16 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:textColor="#ffffff"
-            android:textSize="30sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="10dp"
             android:textColor="#ffffff"
-            android:textSize="28sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 </LinearLayout>

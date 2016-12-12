@@ -7,16 +7,16 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:gravity="center"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="vertical" >
 
         <ImageView
             android:id="@+id/music_view"
             android:layout_width="wrap_content"
-            android:layout_margin="10dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_bluetooth_music" />
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_bluetooth_music" />
 
         <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_title"
@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="5dp"
+            android:layout_weight="1"
             android:ellipsize="marquee"
             android:focusable="true"
-            android:layout_weight="1"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
@@ -53,19 +53,17 @@
             android:layout_marginBottom="5dp"
             android:ellipsize="marquee"
             android:focusable="true"
-            android:visibility="gone"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="80dip"
         android:layout_marginBottom="20dp"
-        android:layout_marginRight="80dip"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -76,9 +74,10 @@
 
             <ImageButton
                 android:id="@+id/music_previous"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/music_button_previous" />
+                android:layout_width="70dp"
+                android:background="@android:color/transparent"
+                android:layout_height="70dp"
+                android:src="@drawable/music_button_previous" />
         </LinearLayout>
 
         <LinearLayout
@@ -89,9 +88,10 @@
 
             <ImageButton
                 android:id="@+id/music_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/music_button_play" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/music_button_play" />
         </LinearLayout>
 
         <LinearLayout
@@ -102,9 +102,10 @@
 
             <ImageButton
                 android:id="@+id/music_next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/music_button_next" />
+                android:layout_width="70dp"
+                 android:background="@android:color/transparent"
+                android:layout_height="70dp"
+                android:src="@drawable/music_button_next" />
         </LinearLayout>
     </LinearLayout>
 

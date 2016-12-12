@@ -9,17 +9,17 @@
     <RelativeLayout
         android:id="@+id/input_layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/input_bg" >
 
         <ImageButton
             android:id="@+id/delete_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="47dp"
+            android:layout_height="45dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="30dip"
+            android:layout_marginRight="15dip"
             android:background="@drawable/bluetooth_delete" />
 
         <TextView
@@ -46,12 +46,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:gravity="left"
-                android:layout_marginLeft="30dp"
                 android:singleLine="true"
                 android:text="@string/default_title"
                 android:textColor="@color/white"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
         </HorizontalScrollView>
 
         <TextView
@@ -77,7 +77,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_marginTop="25dip"
+            android:layout_marginTop="10dip"
             android:layout_weight="1"
             android:orientation="vertical" >
 
@@ -90,7 +90,7 @@
                 <ImageButton
                     android:id="@+id/number_1"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -99,7 +99,7 @@
                 <ImageButton
                     android:id="@+id/number_2"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -108,7 +108,7 @@
                 <ImageButton
                     android:id="@+id/number_3"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -124,7 +124,7 @@
                 <ImageButton
                     android:id="@+id/number_4"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -133,7 +133,7 @@
                 <ImageButton
                     android:id="@+id/number_5"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -142,7 +142,7 @@
                 <ImageButton
                     android:id="@+id/number_6"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -158,7 +158,7 @@
                 <ImageButton
                     android:id="@+id/number_7"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -167,7 +167,7 @@
                 <ImageButton
                     android:id="@+id/number_8"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -176,7 +176,7 @@
                 <ImageButton
                     android:id="@+id/number_9"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -192,7 +192,7 @@
                 <ImageButton
                     android:id="@+id/number_jin"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -201,7 +201,7 @@
                 <ImageButton
                     android:id="@+id/number_0"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -210,7 +210,7 @@
                 <ImageButton
                     android:id="@+id/number_xing"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -232,8 +232,8 @@
 
                 <ImageButton
                     android:id="@+id/dial_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
                     android:background="@drawable/bluetooth_dial" />
             </LinearLayout>
 
@@ -245,8 +245,8 @@
 
                 <ImageButton
                     android:id="@+id/dropped_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="68dp"
+                    android:layout_height="68dp"
                     android:background="@drawable/bluetooth_dropped" />
             </LinearLayout>
         </LinearLayout>
