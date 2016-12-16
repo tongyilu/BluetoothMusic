@@ -23,27 +23,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
             android:ellipsize="marquee"
             android:focusable="true"
+            android:layout_marginBottom="5dp"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:ellipsize="marquee"
             android:focusable="true"
+            android:layout_marginBottom="5dp"
             android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textSize="26sp" />
+            android:textSize="18sp" />
 
         <com.spreadwin.btc.view.AlwaysMarqueeTextView
             android:id="@+id/play_album"
@@ -74,9 +74,9 @@
 
             <ImageButton
                 android:id="@+id/music_previous"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                 android:background="@android:color/transparent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:src="@drawable/music_button_previous" />
         </LinearLayout>
 
@@ -88,8 +88,8 @@
 
             <ImageButton
                 android:id="@+id/music_play"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:src="@drawable/music_button_play" />
         </LinearLayout>
@@ -102,9 +102,9 @@
 
             <ImageButton
                 android:id="@+id/music_next"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                  android:background="@android:color/transparent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:src="@drawable/music_button_next" />
         </LinearLayout>
     </LinearLayout>
