@@ -229,8 +229,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
 								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-						params.x = 800;
-						params.width = 818;
+						params.x = 600;
+						params.width = 680;
 						params.y = 0;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);

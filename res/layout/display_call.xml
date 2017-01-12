@@ -12,18 +12,18 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:layout_marginLeft="30dp"
         android:layout_weight="2.2"
         android:gravity="center"
-        android:layout_marginLeft="30dp"
+        android:visibility="gone"
         android:orientation="vertical"
-         android:visibility="gone"
-        android:padding="20dp" >
+        android:padding="10dp" >
 
         <LinearLayout
             android:id="@+id/input_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/input_bg"
             android:orientation="horizontal" >
 
@@ -43,7 +43,7 @@
                     android:gravity="left|center"
                     android:singleLine="true"
                     android:textColor="@color/white"
-                    android:textSize="30sp" />
+                    android:textSize="18sp" />
             </HorizontalScrollView>
 
             <ImageView
@@ -58,7 +58,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical" >
 
@@ -71,7 +71,7 @@
                 <ImageButton
                     android:id="@+id/number_1"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -80,7 +80,7 @@
                 <ImageButton
                     android:id="@+id/number_2"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -89,7 +89,7 @@
                 <ImageButton
                     android:id="@+id/number_3"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -105,7 +105,7 @@
                 <ImageButton
                     android:id="@+id/number_4"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -114,7 +114,7 @@
                 <ImageButton
                     android:id="@+id/number_5"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -123,7 +123,7 @@
                 <ImageButton
                     android:id="@+id/number_6"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -139,7 +139,7 @@
                 <ImageButton
                     android:id="@+id/number_7"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -148,7 +148,7 @@
                 <ImageButton
                     android:id="@+id/number_8"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -157,7 +157,7 @@
                 <ImageButton
                     android:id="@+id/number_9"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                   android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -173,7 +173,7 @@
                 <ImageButton
                     android:id="@+id/number_jin"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                   android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -182,7 +182,7 @@
                 <ImageButton
                     android:id="@+id/number_0"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                   android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -191,7 +191,7 @@
                 <ImageButton
                     android:id="@+id/number_xing"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -214,8 +214,8 @@
 
             <com.spreadwin.btc.view.RippleBackground
                 android:id="@+id/content"
-                android:layout_width="184dp"
-                android:layout_height="184dp"
+                android:layout_width="174dp"
+                android:layout_height="174dp"
                 android:gravity="center"
                 app:rb_color="#0099CC"
                 app:rb_duration="4000"
@@ -235,7 +235,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
-                android:textSize="35sp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:id="@+id/address_text"
@@ -243,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:textColor="@color/blue"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:visibility="gone" />
 
             <TextView
@@ -252,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:textColor="@color/blue"
-                android:textSize="24sp" />
+                android:textSize="18sp" />
 
             <Chronometer
                 android:id="@+id/chronometer"
@@ -260,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:format="%s"
                 android:textColor="@color/blue"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:visibility="gone" />
 
             <com.spreadwin.btc.view.DilatingDotsProgressBar
@@ -287,37 +287,37 @@
 
             <ImageView
                 android:id="@+id/checkout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                  android:layout_width="68dp"
+                    android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/keyboard_u"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/image_switch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                   android:layout_width="68dp"
+                    android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/switching_02" />
 
             <ImageView
                 android:id="@+id/mdropped_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/bluetooth_dropped" />
 
             <ImageView
                 android:id="@+id/mute"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/mute_d" />
 
             <ImageView
                 android:id="@+id/mdial_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/bluetooth_dial"
                 android:visibility="gone" />

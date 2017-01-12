@@ -1324,12 +1324,12 @@ public class SyncService extends Service {
 
 		// 设置悬浮窗的长得宽
 		if (full == 1) {
-			params.x = 800;
-			params.width = 818;
+			params.x = 600;
+			params.width = 540;
 			isScreen = true;
 		} else if (full == 2) {
 			params.x = 0;
-			params.width = 1424;
+			params.width = 1000;
 			isScreen = false;
 			params.gravity = Gravity.LEFT;
 		} else if (full == 3) {
