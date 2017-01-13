@@ -15,9 +15,9 @@
         android:layout_marginLeft="30dp"
         android:layout_weight="2.2"
         android:gravity="center"
-        android:visibility="gone"
         android:orientation="vertical"
-        android:padding="10dp" >
+        android:padding="10dp"
+        android:visibility="gone" >
 
         <LinearLayout
             android:id="@+id/input_layout"
@@ -157,7 +157,7 @@
                 <ImageButton
                     android:id="@+id/number_9"
                     android:layout_width="fill_parent"
-                   android:layout_height="50dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -173,7 +173,7 @@
                 <ImageButton
                     android:id="@+id/number_jin"
                     android:layout_width="fill_parent"
-                   android:layout_height="50dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -182,7 +182,7 @@
                 <ImageButton
                     android:id="@+id/number_0"
                     android:layout_width="fill_parent"
-                   android:layout_height="50dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -214,14 +214,14 @@
 
             <com.spreadwin.btc.view.RippleBackground
                 android:id="@+id/content"
-                android:layout_width="174dp"
-                android:layout_height="174dp"
+                android:layout_width="164dp"
+                android:layout_height="164dp"
                 android:gravity="center"
                 app:rb_color="#0099CC"
                 app:rb_duration="4000"
-                app:rb_radius="15dp"
-                app:rb_rippleAmount="6"
-                app:rb_scale="6" >
+                app:rb_radius="12dp"
+                app:rb_rippleAmount="5"
+                app:rb_scale="5" >
 
                 <ImageView
                     android:id="@+id/icon"
@@ -235,7 +235,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
-                android:textSize="28sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/address_text"
@@ -243,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:textColor="@color/blue"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:visibility="gone" />
 
             <TextView
@@ -252,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:textColor="@color/blue"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <Chronometer
                 android:id="@+id/chronometer"
@@ -260,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:format="%s"
                 android:textColor="@color/blue"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:visibility="gone" />
 
             <com.spreadwin.btc.view.DilatingDotsProgressBar
@@ -287,16 +287,16 @@
 
             <ImageView
                 android:id="@+id/checkout"
-                  android:layout_width="68dp"
-                    android:layout_height="68dp"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/keyboard_u"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/image_switch"
-                   android:layout_width="68dp"
-                    android:layout_height="68dp"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
                 android:layout_weight="1"
                 android:src="@drawable/switching_02" />
 

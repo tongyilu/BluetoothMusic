@@ -1402,6 +1402,8 @@ public class SyncService extends Service {
 				return true;
 			}
 		}
+		
+		
 		return false;
 	}
 

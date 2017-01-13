@@ -6,10 +6,10 @@
 
     <com.spreadwin.btc.view.SlidingTabLayout
         android:id="@+id/tabs"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp" />
+        android:layout_height="wrap_content" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"

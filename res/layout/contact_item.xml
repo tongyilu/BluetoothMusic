@@ -22,7 +22,7 @@
     <LinearLayout
         android:id="@+id/name_layout"
         android:layout_width="fill_parent"
-        android:layout_height="63dip" >
+        android:layout_height="45dip" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -39,16 +39,16 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
+            android:paddingRight="10dp"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
 </LinearLayout>
