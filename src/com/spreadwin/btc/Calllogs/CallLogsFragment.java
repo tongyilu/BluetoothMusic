@@ -252,7 +252,7 @@ public class CallLogsFragment extends Fragment {
 			emptyView = new TextView(getActivity());
 			emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 			emptyView.setText(getResources().getString(R.string.no_call_log));
-			emptyView.setTextSize(30);
+			emptyView.setTextSize(18);
 			emptyView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 			emptyView.setVisibility(View.GONE);
 			((ViewGroup) mListView.getParent()).addView(emptyView, 1);

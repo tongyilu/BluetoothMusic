@@ -12,8 +12,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_weight="2.2"
+        android:layout_marginLeft="40dp"
+        android:layout_weight="2"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp"
@@ -21,9 +21,8 @@
 
         <LinearLayout
             android:id="@+id/input_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="350dp"
             android:layout_height="45dp"
-            android:layout_marginTop="5dp"
             android:background="@drawable/input_bg"
             android:orientation="horizontal" >
 
@@ -51,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="35dp"
+                android:layout_marginRight="15dp"
                 android:src="@drawable/bluetooth_delete" />
         </LinearLayout>
 
@@ -214,8 +213,8 @@
 
             <com.spreadwin.btc.view.RippleBackground
                 android:id="@+id/content"
-                android:layout_width="164dp"
-                android:layout_height="164dp"
+                android:layout_width="154dp"
+                android:layout_height="154dp"
                 android:gravity="center"
                 app:rb_color="#0099CC"
                 app:rb_duration="4000"
@@ -241,7 +240,7 @@
                 android:id="@+id/address_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
+                android:layout_marginTop="6dp"
                 android:textColor="@color/blue"
                 android:textSize="16sp"
                 android:visibility="gone" />
@@ -250,7 +249,7 @@
                 android:id="@+id/call_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
+                android:layout_marginTop="6dp"
                 android:textColor="@color/blue"
                 android:textSize="16sp" />
 
@@ -268,10 +267,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
                 android:radius="6dp"
                 android:visibility="gone"
-                app:dd_animationDuration="500"
                 app:dd_horizontalSpacing="8dp"
                 app:dd_numDots="6"
                 app:dd_scaleMultiplier="1.5"

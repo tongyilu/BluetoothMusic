@@ -894,17 +894,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
 					// setDefaultFragment();
-					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
+//					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
 					// 来电时
 					mDismissDialog(DIALOG1);
-					mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
+//					mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
 					// if (tempApp) {
 					// moveTaskToBack(true);
 					// }
 				} else {
 					mDismissDialog(DIALOG1);
-					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
+//					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mLog("Receiver mActionCall mStatus NO_CALL  tempApp==" + tempApp);
 					// if (tempApp) {
 					// moveTaskToBack(true);
@@ -1058,7 +1058,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	private void onRightLayout(boolean isTrue) {
-		layoutParams.setMargins(0, 0, 130, 0);// 4个参数按顺序分别是左上右下
+		layoutParams.setMargins(0, 0, 160, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
 		if (!isTrue) {
 			mContectText.setVisibility(View.GONE);
@@ -1067,7 +1067,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	private void onFullScreen() {
-		params.setMargins(120, 0, 0, 0);// 4个参数按顺序分别是左上右下
+		params.setMargins(150, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
 		leftParams.setMargins(100, 20, 0, 0);
 		mLeftMenu.setLayoutParams(leftParams);

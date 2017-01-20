@@ -9,18 +9,18 @@
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="fill_parent"
-        android:layout_height="140dp"
+        android:layout_height="100dp"
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/title"
             style="@style/text_22_ffffff"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:id="@+id/title"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="@string/hint"
-            android:textSize="28sp" />
+            android:textSize="22sp" />
 
         <View
             android:layout_width="fill_parent"
@@ -30,11 +30,11 @@
         <TextView
             android:id="@+id/message"
             style="@style/text_20_ffffff"
-            android:layout_width="400dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="18dp"
-            android:textSize="28sp" />
+            android:padding="16dp"
+            android:textSize="22sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -43,36 +43,28 @@
         android:layout_gravity="bottom"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="15dp" >
+        android:padding="10dp" >
 
         <Button
             android:id="@+id/positiveButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             android:layout_marginRight="60dp"
-            android:background="@drawable/btn_selete_dorder"
+            android:background="@drawable/white_border"
             android:gravity="center"
-            android:paddingBottom="10dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:paddingTop="10dp"
             android:text="@string/confirm"
-            android:textColor="@android:color/white"
-            android:textSize="26sp" />
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/negativeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_selete_dorder"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:background="@drawable/white_border"
             android:gravity="center"
-            android:paddingBottom="10dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:paddingTop="10dp"
             android:text="@string/cancel"
             android:textColor="@color/white"
-            android:textSize="26sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 </LinearLayout>
