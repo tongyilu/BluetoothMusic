@@ -1044,9 +1044,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			ViewGroup.LayoutParams.MATCH_PARENT);
 
 	private void onLeftLayout() {
-		layoutParams.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
+		layoutParams.setMargins(0, 0, 20, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothName.setLayoutParams(layoutParams);
-		params.setMargins(0, 0, 0, 0);// 4个参数按顺序分别是左上右下
+		params.setMargins(15, 0, 0, 0);// 4个参数按顺序分别是左上右下
 		mBluetoothStatus.setLayoutParams(params);
 
 		leftParams.setMargins(10, 0, 0, 0);
@@ -1071,7 +1071,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mBluetoothStatus.setLayoutParams(params);
 		leftParams.setMargins(100, 20, 0, 0);
 		mLeftMenu.setLayoutParams(leftParams);
-
 	}
 
 	@Override
