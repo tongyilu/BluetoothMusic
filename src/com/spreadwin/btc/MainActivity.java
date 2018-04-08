@@ -894,17 +894,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mShowDialog(DIALOG1);
 				} else if (mStatus == BtcGlobalData.CALL_OUT) {
 					// setDefaultFragment();
-//					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
+					mBluetoothFragment.setCallStatus(BtcGlobalData.CALL_OUT);
 				} else if (mStatus == BtcGlobalData.IN_CALL) {
 					// 来电时
 					mDismissDialog(DIALOG1);
-//					mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
+					mBluetoothFragment.setCallStatus(BtcGlobalData.IN_CALL);
 					// if (tempApp) {
 					// moveTaskToBack(true);
 					// }
 				} else {
 					mDismissDialog(DIALOG1);
-//					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
+					mBluetoothFragment.setCallStatus(BtcGlobalData.NO_CALL);
 					mLog("Receiver mActionCall mStatus NO_CALL  tempApp==" + tempApp);
 					// if (tempApp) {
 					// moveTaskToBack(true);

@@ -220,14 +220,14 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 				mDisplayNumber.delete(0, mDisplayNumber.length());
 				mIncallText.setText(getCallInfo());
 			}
-			if (!bool) {
+		/*	if (!bool) {
 				hour = 0;
 				minute = 0;
 				second = 0;
 				mLog("setCallStatus second ==" + second);
 				handler.removeCallbacks(runnable);
 				handler.post(runnable);
-			}
+			}*/
 			bool = true;
 		}
 	}
