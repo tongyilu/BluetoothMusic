@@ -205,9 +205,9 @@ public class SyncService extends Service {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			mLog("mDataThread  is start");
+			mLog("getDatabase  is start");
 			mdatabase = getDatabase();
-			mLog("mDataThread  is end");
+			mLog("getDatabase  is end");
 			if (mdatabase && isNetworkConnected() && isConnect) {
 				PullContacts();
 			}
@@ -348,7 +348,7 @@ public class SyncService extends Service {
 				int PB_IN_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_IN);
 				mTempStatus = PB_IN_TYPE;
 				if (PB_IN_TYPE == BtcGlobalData.NEW_SYNC) {
-					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
+				    mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus PB_IN ==" + mSyncStatus);
 					updatePbIn();
 				}
 
@@ -356,7 +356,7 @@ public class SyncService extends Service {
 				int PB_OUT_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_OUT);
 				mTempStatus = PB_OUT_TYPE;
 				if (PB_OUT_TYPE == BtcGlobalData.NEW_SYNC) {
-					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
+				    mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus PB_OUT ==" + mSyncStatus);
 					updatePbOut();
 					Log.e("------", "onSyncStatusChange end 111111111111");
 				}
@@ -365,7 +365,7 @@ public class SyncService extends Service {
 				int PB_MISS_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_MISS);
 				mTempStatus = PB_MISS_TYPE;
 				if (PB_MISS_TYPE == BtcGlobalData.NEW_SYNC) {
-					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
+				    mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus PB_MISS ==" + mSyncStatus);
 					updatePbMiss();
 				}
 
@@ -373,7 +373,7 @@ public class SyncService extends Service {
 				int PB_PHONE_TYPE = BtcNative.getSyncStatus(BtcGlobalData.PB_PHONE);
 				mTempStatus = PB_PHONE_TYPE;
 				if (PB_PHONE_TYPE == BtcGlobalData.NEW_SYNC) {
-					mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus ==" + mSyncStatus);
+				    mLog("mTempStatus ==" + mTempStatus + "; mSyncStatus PB_PHONE ==" + mSyncStatus);
 					updatePbPhone();
 				}
 				try {
@@ -537,7 +537,7 @@ public class SyncService extends Service {
 		mLog("syncT onSyncStatusChange sRecordNum==" + RecordNum + "; mPhoneBook.size() ==" + mPhoneBook.size()
 				+ "mUpdateCalllog====" + mUpdateCalllog);
 		// if (mUpdateCalllog == BtcGlobalData.NO_CALL) {
-		if (mPhoneBook.size() != RecordNum || isNewContacts()) {
+		if ((RecordNum > 0 && mPhoneBook.size() != RecordNum ) || isNewContacts()) {
 			addContacts();
 			// handler.sendEmptyMessage(mAddDatabase);
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spreadwin.btc"
-    android:versionCode="18040800"
-    android:versionName="18040800" >
-    android:sharedUserId="android.uid.system"
+    android:versionCode="18051800"
+    android:versionName="18051800" >
+    android:sharedUserId="android.uid.system"
+    
     <uses-sdk android:minSdkVersion="14" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
