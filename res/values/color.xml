@@ -4,7 +4,19 @@
     <color name="blue">#00acfe</color>
     <color name="gray_61">#616161</color>
     <color name="black">#000</color>
+    <color name="miss_red">#ed2323</color>
     <color name="black_05">#051629</color>
     <color name="blue_00">#00a5f3</color>
      <color name="rippelColor">#0099CC</color>
+     <color name="button_normal">#4CE4E4E4</color>
+     <color name="button_down">#CCFFFFFF</color>
+     
+     <color name="dial_normal">#59CB5E</color>
+     <color name="dial_down">#549F57</color>
+     
+     <color name="item_color">#4CE5E5E5</color>
+     
+     <color name="droped_normal">#d0312d</color>
+     <color name="droped_down">#942523</color>
+     
 </resources>

@@ -13,10 +13,11 @@ import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.utils.PhoneBookInfo_new;
 
 import android.app.ActionBar.LayoutParams;
-import android.app.Fragment;
+//import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -86,8 +87,13 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mLog("onCreate 111111111");
+	      if (MainActivity.binder != null) {
+	            if (MainActivity.binder.getPhoneBookInfo_new() != null) {
+	                mLog("onCreate mContactsInfo =="+mContactsInfo.size()+"; getPhoneBookInfo_new =="+MainActivity.binder.getPhoneBookInfo_new().size());
+	                mContactsInfo = (List<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
+	            }
+	        }
 		try {
-			mContactsInfo = (List<PhoneBookInfo_new>) MainActivity.binder.getPhoneBookInfo_new();
 			characterParser = CharacterParser.getInstance();
 			pinyinComparator = new PinyinComparator();
 		} catch (Exception e) {
@@ -143,6 +149,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		try {
 			Collections.sort(mContactsInfo, pinyinComparator);
 		} catch (Exception e) {
+		    e.printStackTrace();
 		}
 		adapter = new ContactsAdapter(getActivity());
 		adapter.clearPhoneBookInfoList();
@@ -223,7 +230,7 @@ public class ContactsFragment extends Fragment implements OnCreateContextMenuLis
 		}
 		if (mContactsInfo.size() > 0) {
 //			mContactsNumber.setVisibility(View.VISIBLE);
-			sideBar.setVisibility(View.VISIBLE);
+//			sideBar.setVisibility(View.VISIBLE);
 //			mContactsNumber.setText("联系人数量：" + mContactsInfo.size());
 		} else {
 			mContactsInfo.clear();

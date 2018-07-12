@@ -137,6 +137,7 @@ public class SyncService extends Service {
 	public final int mPhoneBookSyncBroadcast = 3;
 	public final int mAddDatabase = 5;
 	public final int mUpdateBookInfoOver = 7;
+	public final int mUpdateMusicInfo = 8;
 	/********************************/
 	public final int mNewSyncStatus = 4; // deprecated
 	public final int mUpdateDataBase = 6; // deprecated
@@ -296,6 +297,7 @@ public class SyncService extends Service {
 				}
 				// 监听CallStatus
 				mTempStatus = BtcNative.getCallStatus();
+//				mTempStatus = BtcGlobalData.CALL_IN;
 				if (mTempStatus != mCallStatus) {
 					onCallStatusChange();
 				}
@@ -321,7 +323,7 @@ public class SyncService extends Service {
 				// 更新歌曲
 				if (isPlayTileChenger()) {
 					mLog("isPlayTileChenger" + isPlayTileChenger());
-					onPlayTitleChenger(true);
+					handler.sendEmptyMessageDelayed(mUpdateMusicInfo, 500);					
 				}
 				// if (mTitle != BtcNative.getPlayTitle()) {
 				// mTitle = BtcNative.getPlayTitle();
@@ -396,6 +398,7 @@ public class SyncService extends Service {
 			mArtist = null;
 			mAlbum = null;
 		}
+		mLog("onPlayTitleChenger mTitle"+mTitle+"; mArtist =="+mArtist+"; mAlbum =="+mAlbum);
 		Intent mA2dpIntent = new Intent();
 		mA2dpIntent.setAction(MusicFragment.mActionInfoBfp);
 		mA2dpIntent.putExtra("mTitle", mTitle);
@@ -434,16 +437,16 @@ public class SyncService extends Service {
 					continue;
 				}
 				mLog("呼出记录:============" + "姓名：" + mName + "号码：" + mNumber + "时间" + mDateTime);
-				String[] str = mDateTime.split("T");
-				String time = "";
-				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
-				try {
-					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
-				} catch (StringIndexOutOfBoundsException e) {
-					e.printStackTrace();
-				}
+//				String[] str = mDateTime.split("T");
+//				String time = "";
+//				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+//				try {
+//					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
+//				} catch (StringIndexOutOfBoundsException e) {
+//					e.printStackTrace();
+//				}
 				if (isConnect && mName != null && mNumber != null) {
-					mCalloutInfo.add(mName, mNumber, time);
+					mCalloutInfo.add(mName, mNumber, mDateTime);
 				} else {
 					mCalloutInfo.clear();
 				}
@@ -477,16 +480,16 @@ public class SyncService extends Service {
 					continue;
 				}
 				mLog("呼入记录:============" + "姓名：" + mName + "号码：" + mNumber + "时间" + mDateTime);
-				String[] str = mDateTime.split("T");
-				String time = "";
-				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
-				try {
-					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
-				} catch (StringIndexOutOfBoundsException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-				mCallinInfo.add(mName, mNumber, time);
+//				String[] str = mDateTime.split("T");
+//				String time = "";
+//				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+//				try {
+//					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
+//				} catch (StringIndexOutOfBoundsException e) {
+//					// TODO: handle exception
+//					e.printStackTrace();
+//				}
+				mCallinInfo.add(mName, mNumber, mDateTime);
 			}
 		}
 		mLog("mCalloutInfo ==" + mCallinInfo.getSize());
@@ -512,15 +515,15 @@ public class SyncService extends Service {
 					continue;
 				}
 				mLog("未接记录:============" + "姓名：" + mName + "号码：" + mNumber + "时间：" + mDateTime);
-				String[] str = mDateTime.split("T");
-				String time = "";
-				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
-				try {
-					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
-				} catch (StringIndexOutOfBoundsException e) {
-					e.printStackTrace();
-				}
-				mCallmissInfo.add(mName, mNumber, time);
+//				String[] str = mDateTime.split("T");
+//				String time = "";
+//				// + " "+ str[1].substring(0, 2) + ":" + str[1].substring(2, 4);
+//				try {
+//					time = str[0].substring(0, 4) + "-" + str[0].substring(4, 6) + "-" + str[0].substring(6, 8);
+//				} catch (StringIndexOutOfBoundsException e) {
+//					e.printStackTrace();
+//				}
+				mCallmissInfo.add(mName, mNumber, mDateTime);
 			}
 		}
 		mLog("mCalloutInfo ==" + mCallmissInfo.getSize());
@@ -554,7 +557,9 @@ public class SyncService extends Service {
 			}
 			message.arg2 = BtcGlobalData.NEW_SYNC;
 		}
+		mLog("updatePbPhone isConnect==" + isConnect+"; size =="+mContactsInfo.size());
 		if (!isConnect) {
+		    mLog("mContactsInfo333 clear");
 			mContactsInfo.clear();
 			mPhoneBook.clear();
 			return;
@@ -584,6 +589,7 @@ public class SyncService extends Service {
 		 * @return
 		 */
 		public List<PhoneBookInfo_new> getPhoneBookInfo_new() {
+		    mLog("getPhoneBookInfo_new =="+mContactsInfo.size()+"; mContactsInfo =="+mContactsInfo);
 			return mContactsInfo;
 		}
 
@@ -593,7 +599,7 @@ public class SyncService extends Service {
 				if (mContactsInfo.get(i).getName().equals(getCallName)
 						|| mContactsInfo.get(i).getName().contains(getCallName)) {
 					number = mContactsInfo.get(i).getNumber();
-					Log.d("ContactsInfo.size()====", i + "");
+					Log.d(TAG, i + "");
 					break;
 				}
 			}
@@ -738,6 +744,7 @@ public class SyncService extends Service {
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_DISCONNECT);
 			// 清空联系人和通话记录数据
 			mLog("clear phonebook data");
+			mLog("mContactsInfo444 clear");
 			mPhoneBook.clear();
 			mContactsInfo.clear();
 			// mHandler.removeCallbacks(mRunnble);
@@ -799,6 +806,9 @@ public class SyncService extends Service {
 				mCallIntent.setAction(MainActivity.mActionBookInfoOver);
 				sendObjMessage(1, mCallIntent);
 				break;
+			case mUpdateMusicInfo:
+			    onPlayTitleChenger(true);
+			    break;
 			}
 		}
 	};
@@ -1026,6 +1036,7 @@ public class SyncService extends Service {
 			} while (c.moveToNext() && isConnect);
 			c.close();
 			if (!isConnect) {
+			    mLog("mContactsInfo clear");
 				mContactsInfo.clear();
 				mPhoneBook.clear();
 				return true;
@@ -1105,6 +1116,7 @@ public class SyncService extends Service {
 			sortModel.setSecondLetters("#");
 		}
 		if (!isConnect) {
+		    mLog("mContactsInfo111 clear");
 			mPhoneBook.clear();
 			mContactsInfo.clear();
 			return;
@@ -1446,6 +1458,7 @@ public class SyncService extends Service {
 						addContactsInfo(contacts[0], contacts[1]);
 					}
 					if (!isConnect) {
+					    mLog("mContactsInfo222 clear");
 						mContactsInfo.clear();
 						mPhoneBook.clear();
 						return;

@@ -18,14 +18,15 @@ import com.spreadwin.btc.view.SlidingTabLayout;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+//import android.app.Fragment;
+//import android.app.FragmentManager;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler; //import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 //import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -144,7 +145,7 @@ public class CallLogsFragment extends Fragment {
 	}
 
 	public class MyAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
-		String[] mTitle = { "呼出电话", "呼入电话", "未接电话" };
+		String[] mTitle = { "呼出", "呼入", "未接" };
 		int mCurPos = 0;
 
 		@Override
@@ -308,18 +309,18 @@ public class CallLogsFragment extends Fragment {
 		@Override
 		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 			mLog("onCreateContextMenu arg0 ==" + index);
-			// if (mPhoneBookInfo.get(mTabTpye).getTelName(index).length() > 0)
-			// {
-			// menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelName(
-			// index));
-			// } else {
+//			 if (mPhoneBookInfo.get(mTabTpye).getTelName(index).length() > 0)
+//			 {
+//			 menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelName(
+//			 index));
+//			 } else {
 			menu.setHeaderTitle(mPhoneBookInfo.get(mTabTpye).getTelNumber(index));
 			String number = mPhoneBookInfo.get(mTabTpye).getTelNumber(index);
 			BtcNative.dialCall(number);
-			// }
-			// menu.add(mTabTpye, 1, 0, "拨打");
-			// menu.add(0, 2, 0, "test2");
-			// menu.add(0, 3, 0, "test3");
+//			 }
+//			 menu.add(mTabTpye, 1, 0, "拨打");
+//			 menu.add(0, 2, 0, "test2");
+//			 menu.add(0, 3, 0, "test3");
 		}
 	}
 
@@ -343,6 +344,7 @@ public class CallLogsFragment extends Fragment {
 	}
 
 	public void notifyDataSetChanged() {
+	    mLog("notifyDataSetChanged mAdapter =="+mAdapter);
 		if (mAdapter == null) {
 			return;
 		}

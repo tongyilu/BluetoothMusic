@@ -7,9 +7,9 @@ import com.spreadwin.btc.MainActivity;
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.utils.BtcGlobalData;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +51,7 @@ public class BluetoothFragment extends Fragment implements OnClickListener, OnLo
 		// mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 		return mRootView;
 	}
-
+	
 	private void init() {
 		mDeleteButton = (ImageButton) mRootView.findViewById(R.id.delete_button);
 		mNumberOne = (ImageButton) mRootView.findViewById(R.id.number_1);

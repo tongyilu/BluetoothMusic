@@ -10,10 +10,10 @@
             android:layout_width="fill_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:divider="@color/gray_61"
+            android:divider="@android:color/transparent"
             android:scrollbars="none"
             android:dividerHeight="1dp"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="fill_parent"></ListView>
         
          <LinearLayout              
          	 android:id="@+id/loading"

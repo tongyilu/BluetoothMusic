@@ -5,4 +5,10 @@
     <dimen name="dp_25">25dp</dimen>
     <dimen name="rippleRadius">64dp</dimen>
     <dimen name="rippleStrokeWidth">2dp</dimen>
+    
+    <dimen name="numberWidth">147dp</dimen>
+    <dimen name="numberHeight">90dp</dimen>
+    <dimen name="numberMargin">2dp</dimen>
+    <dimen name="input_number_Width">187dp</dimen>
+    <dimen name="input_number_Height">98dp</dimen>
 </resources>

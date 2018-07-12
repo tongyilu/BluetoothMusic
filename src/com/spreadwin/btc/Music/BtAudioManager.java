@@ -121,10 +121,10 @@ public class BtAudioManager {
 			} else {
 				setAudioMode(AUDIO_MODE_BT);
 			}
-			BtcNative.setVolume(VolumeNormal);
+//			BtcNative.setVolume(VolumeNormal);
 		} else {
 			setAudioMode(AUDIO_MODE_NORMAL);
-			BtcNative.setVolume(VolumeMute);
+//			BtcNative.setVolume(VolumeMute);
 		}
 	}
 
@@ -132,8 +132,8 @@ public class BtAudioManager {
 	 * 音频kill掉后重启
 	 */
 	public void setMediaKillMode() {
-		audioManager.setParameters("cdr_mode=" + AUDIO_MODE_NORMAL);
-		audioManager.setParameters("cdr_mode=" + mMode);
+	/*	audioManager.setParameters("cdr_mode=" + AUDIO_MODE_NORMAL);
+		audioManager.setParameters("cdr_mode=" + mMode);*/
 	}
 
 	/**
@@ -147,7 +147,10 @@ public class BtAudioManager {
 			mTempAudioFocus = mTempFocusNormal;
 			audioManager.abandonAudioFocus(mAudioFocusListener);
 		}
-		audioManager.setParameters("cdr_mode=" + mode);
+		if (mode == AUDIO_MODE_BT) {
+            mContext.sendBroadcast(new Intent("android.intent.action.E100_BT_MODE"));
+        }
+		//audioManager.setParameters("cdr_mode=" + mode);
 
 		mLastMode = mMode;
 		mMode = mode;

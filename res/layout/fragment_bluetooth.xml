@@ -4,14 +4,15 @@
     android:layout_height="fill_parent"
     android:layout_marginLeft="10dip"
     android:layout_marginRight="10dip"
-    android:orientation="vertical" >
+    android:orientation="vertical" >    
 
     <RelativeLayout
         android:id="@+id/input_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="447dip"
         android:layout_height="45dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/input_bg" >
+         >
+        android:background="@drawable/input_bg"
 
         <ImageButton
             android:id="@+id/delete_button"
@@ -49,9 +50,9 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
                 android:singleLine="true"
-                android:text="@string/default_title"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
+                android:text="@string/default_title"
         </HorizontalScrollView>
 
         <TextView
@@ -72,168 +73,186 @@
         android:layout_alignRight="@id/input_layout"
         android:layout_below="@id/input_layout"
         android:layout_centerHorizontal="true"
-        android:orientation="horizontal" >
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="447dip"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
                 <ImageButton
                     android:id="@+id/number_1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:src="@drawable/bluetooth_number_1" />
 
                 <ImageButton
                     android:id="@+id/number_2"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
+                    android:layout_marginLeft="@dimen/numberMargin"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:src="@drawable/bluetooth_number_2" />
 
                 <ImageButton
                     android:id="@+id/number_3"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
+                    android:layout_marginLeft="@dimen/numberMargin"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_3" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal" >
 
                 <ImageButton
                     android:id="@+id/number_4"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_4" />
 
                 <ImageButton
                     android:id="@+id/number_5"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginLeft="@dimen/numberMargin"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_5" />
 
                 <ImageButton
                     android:id="@+id/number_6"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginLeft="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_6" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal" >
 
                 <ImageButton
                     android:id="@+id/number_7"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_7" />
 
                 <ImageButton
                     android:id="@+id/number_8"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginLeft="@dimen/numberMargin"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_8" />
 
                 <ImageButton
                     android:id="@+id/number_9"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginLeft="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_9" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal" >
 
                 <ImageButton
                     android:id="@+id/number_jin"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_jin" />
 
                 <ImageButton
                     android:id="@+id/number_0"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginLeft="@dimen/numberMargin"
+                    android:layout_marginRight="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_0" />
 
                 <ImageButton
                     android:id="@+id/number_xing"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/numberWidth"
+                    android:layout_height="@dimen/numberHeight"
+                    android:background="@drawable/button_bg"
+                    android:layout_marginLeft="@dimen/numberMargin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:src="@drawable/bluetooth_number_xing" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="10dp"
-            android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical" >
+                android:gravity="center" >
 
                 <ImageButton
                     android:id="@+id/dial_button"
-                    android:layout_width="68dp"
-                    android:layout_height="68dp"
+                    android:layout_width="208dp"
+                    android:layout_height="90dp"
+                    android:src="@drawable/bt_dial"
+                    android:scaleType="centerInside"
                     android:background="@drawable/bluetooth_dial" />
             </LinearLayout>
 
@@ -241,12 +260,13 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical" >
-
+                android:visibility="gone"
+                android:gravity="center" >
+                
                 <ImageButton
                     android:id="@+id/dropped_button"
-                    android:layout_width="68dp"
-                    android:layout_height="68dp"
+                    android:layout_width="208dp"
+                    android:layout_height="90dp"
                     android:background="@drawable/bluetooth_dropped" />
             </LinearLayout>
         </LinearLayout>

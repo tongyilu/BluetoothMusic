@@ -8,7 +8,7 @@ import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.PreferencesUtils;
 import com.spreadwin.btc.view.AlwaysMarqueeTextView;
 
-import android.app.Fragment;
+//import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -153,11 +154,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 			return;
 		}
 		if (status == A2DP_PLAYING) {
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
+			mMusicPlay.setImageResource(R.drawable.music_button_play);
 		} else if (status == A2DP_CONNECTED) {
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
+			mMusicPlay.setImageResource(R.drawable.music_button_play);
 		} else if (status == A2DP_DISCONNECT) {
-			mMusicPlay.setBackgroundResource(R.drawable.music_button_play);
+			mMusicPlay.setImageResource(R.drawable.music_button_play);
 		}
 	}
 
@@ -193,11 +194,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 
 	private void mMusicPlay() {
 		mLog("onClick BtcNative.getA2dpStatus() ==" + BtcNative.getA2dpStatus());
-		if (mPlayer == 2) {
+		if (mPlayer == A2DP_PLAYING) {
 			if (!(BtAudioManager.mLastMode == 0 && BtAudioManager.mMode == 6)) {
 				mLog("onClick pauseMusic");
 				BtcNative.pauseMusic();
-				mPlayer = 1;
+				mPlayer = A2DP_CONNECTED;
 			} else {
 				openAudioMode();
 				mLog("change focus playMusic");
@@ -205,11 +206,11 @@ public class MusicFragment extends Fragment implements OnClickListener {
 //					BtcNative.playMusic();
 //				}
 			}
-		} else if (mPlayer == 1 || mPlayer == 0) {
+		} else if (mPlayer == A2DP_CONNECTED || mPlayer == A2DP_DISCONNECT) {
 			openAudioMode();
 			mLog("onClick playMusic");
 			BtcNative.playMusic();
-			mPlayer = 2;
+			mPlayer = A2DP_PLAYING;
 		}
 	}
 

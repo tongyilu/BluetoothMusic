@@ -1,6 +1,8 @@
 package com.spreadwin.btc.Calllogs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.spreadwin.btc.R;
 import com.spreadwin.btc.utils.PhoneBookInfo;
@@ -20,6 +22,10 @@ public class CallLogsAdapter extends BaseAdapter {
 	ArrayList<String> mTelTime;
 	PhoneBookInfo mCallLogsInfo;
 	LayoutInflater mInflater;
+	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+	private String mCurData;
+	
+	
 
 	public CallLogsAdapter(Context context, ArrayList<String> _mTelName, ArrayList<String> _mTelNumber,
 			ArrayList<String> _mTelTime) {
@@ -27,7 +33,8 @@ public class CallLogsAdapter extends BaseAdapter {
 		mTelName = _mTelName;
 		mTelNumber = _mTelNumber;
 		mTelTime = _mTelTime;
-		mInflater = LayoutInflater.from(context);
+		mInflater = LayoutInflater.from(context);		
+
 	}
 
 	public CallLogsAdapter(Context context, LayoutInflater _Inflater, PhoneBookInfo callLogsInfo) {
@@ -35,12 +42,16 @@ public class CallLogsAdapter extends BaseAdapter {
 		mCallLogsInfo = callLogsInfo;
 		mInflater = _Inflater;
 		notifyDataSetChanged();
+        //获取当前时间
+        Date date = new Date(System.currentTimeMillis());
+        mCurData = simpleDateFormat.format(date);
+        CallLogsFragment.mLog("mCurData =="+mCurData);
 	}
 
 	@Override
 	public int getCount() {
-		CallLogsFragment.mLog(
-				"CallLogsAdapter getType ==" + mCallLogsInfo.getType() + ";getCount ==" + mCallLogsInfo.getSize());
+//		CallLogsFragment.mLog(
+//				"CallLogsAdapter getType ==" + mCallLogsInfo.getType() + ";getCount ==" + mCallLogsInfo.getSize());
 		return mCallLogsInfo.getSize();
 	}
 
@@ -89,41 +100,73 @@ public class CallLogsAdapter extends BaseAdapter {
 			return convertView;
 		}
 		try {
+		    holder.mTelName.setVisibility(View.VISIBLE);
 			if (mCallLogsInfo.getTelName(position).length() == 0) {
 				onMatchingName(holder.mTelName, position);
 			} else {
 				holder.mTelName.setText(mCallLogsInfo.getTelName(position));
 			}
-			holder.mTelTime.setText(mCallLogsInfo.getTelTime(position));
-
-			if (mCallLogsInfo.getType() == CallLogsFragment.CALL_OUT_TYPE) {
-				holder.mIcon.setImageResource(R.drawable.placed_);
-			} else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_MISS_TYPE) {
-				holder.mIcon.setImageResource(R.drawable.missed);
-			} else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_IN_TYPE) {
-				holder.mIcon.setImageResource(R.drawable.picked_up);
-			}
 		} catch (Exception e) {
-			CallLogsFragment.mLog("getView111 e==" + e);
-			holder.mTelName.setText("未知");
+			e.printStackTrace();
+			holder.mTelName.setVisibility(View.GONE);
+//			holder.mTelName.setText("未知");
 		}
-		try {
-			holder.mTelNumber.setText(mCallLogsInfo.getTelNumber(position));
+		try {		
+		    if (holder.mTelName.getVisibility() == View.VISIBLE) {
+		        holder.mTelNumber.setVisibility(View.GONE);
+            }else{
+                holder.mTelNumber.setVisibility(View.VISIBLE);
+                holder.mTelNumber.setText(mCallLogsInfo.getTelNumber(position));                
+            }
 		} catch (Exception e) {
-			CallLogsFragment.mLog("getView222 e==" + e);
-			holder.mTelNumber.setText("未知");
+		    e.printStackTrace();
+		    holder.mTelNumber.setText("未知");
 		}
+		
+        try {
+            if (mCallLogsInfo.getType() == CallLogsFragment.CALL_OUT_TYPE) {
+                holder.mIcon.setImageResource(R.drawable.placed_);
+            } else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_MISS_TYPE) {
+                holder.mIcon.setImageResource(R.drawable.missed);
+            } else if (mCallLogsInfo.getType() == CallLogsFragment.CALL_IN_TYPE) {
+                holder.mIcon.setImageResource(R.drawable.picked_up);
+            }
+            
+            String[] str = mCallLogsInfo.getTelTime(position).split("T");
+//            CallLogsFragment.mLog("getView getTelTime ==" + mCallLogsInfo.getTelTime(position) + "; position ==" + position
+//                    + ";mCallLogsInfo type ==" + mCallLogsInfo.getType());
+            String time = "";
+            if (str.length >= 2) {
+                if (str[0].equals(mCurData)) {
+                    time = str[1].substring(0, 2) + ":"
+                            + str[1].substring(2, 4);
+                } else {
+                    time =  str[0].substring(4, 6) + "/"
+                            + str[0].substring(6, 8) + "\r\n"
+                            +str[0].substring(0, 4);
+                }
+            }else{
+                time =  str[0].substring(4, 6) + "/"
+                        + str[0].substring(6, 8) + "\r\n"
+                        +str[0].substring(0, 4);
+            }
+            holder.mTelTime.setText(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
 		return convertView;
 	}
 
 	private void onMatchingName(TextView mTextView, int position) {
-		CallLogsFragment.mLog("position ==" + position);
+//		CallLogsFragment.mLog("position ==" + position);
 		String temp = CallLogsFragment.mNumberParams.get(mCallLogsInfo.getTelNumber(position));
-		CallLogsFragment.mLog("temp ==" + temp);
+//		CallLogsFragment.mLog("temp ==" + temp);
 		if (temp != null) {
 			mTextView.setText(temp);
 		} else {
-			mTextView.setText("未知");
+		    mTextView.setVisibility(View.GONE);
+//			mTextView.setText("未知");
 		}
 	}
 

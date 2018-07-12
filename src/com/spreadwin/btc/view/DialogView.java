@@ -44,8 +44,10 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private ImageView mDialButton, mMute, mSwitch, mCheckout;
 	private ImageView mdroppedbutton;
+	private ImageView mIntputDroppedButton;
 	private Chronometer mChronometer;
 	private TextView mAddressText, mNameText, mCallText;
+	private TextView mCheckoutText;
 	public static final String ACTION_BT_CALL_IN = "ACTION_BT_CALL_IN";
 	public static final String EXTRA_BT_CALL_IN_NAME = "EXTRA_BT_CALL_IN_NAME";
 	public static final String EXTRA_BT_CALL_IN_NUMBER = "EXTRA_BT_CALL_IN_NUMBER";
@@ -59,6 +61,8 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private boolean isScreen;
 	private boolean isCheckout;
 	private LinearLayout mDial;
+	private LinearLayout mMenuLayout;
+	private LinearLayout mLayoutCheckout;
 	private boolean isAnswer;
 	private WindowManager wm = null;
 	private	boolean isClickAudio;
@@ -75,6 +79,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				mMute.setImageResource(R.drawable.mute_d);
 				isClickAudio = true;
 			}
+			
 			mHandler.postDelayed(mRunnable, 500);
 		}
 	};
@@ -95,6 +100,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 
 	private String getCallNumber;
 	private String getPhoneName;
+	
 
 	public DialogView(Context context, boolean isFlags, boolean isScreen, String getPhoneName) {
 		this.mContext = context;
@@ -108,8 +114,9 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 	private void initView(View view) {
 		wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		mDial = (LinearLayout) view.findViewById(R.id.layout_dial);
-		mDialButton = (ImageView) view.findViewById(R.id.mdial_button);
-		mdroppedbutton = (ImageView) view.findViewById(R.id.mdropped_button);
+		mDialButton = (ImageView) view.findViewById(R.id.dial2_button);
+		mdroppedbutton = (ImageView) view.findViewById(R.id.dropped2_button);
+		mIntputDroppedButton = (ImageView) view.findViewById(R.id.intput_dropped_button);
 		mCheckout = (ImageView) view.findViewById(R.id.checkout);
 		mAddressText = (TextView) view.findViewById(R.id.address_text);
 		mNameText = (TextView) view.findViewById(R.id.name_text);
@@ -132,6 +139,10 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mNumberJin = (ImageButton) view.findViewById(R.id.number_jin);
 		mNumberXing = (ImageButton) view.findViewById(R.id.number_xing);
 		mInputText = (TextView) view.findViewById(R.id.input_text);
+		mCheckoutText = (TextView) view.findViewById(R.id.checkout_text);
+		
+		mMenuLayout = (LinearLayout) view.findViewById(R.id.menu_layout);
+		mLayoutCheckout = (LinearLayout) view.findViewById(R.id.layout_checkout);
 
 		rippleBackground = (RippleBackground) view.findViewById(R.id.content);
 
@@ -153,6 +164,7 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mSwitch.setOnClickListener(this);
 		mDialButton.setOnClickListener(this);
 		mdroppedbutton.setOnClickListener(this);
+		mIntputDroppedButton.setOnClickListener(this);
 		mCheckout.setOnClickListener(this);
 
 		mDeleteButton.setOnLongClickListener(this);
@@ -177,10 +189,11 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			mDialButton.setVisibility(View.GONE);
 		} else {
 			mCallText.setText("来电");
-			mMute.setVisibility(View.VISIBLE);
+			mMute.setVisibility(View.GONE);
 			mDialButton.setVisibility(View.VISIBLE);
 			onSendBTCall(ACTION_BT_CALL_IN, getPhoneName, getCallNumber);
 		}
+		mMenuLayout.setVisibility(View.GONE);
 		mContext.sendBroadcast(new Intent("ACTION_SCREENSAVER_CLOSE"));
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(FINISH_ACTIVITY);
@@ -222,23 +235,23 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 				setCaller();
 			} else if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
 				if (!isScreen && isFlasg) {
-					try {
+					/*try {
 						mDismissDialog();
 						isScreen = true;
 						WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 						params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN
 								| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-						params.x = 600;
-						params.width = 680;
+						params.x = 0;
 						params.y = 0;
+						params.width = WindowManager.LayoutParams.MATCH_PARENT;
 						params.height = WindowManager.LayoutParams.MATCH_PARENT;
 						mCheckout.setVisibility(View.GONE);
 						mDial.setVisibility(View.GONE);
 						wm.addView(mView, params);
 					} catch (Exception e) {
 						e.printStackTrace();
-					}
+					}*/
 				}
 			}
 		}
@@ -260,28 +273,36 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 		mAddressText.setVisibility(View.VISIBLE);
 		mChronometer.setVisibility(View.VISIBLE);
 		mDialButton.setVisibility(View.GONE);
+		mMenuLayout.setVisibility(View.VISIBLE);
 		mAddressText.setText("通话中...");
 		mCallText.setVisibility(View.GONE);
 		mChronometer.setBase(SystemClock.elapsedRealtime());
 		mChronometer.start();
 		if (!isScreen && isAnswer) {
 			Log.d(TAG, "显示");
+			mCheckoutText.setText("显示键盘");
+			isCheckout = true;
 			mCheckout.setVisibility(View.VISIBLE);
+			mCheckoutText.setVisibility(View.VISIBLE);
 		} else {
 			Log.d(TAG, "隐藏");
-			mCheckout.setVisibility(View.GONE);
+			mCheckoutText.setText("关闭键盘");
+			mCheckoutText.setVisibility(View.INVISIBLE);
+			mCheckout.setVisibility(View.INVISIBLE);
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
+	    Log.d(TAG, "checkout  v =="+v);
 		onNumClick(v);
 		switch (v.getId()) {
-		case R.id.mdial_button:
+		case R.id.dial2_button:
 			BtcNative.answerCall();
 			setCaller();
 			break;
-		case R.id.mdropped_button:
+		case R.id.dropped2_button:
+		case R.id.intput_dropped_button:
 			denyCall();
 			break;
 		case R.id.mute:
@@ -301,14 +322,19 @@ public class DialogView implements OnClickListener, OnLongClickListener {
 			BtcNative.changeAudioPath();
 			break;
 		case R.id.checkout:
+		    Log.d(TAG, "checkout  isCheckout =="+isCheckout);
 			if (isCheckout) {
 				isCheckout = false;
-				mCheckout.setImageResource(R.drawable.keyboard_d);
+				mCheckoutText.setText("关闭键盘");
+//				mCheckout.setImageResource(R.drawable.keyboard_d);
 				mDial.setVisibility(View.VISIBLE);
+				mLayoutCheckout.setVisibility(View.GONE);
 			} else {
 				isCheckout = true;
-				mCheckout.setImageResource(R.drawable.keyboard_u);
+				mCheckoutText.setText("显示键盘");
+//				mCheckout.setImageResource(R.drawable.keyboard_u);
 				mDial.setVisibility(View.GONE);
+				mLayoutCheckout.setVisibility(View.VISIBLE);
 			}
 			break;
 		}

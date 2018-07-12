@@ -214,13 +214,15 @@ public class SlidingTabLayout extends HorizontalScrollView {
 				tabTitleView = (TextView) tabView;
 			}
 			Drawable drawable = null;
-			if (adapter.getPageTitle(i).equals("呼出电话")) {
+			if (adapter.getPageTitle(i).equals("呼出")) {
 				drawable = getResources().getDrawable(R.drawable.placed_);
-			} else if (adapter.getPageTitle(i).equals("呼入电话")) {
+			} else if (adapter.getPageTitle(i).equals("呼入")) {
 				drawable = getResources().getDrawable(R.drawable.picked_up);
-			} else if (adapter.getPageTitle(i).equals("未接电话")) {
+			} else if (adapter.getPageTitle(i).equals("未接")) {
 				drawable = getResources().getDrawable(R.drawable.missed);
-			}
+			}else{
+			    drawable = getResources().getDrawable(R.drawable.placed_);
+            }
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight()); // 设置边界
 			tabTitleView.setCompoundDrawables(drawable, null, null, null);
 			tabTitleView.setText(adapter.getPageTitle(i));

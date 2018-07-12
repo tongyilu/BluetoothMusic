@@ -18,6 +18,7 @@
         android:paddingLeft="10dp"
         android:singleLine="true"
         android:textColor="@color/white"
+        android:visibility="gone"
         android:textSize="16.0sp" />
 
     <TextView
@@ -28,6 +29,31 @@
         android:text="联系人数量：0"
         android:textSize="16sp"
         android:visibility="gone" />
+    
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
+            
+            <ImageView
+                android:id="@+id/bt_contacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:layout_marginLeft="12dip"
+                android:src="@drawable/bt_contacts" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="26dip"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="电话簿"/>
+        </LinearLayout>
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -40,10 +66,11 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            android:divider="@color/gray_61"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="15dp"
-            android:dividerHeight="1dp" />
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:dividerHeight="1dp" 
+            android:divider="@android:color/transparent"
+            />
 
         <TextView
             android:id="@+id/dialog"

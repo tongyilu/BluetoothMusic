@@ -2,39 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:background="@drawable/bg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_height="45dip" >
 
             <TextView
                 android:id="@+id/contect_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_centerVertical="true"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/disconnect_title"
                 android:textColor="@color/blue_00"
                 android:textSize="16sp" />
+            
+            <ImageButton
+                android:id="@+id/iv_contect_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dip"
+                android:layout_toRightOf="@id/contect_status"
+                android:background="@drawable/ic_disconnect_connection"/>
 
             <TextView
                 android:id="@+id/contect_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
                 android:ellipsize="end"
                 android:visibility="gone"
                 android:singleLine="true"
+                android:layout_centerInParent="true"
                 android:textColor="@color/blue_00"
                 android:textSize="16sp" />
 
@@ -45,7 +53,8 @@
                 android:ellipsize="marquee"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:gravity="right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
                 android:background="@drawable/border_style"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
@@ -53,12 +62,70 @@
                 android:text="@string/device_name"
                 android:textColor="@color/blue_00"
                 android:textSize="16sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@drawable/ic_divider" />
+        
+  <!--      <com.spreadwin.btc.view.SlidingTabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" /> -->
+            
+      <LinearLayout
+            android:id="@+id/rgcontroller"
+            android:layout_width="match_parent"
+            android:layout_height="60dip"
+            android:orientation="horizontal"
+            android:background="#1affffff" >
+
+          <LinearLayout 
+              android:layout_width="0dip"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:gravity="center"
+              >
+              
+           <ImageButton
+                android:id="@+id/bt_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:src="@drawable/rb_phone"/>
+
+          </LinearLayout>
+
+            <View                
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#b5b5b5" />
+          <LinearLayout 
+              android:layout_width="0dip"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:gravity="center"
+              >
+            <ImageButton
+                android:id="@+id/bt_music"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:src="@drawable/rb_music" />
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/main"
@@ -73,6 +140,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dip"
                 android:gravity="center_horizontal"
+                android:visibility="gone"
                 android:orientation="vertical" >
 
                 <include
@@ -96,16 +164,46 @@
             </LinearLayout>
 
             <FrameLayout
+                android:id="@+id/left_fragment_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:layout_weight="1.2" />
+            
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:background="#b5b5b5" />
+            
+            <FrameLayout
                 android:id="@+id/id_fragment_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
+            
+           <View
+               android:id="@+id/divider2"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:background="#b5b5b5" />
+                       
+            <FrameLayout
+                android:id="@+id/right_fragment_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:layout_weight="1.2" />
 
             <FrameLayout
                 android:id="@+id/add_bluetooth_music"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="15"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
