@@ -8,6 +8,6 @@
      <ListView 
             android:id="@+id/call_miss_list"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="fill_parent"></ListView>
 </LinearLayout>
 
