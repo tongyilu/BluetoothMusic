@@ -95,7 +95,7 @@ public class CustomDialog extends Dialog {
 							EditText msg = (EditText) layout.findViewById(R.id.message);
 							String message = String.valueOf(msg.getText());
 							if (!TextUtils.isEmpty(message) && message.getBytes().length < 16) {
-								BtcNative.setDeviceName("V66-" + message);
+								BtcNative.setDeviceName("E100-" + message);
 							}else{
 								Toast.makeText(context, "总长度不超过16个英文字符!", Toast.LENGTH_SHORT).show();
 							}

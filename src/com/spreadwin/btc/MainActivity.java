@@ -371,7 +371,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		mMusicLayout.setOnClickListener(this);
 		mRedialLayout.setOnClickListener(this);
 		mBluetoothLayout.setOnClickListener(this);
-		mBluetoothName.setOnClickListener(this);
+//		mBluetoothName.setOnClickListener(this);
 
 		mCallLogsFragment = new CallLogsFragment();
 		mContactsFragment = new ContactsFragment();
@@ -411,8 +411,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mLog("Receiver mActionA2dp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
-					} else if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+					} else if (mStatus == BtcGlobalData.A2DP_CONNECTED) {
+						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_CONNECTED);
 					} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 					}
@@ -1007,8 +1007,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				mLog("Receiver mActionA2dp mStatus ==" + mStatus);
 				if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
 					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
-				} else if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+				} else if (mStatus == BtcGlobalData.A2DP_CONNECTED) {
+					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_CONNECTED);
 				} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 					mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 				}
