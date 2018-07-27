@@ -90,6 +90,8 @@ public class SyncService extends Service {
 	public static final String PUSH_MUSIC_PLAY_STATE = "android.intent.action.SPREADWIN.BLUTOOTHMUSIC_STATUS";
 
 	public static final String ACTION_MEDIAKILLED = "com.spreadwin.service.mediakilled";
+	
+	public static final String ACTION_BT_CONNECT_CHANGED = "com.spreadwin.BT_CONNECT_CHANGED";
 
 	public boolean mOnlyMusic = false;
 
@@ -195,6 +197,7 @@ public class SyncService extends Service {
 
 	public static LruJsonCache mCache; // 缓存来电归属：换成数据库考虑没网络的情况
 	public static boolean isConnect;
+	public static boolean mBtContect;
 
 	// private OpenUtils openUtils;
 	boolean mdatabase; // 是否从数据库读取电话本信息标识位
@@ -270,6 +273,7 @@ public class SyncService extends Service {
 		filter.addAction(ACTION_ACC_ON);
 		filter.addAction(LOCAL_MUSIC_ACTION);
 		filter.addAction(ACTION_MEDIAKILLED);
+		filter.addAction(ACTION_BT_CONNECT_CHANGED);
 		registerReceiver(mBatInfoReceiver, filter);
 	}
 
@@ -726,6 +730,7 @@ public class SyncService extends Service {
 			mLog("start =========== log");
 			mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, true);
 			isConnect = true;
+			mBtContect = true;
 			saySomething("蓝牙已连接");// 语音提示
 			handler.sendEmptyMessageDelayed(mShowNotification, MainActivity.mShowDeviceNameDelayed);
 			mBfpIntent.putExtra("bfp_status", BtcGlobalData.BFP_CONNECTED);
@@ -733,7 +738,7 @@ public class SyncService extends Service {
 			// setBtAudioMode(BtAudioManager.AUDIO_MODE_BT);
 
 		} else if (mTempStatus == BtcGlobalData.BFP_DISCONNECT) {
-			saySomething("蓝牙已断开");// 语音提示
+//			saySomething("蓝牙已断开");// 语音提示
 			mLog("end =========== log");
 			mSendBluetoothBroadcast(BLUETOOTH_CONNECT_CHANGE, false);
 			m_DBAdapter.close();
@@ -1370,7 +1375,7 @@ public class SyncService extends Service {
 				for (int i = 0; i < 3; i++) {
 					mLog("ainActivity.mBroadcast isTopMyself");
 					ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
-					if (isTopMyself(this,am.getLeftStackId())) {
+					if (isTopMyself(this)) {
 						mLog("ainActivity.mBroadcast isTopMyself==" + true);
 						break;
 					}
@@ -1403,20 +1408,15 @@ public class SyncService extends Service {
 	 * 
 	 * @return
 	 */
-	public static boolean isTopMyself(Context context,int leftStack) {
-//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//		PackageManager pm = (PackageManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		RecentTaskInfo ti = SplitUtil.getTopTaskOfStack(context, leftStack);
-		if (ti != null) {
-			Intent it = ti.baseIntent;
-//			ResolveInfo resolveInfo = pm.resolveActivity(it, 0);
-			if ((it.getComponent().getPackageName()).equals("com.spreadwin.btc")) {
-				return true;
-			}
-		}
-		
-		
-		return false;
+	public static boolean isTopMyself(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningTaskInfo> runningTasks = am.getRunningTasks(1);
+        RunningTaskInfo rti = runningTasks.get(0);
+        ComponentName component = rti.topActivity;
+        if (component.getPackageName().equals("com.spreadwin.btc")) {
+            return true;
+        }
+        return false;
 	}
 
 	
@@ -1616,8 +1616,14 @@ public class SyncService extends Service {
 			} else if (intent.getAction().equals(ACTION_MYACTION_BTC_CALL)) {
 				dialCall(intent.getStringExtra("call_number"));
 			} else if (intent.getAction().equals(ACTION_MEDIAKILLED)) {
-				mLog("接受到媒体库挂断广播");
 				BtAudioManager.getInstance(getApplicationContext()).setMediaKillMode();
+			} else if (intent.getAction().equals(ACTION_BT_CONNECT_CHANGED)) {
+			    boolean connect = intent.getBooleanExtra("connState", false);
+			    mLog("ACTION_BT_CONNECT_CHANGED =="+connect);
+			    Intent mBtIntent = new Intent();
+			    mBtIntent.setAction(ACTION_BT_CONNECT_CHANGED);
+			    mBtIntent.putExtra("connect", connect);
+                sendObjMessage(1, mBtIntent);
 			}
 		}
 	};

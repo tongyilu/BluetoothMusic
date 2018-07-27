@@ -29,4 +29,11 @@
         <item name="android:textSize">20.0dip</item>
         <item name="android:textColor">#fff</item>
     </style>
+    
+    <style name="MyDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

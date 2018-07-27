@@ -11,6 +11,7 @@ import com.spreadwin.btc.Music.MusicFragment;
 import com.spreadwin.btc.contacts.ContactsFragment;
 import com.spreadwin.btc.utils.BtcGlobalData;
 import com.spreadwin.btc.utils.ControlVolume;
+import com.spreadwin.btc.utils.DialogUtils;
 import com.spreadwin.btc.utils.PhoneBookInfo;
 import com.spreadwin.btc.view.CustomDialog;
 import com.spreadwin.btc.view.CustomDialogText;
@@ -39,6 +40,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
+import android.os.SystemProperties;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -83,6 +85,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public static final String mActionCall = "com.spreadwin.btc.call";
 	public static final String mActionPair = "com.spreadwin.btc.pair";
 	public static final String mAcitonFinish = "com.spreadwin.btc.finish";
+	
+	
+	public static final String mUartConState = "hw.spreadwin.uartconnstate";
+	
+	
 
 	public static final String mActionBookInfoOver = "com.spreadwin.btc.over";
 
@@ -247,7 +254,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	protected void onResume() {
 		super.onResume();
 		mLog("MainActivity onResume");
-		parserIntent();
+		parserIntent();		
+	      
+        if (isUartConnect()) {
+            DialogUtils.dismissBluetoothDialog();
+        }else{
+            DialogUtils.showNoBluetoothDialog(MainActivity.this);
+        }
 
 	}
 
@@ -296,7 +309,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		}
 	}
 
-	@Override
+	private boolean isUartConnect() {
+        int conn = SystemProperties.getInt(mUartConState, 0);
+        if (conn == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
@@ -461,8 +482,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 						handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
 						mLog("Receiver mMusicFragment222 isVisible ==" + mMusicFragment.isVisible());
-						if (SyncService.isTopMyself(getBaseContext(), stackLeftId)
-								|| SyncService.isTopMyself(getBaseContext(), stackRegihtId)) {
+						if (SyncService.isTopMyself(getBaseContext())) {
 							if (mMusicFragment.isVisible()) {
 								mMusicFragment.openAudioMode();
 							}
@@ -471,6 +491,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 									mMusicRightFragment.openAudioMode();
 								}
 							}
+							DialogUtils.dismissBluetoothDialog();
 						}
 						// LockScreen();
 					} else if (mStatus == BtcGlobalData.BFP_DISCONNECT) {
@@ -482,11 +503,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						mBluetoothStatus.setText(getResources().getString(R.string.disconnect_title));
 						handler.sendEmptyMessage(mMessageNotifyData);
 						mDismissDialog(DIALOG1);
+						DialogUtils.showNoBluetoothDialog(MainActivity.this);
 					}
 				} else if (intent.getAction().equals(mAcitonFinish)) {
 					MainActivity.this.finish();
 				}
-
 			}
 		};
 		IntentFilter intentFilter = new IntentFilter();
@@ -497,7 +518,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		intentFilter.addAction(mActionBfp);
 		intentFilter.addAction(mAcitonFinish);
 		intentFilter.addAction(mActionBookInfoOver);
-		intentFilter.addAction(mActionFull);
+		intentFilter.addAction(mActionFull);		
 
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		mBroadcast = true;
@@ -1053,14 +1074,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mIvContectStatus.setBackgroundResource(R.drawable.ic_connection);
 					mBluetoothStatus.setText(getResources().getString(R.string.connect_title));
 					handler.sendEmptyMessageDelayed(mMessageShowDeviceName, mShowDeviceNameDelayed);
-					mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible());
+					mLog("Receiver mMusicFragment isVisible ==" + mMusicFragment.isVisible()+"; isTopMyself =="+
+					        SyncService.isTopMyself(getBaseContext()));
 
-					if (SyncService.isTopMyself(getBaseContext(), stackLeftId)
-							|| SyncService.isTopMyself(getBaseContext(), stackRegihtId)) {
+					if (SyncService.isTopMyself(getBaseContext())
+							|| SyncService.isTopMyself(getBaseContext())) {
 						if (mMusicFragment.isVisible()) {
 							mLog("Receiver mMusicFragment 11111111");
 							mMusicFragment.openAudioMode();
 						}
+						DialogUtils.dismissBluetoothDialog();
 						if (mMusicRightFragment != null) {
 							mLog("Receiver mMusicRightFragment isVisible ==" + mMusicRightFragment.isVisible()
 									+ "; getVisibility ==" + mMusicRightFragment.getView().getVisibility()
@@ -1101,7 +1124,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				if (mMusicRightFragment != null) {
 					mMusicRightFragment.setPlayTitle(intent);
 				}
-			}
+			} else if (intent.getAction().equals(SyncService.ACTION_BT_CONNECT_CHANGED)) {
+                boolean connect = intent.getBooleanExtra("connect", false);
+                mLog("isTopMyself =="+SyncService.isTopMyself(getBaseContext()) +"; connect =="+connect);
+                if (SyncService.isTopMyself(getBaseContext()) && !connect) {
+                    DialogUtils.showNoBluetoothDialog(MainActivity.this);
+                }else{
+                    DialogUtils.dismissBluetoothDialog();
+                }
+            }
 		}
 	}
 
