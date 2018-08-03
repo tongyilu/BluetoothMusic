@@ -295,10 +295,10 @@ public class SyncService extends Service {
 				}
 
 				// 监听getPairStatus()
-				mTempStatus = BtcNative.getPairStatus();
+			/*	mTempStatus = BtcNative.getPairStatus();
 				if (mTempStatus != mPairStatus) {
 					onPairStatusChange();
-				}
+				}*/
 				// 监听CallStatus
 				mTempStatus = BtcNative.getCallStatus();
 //				mTempStatus = BtcGlobalData.CALL_IN;
@@ -1335,7 +1335,7 @@ public class SyncService extends Service {
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams();
 
 		// 背景透明
-		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 		// params.format = PixelFormat.TRANSLUCENT;
 		params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 

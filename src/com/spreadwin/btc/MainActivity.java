@@ -228,6 +228,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+//	      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//	                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.main);
 		init();
 		mLog("MainActivity onCreate1111");
@@ -923,7 +925,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			setBTVolume(true);
 			return true;
 		} else if (keyCode == event.KEYCODE_BACK) {
-			moveTaskToBack(true);
+            Intent intent = getPackageManager().getLaunchIntentForPackage("com.softwinner.carlet.launcherx3");
+            if (intent != null) {
+                startActivity(intent);
+            }else{
+                moveTaskToBack(true);
+            }
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
