@@ -361,8 +361,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					mLog("Receiver mActionA2dp mStatus ==" + mStatus);
 					if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
-					} else if (mStatus == BtcGlobalData.A2DP_DISCONNECT) {
-						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_DISCONNECT);
+					} else if (mStatus == BtcGlobalData.A2DP_CONNECTED) {
+						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_CONNECTED);
 					} else if (mStatus == BtcGlobalData.A2DP_PLAYING) {
 						mMusicFragment.setA2dpStatus(BtcGlobalData.A2DP_PLAYING);
 					}

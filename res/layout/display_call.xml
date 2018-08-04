@@ -70,7 +70,7 @@
                 <ImageButton
                     android:id="@+id/number_1"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -79,7 +79,7 @@
                 <ImageButton
                     android:id="@+id/number_2"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -88,7 +88,7 @@
                 <ImageButton
                     android:id="@+id/number_3"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -104,7 +104,7 @@
                 <ImageButton
                     android:id="@+id/number_4"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -113,7 +113,7 @@
                 <ImageButton
                     android:id="@+id/number_5"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -122,7 +122,7 @@
                 <ImageButton
                     android:id="@+id/number_6"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -138,7 +138,7 @@
                 <ImageButton
                     android:id="@+id/number_7"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -147,7 +147,7 @@
                 <ImageButton
                     android:id="@+id/number_8"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -156,7 +156,7 @@
                 <ImageButton
                     android:id="@+id/number_9"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -172,7 +172,7 @@
                 <ImageButton
                     android:id="@+id/number_jin"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -181,7 +181,7 @@
                 <ImageButton
                     android:id="@+id/number_0"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -190,7 +190,7 @@
                 <ImageButton
                     android:id="@+id/number_xing"
                     android:layout_width="fill_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
@@ -213,12 +213,12 @@
 
             <com.spreadwin.btc.view.RippleBackground
                 android:id="@+id/content"
-                android:layout_width="154dp"
-                android:layout_height="154dp"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
                 android:gravity="center"
                 app:rb_color="#0099CC"
                 app:rb_duration="4000"
-                app:rb_radius="12dp"
+                app:rb_radius="9dp"
                 app:rb_rippleAmount="5"
                 app:rb_scale="5" >
 
